@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DesayMem_mem0 架构图集</title>
+<style>
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: #1a1a2e;
+    font-family: "Microsoft YaHei", sans-serif;
+    color: #e0e0e0;
+  }
+  .nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    height: 52px;
+    background: #16213e;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 0 20px;
+    z-index: 1000;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.5);
+    overflow-x: auto;
+  }
+  .nav button {
+    background: #0f3460;
+    color: #e0e0e0;
+    border: 1px solid #1a4080;
+    border-radius: 4px;
+    padding: 6px 16px;
+    font-size: 14px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background 0.2s;
+  }
+  .nav button:hover { background: #1a5276; }
+  .nav button.active { background: #533483; border-color: #7b2cbf; }
+
+  .section {
+    display: none;
+    padding: 80px 20px 40px;
+    max-width: 1600px;
+    margin: 0 auto;
+  }
+  .section.active { display: block; }
+
+  .section h1 {
+    font-size: 22px;
+    color: #ffffff;
+    border-bottom: 2px solid #533483;
+    padding-bottom: 8px;
+    margin-bottom: 6px;
+  }
+  .section .desc {
+    color: #a0a0c0;
+    font-size: 14px;
+    line-height: 1.7;
+    margin-bottom: 20px;
+  }
+  .section .desc strong { color: #e0e0e0; }
+  .section .desc code {
+    background: #16213e;
+    padding: 1px 6px;
+    border-radius: 3px;
+    font-size: 13px;
+    color: #7ec8e3;
+  }
+
+  .chart-box {
+    background: #fafafa;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.4);
+    overflow: auto;
+  }
+  .chart-box svg { max-width: none; }
+
+  .legend {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    margin-bottom: 14px;
+    font-size: 13px;
+  }
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .legend-color {
+    width: 16px; height: 16px;
+    border-radius: 3px;
+    border: 1px solid #888;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 16px;
+    font-size: 13px;
+    color: #d0d0e0;
+  }
+  table th, table td {
+    border: 1px solid #2a2a4e;
+    padding: 8px 12px;
+    text-align: left;
+  }
+  table th { background: #16213e; color: #fff; }
+  table td code { background: #0d1b2a; padding: 1px 5px; border-radius: 3px; color: #7ec8e3; }
+
+  .mermaid-target {
+    font-size: 15px;
+    display: flex;
+    justify-content: center;
+  }
+  .mermaid-target svg { max-width: none; }
+</style>
+</head>
+<body>
+
+<div class="nav">
+  <button onclick="show('overview')" class="active">总图</button>
+  <button onclick="show('write')">写入七步</button>
+  <button onclick="show('derive')">L1→L2→L3 派生</button>
+  <button onclick="show('retrieve')">检索召回拼接</button>
+  <button onclick="show('layers')">三层记忆模型</button>
+  <button onclick="show('deploy')">部署形态</button>
+</div>
+
+<!-- ============ 总图 ============ -->
+<div class="section active" id="overview">
+  <h1>总图：三大子系统概览</h1>
+  <div class="desc">
+    系统分三条主线：<strong>写入七步</strong>（对话 → LLM 抽取 → L1 入库）、<strong>派生层</strong>（L1 → L2 事件 + L3 画像）、<strong>检索拼接</strong>（向量召回 → 精排 → 返回 memories + profile）。
+    下方各页逐个展开。<code>DesayMemory</code> 是中心编排器，下面三页分别对应它的 <code>add</code>、<code>_evolve_layers</code>、<code>search_result</code> 三条路径。
+  </div>
+  <div class="legend">
+    <div class="legend-item"><div class="legend-color" style="background:#c8e6c9"></div> L1 事实层</div>
+    <div class="legend-item"><div class="legend-color" style="background:#fff9c4"></div> L2 事件层</div>
+    <div class="legend-item"><div class="legend-color" style="background:#bbdefb"></div> L3 画像层</div>
+    <div class="legend-item"><div class="legend-color" style="background:#f3e5f5"></div> LLM Proxy</div>
+  </div>
+  <div class="chart-box">
+    <script type="text/mermaid" class="mermaid-source">
+flowchart LR
+    UI[座舱助手]
+
+    subgraph 写入
+        W[写入七步流水线<br/>add 方法]
+    end
+    subgraph 派生
+        D[L1→L2→L3<br/>_evolve_layers]
+    end
+    subgraph 检索
+        R[检索召回拼接<br/>search_result 方法]
+    end
+
+    PG[(PostgreSQL<br/>+ pgvector)]
+    SQLITE[(SQLite<br/>history + messages)]
+    LLM[LLM<br/>Qwen/DeepSeek]
+    EMB[Embedding<br/>BGE-M3]
+
+    UI -->|POST /v1/memories| W
+    W --> D
+    D --> PG
+    W --> PG
+    W --> SQLITE
+
+    UI -->|POST /v1/memories/search| R
+    R --> PG
+    R --> LLM
+
+    UI -->|question + memory_context| PX[LLM Proxy]
+    PX --> LLM
+    PX -->|reply| UI
+
+    W --> LLM
+    D --> LLM
+    W --> EMB
+    R --> EMB
+
+    style W fill:#c8e6c9,stroke:#2e7d32,stroke-width:2px
+    style D fill:#fff9c4,stroke:#f9a825,stroke-width:2px
+    style R fill:#bbdefb,stroke:#1565c0,stroke-width:2px
+    style PX fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px
+    </script>
+    <div class="mermaid-target"></div>
+  </div>
+</div>
+
+<!-- ============ 写入七步 ============ -->
+<div class="section" id="write">
+  <h1>写入七步流水线（infer=true）</h1>
+  <div class="desc">
+    代码入口 <code>memory.py::add</code>。对话进来后，先读取上下文（最近消息 + 已有记忆 + L3 画像），交给 LLM 做 ADD-only 抽取，去重后写入 L1，
+    再做实体链接和消息保存。Step 5 写入 L1 是核心检查点——之后立即触发<strong>派生层构建</strong>（见下页）。<br/><br/>
+    <strong>ADD-only 原则：</strong>LLM 只能生成新事实，不能 UPDATE/DELETE。偏好"改为 26 度"会存成一条新 L1，旧"22 度"不删，靠检索期冲突消解过滤。
+  </div>
+  <div class="chart-box">
+    <script type="text/mermaid" class="mermaid-source">
+flowchart TD
+    INPUT[对话输入<br/>messages] --> STEP0
+
+    STEP0["Step 0 预处理<br/>① 解析对话文本<br/>② 读取最近 last_k=10 条会话消息（SQLite）<br/>③ 读取 L3 画像快照 narrative（PostgreSQL）<br/>→ 填入抽取 Prompt 的 Summary 槽"]
+
+    STEP1["Step 1 向量召回已有近邻<br/>用整段对话生成 embedding<br/>pgvector 检索 top_k=10<br/>作用：去重参考 + 抽取上下文"]
+
+    STEP2["Step 2 LLM ADD-only 抽取<br/>输入：对话 + last_k + 近邻 + L3 Summary<br/>输出：原子事实列表<br/>LLM 只做 ADD，不能 UPDATE/DELETE"]
+
+    STEP34["Step 3+4 Embedding + MD5 去重<br/>批量生成 embedding<br/>对比已有 content_hash 去重<br/>重复事实跳过"]
+
+    STEP5["Step 5 ⭐ 写入 L1 + History<br/>存入 PostgreSQL memory_items（pgvector）<br/>memory_type=semantic_memory<br/>同时写 SQLite history（ADD 事件）"]
+
+    STEP6["Step 6 实体链接<br/>抽取实体 → memory_entities<br/>建立实体 ↔ 记忆双向链接<br/>检索时可加权"]
+
+    STEP7["Step 7 保存会话消息<br/>写入 SQLite messages 表<br/>供下一轮 last_k 读取<br/>→ 触发 L2/L3 派生"]
+
+    STEP0 --> STEP1 --> STEP2 --> STEP34 --> STEP5 --> STEP6 --> STEP7
+
+    STEP1 -.->|embedding| EMB[Embedding BGE-M3]
+    STEP34 -.->|embedding| EMB
+    STEP2 -.->|LLM| LLM[LLM Qwen/DeepSeek]
+    STEP0 -.->|读 messages| SQLITE[(SQLite)]
+    STEP0 -.->|读 profile| PG[(PostgreSQL)]
+    STEP5 -.->|写 L1 + history| PG
+    STEP5 -.->|写 history| SQLITE
+    STEP7 -.->|写 messages| SQLITE
+
+    style STEP5 fill:#c8e6c9,stroke:#2e7d32,stroke-width:3px
+    style STEP2 fill:#e3f2fd,stroke:#1565c0
+    </script>
+    <div class="mermaid-target"></div>
+  </div>
+  <table>
+    <tr><th>步骤</th><th>代码 Phase</th><th>做什么</th><th>读</th><th>写</th><th>调外部</th></tr>
+    <tr><td>Step 0</td><td>预处理</td><td>解析消息 + 读 last_k + 读 L3 画像</td><td>SQLite messages, PG profile</td><td>-</td><td>-</td></tr>
+    <tr><td>Step 1</td><td>Phase 1</td><td>向量召回已有近邻 top_k=10</td><td>PG memory_items</td><td>-</td><td>Embedding</td></tr>
+    <tr><td>Step 2</td><td>Phase 2</td><td>LLM ADD-only 抽取原子事实</td><td>-</td><td>-</td><td>LLM</td></tr>
+    <tr><td>Step 3+4</td><td>Phase 3-5</td><td>批量 embedding + MD5 去重</td><td>PG content_hash</td><td>-</td><td>Embedding</td></tr>
+    <tr><td>Step 5</td><td>Phase 6</td><td><strong>写入 L1 memory_items + history</strong></td><td>-</td><td>PG + SQLite</td><td>-</td></tr>
+    <tr><td>Step 6</td><td>Phase 7</td><td>实体抽取与链接</td><td>-</td><td>PG entities</td><td>-</td></tr>
+    <tr><td>Step 7</td><td>收尾</td><td>保存会话消息 → 触发 L2/L3</td><td>-</td><td>SQLite messages</td><td>-</td></tr>
+  </table>
+</div>
+
+<!-- ============ L1→L2→L3 派生 ============ -->
+<div class="section" id="derive">
+  <h1>L1 → L2 → L3 派生层构建</h1>
+  <div class="desc">
+    代码入口 <code>memory.py::_evolve_layers</code>，在 L1 写入成功后 best-effort 触发。<strong>L2 和 L3 并行构建，互不依赖</strong>，任一失败只记 warning，不回滚 L1。<br/><br/>
+    <strong>L2 EpisodeBuilder</strong>：读同 scope 的 active episode → LLM 判断 continues/新建 → 写事件摘要（含 <code>source_memory_ids</code> 指回 L1）。<br/>
+    <strong>L3 ProfileDistiller</strong>：L1 + 向量近邻组成证据簇 → LLM 输出 beliefs → Python 校验证据 ID → 执行 CREATE/CONFIRM/SUPERSEDE → 拼成 narrative 反馈下一轮抽取。
+  </div>
+  <div class="legend">
+    <div class="legend-item"><div class="legend-color" style="background:#c8e6c9"></div> L1 事实层</div>
+    <div class="legend-item"><div class="legend-color" style="background:#fff9c4"></div> L2 事件层</div>
+    <div class="legend-item"><div class="legend-color" style="background:#bbdefb"></div> L3 画像层</div>
+  </div>
+  <div class="chart-box">
+    <script type="text/mermaid" class="mermaid-source">
+flowchart TD
+    START[Step 5 完成<br/>L1 已写入 PG] --> SPLIT{best-effort 触发}
+
+    SPLIT -->|分支 A| L2_SIDE
+    SPLIT -->|分支 B| L3_SIDE
+
+    subgraph L2_SIDE ["L2 EpisodeBuilder 分支"]
+        direction TB
+        L2A[读取同 scope 的<br/>active episode]
+        L2B["LLM 判断<br/>输入: 开放事件 + 新事实 + 消息<br/>+ 绝对时间 + embedding 相似度"]
+        L2C{continues?}
+        L2D["continues=true<br/>更新原 episode<br/>合并 source_memory_ids<br/>更新摘要 + 向量"]
+        L2E["continues=false<br/>旧 episode 标 complete<br/>创建新 active episode"]
+        L2F["Python 从 L1 证据推导<br/>occurred_at = min(L1.occurred_at)<br/>occurred_end = max(L1.occurred_at)"]
+        L2G[写入 L2<br/>memory_items / episodic_memory<br/>source_memory_ids 指回 L1]
+        L2Z[失败 → warning, 不回滚 L1]
+
+        L2A --> L2B --> L2C
+        L2C -->|true| L2D --> L2F
+        L2C -->|false| L2E --> L2F
+        L2C -->|LLM 失败| L2Z
+        L2F --> L2G
+    end
+
+    subgraph L3_SIDE ["L3 ProfileDistiller 分支"]
+        direction TB
+        L3A["构建证据簇<br/>本轮 L1 + 向量近邻"]
+        L3B["LLM 输出 beliefs<br/>每条带 evidence_ids + decision + stability"]
+        L3C{"校验 1: 证据 ID<br/>必须在簇内真实 L1 上?"}
+        L3D[丢弃该 belief]
+        L3E{"校验 2: recurring?<br/>证据 ≥ 2 个不同自然日?"}
+        L3F[降级为 episode]
+        L3G["Python 执行决策<br/>CREATE / CONFIRM / REFINE<br/>COEXIST / SUPERSEDE / NOOP"]
+        L3H[写入 L3<br/>profile_beliefs 独立表<br/>evidence_memory_ids 指回 L1]
+        L3I["拼接 active beliefs → narrative<br/>写入 user_profile_snapshots"]
+        L3Z[失败 → warning, 不回滚 L1]
+
+        L3A --> L3B --> L3C
+        L3C -->|不通过| L3D
+        L3C -->|通过| L3E
+        L3E -->|不通过| L3F --> L3G
+        L3E -->|通过| L3G
+        L3G --> L3H --> L3I
+        L3B -.->|LLM 失败| L3Z
+    end
+
+    L3I -.->|narrative 反馈<br/>下一轮 Step 0 Summary 槽| NX[下一轮 add 调用]
+
+    style L2G fill:#fff9c4,stroke:#f9a825,stroke-width:2px
+    style L3H fill:#bbdefb,stroke:#1565c0,stroke-width:2px
+    style START fill:#c8e6c9,stroke:#2e7d32,stroke-width:2px
+    style L2Z fill:#ffcdd2,stroke:#c62828
+    style L3Z fill:#ffcdd2,stroke:#c62828
+    </script>
+    <div class="mermaid-target"></div>
+  </div>
+  <table>
+    <tr><th>L3 决策</th><th>含义</th><th>Python 执行</th></tr>
+    <tr><td>CREATE</td><td>无匹配信念</td><td>插入新行 status=active</td></tr>
+    <tr><td>CONFIRM</td><td>同 key 同 value</td><td>追加 evidence，support_count++</td></tr>
+    <tr><td>REFINE</td><td>同 key 更精确</td><td>旧行 superseded + 新行 active</td></tr>
+    <tr><td>COEXIST</td><td>同主题不同 conditions</td><td>插入新行，两行都 active</td></tr>
+    <tr><td>SUPERSEDE</td><td>同 key 新值替代旧值</td><td>旧行 superseded + 新行 active</td></tr>
+    <tr><td>NOOP</td><td>证据不足</td><td>不写入</td></tr>
+  </table>
+</div>
+
+<!-- ============ 检索召回拼接 ============ -->
+<div class="section" id="retrieve">
+  <h1>检索召回 + 拼接（十阶段）</h1>
+  <div class="desc">
+    代码入口 <code>memory.py::search_result</code>。<strong>L1 和 L2 在同一张 <code>memory_items</code> 表里，向量召回时会一起拉回来</strong>；L3 画像不走向量，按主键直读附加。
+    精排时 LLM 同时看到 L1 事实、L2 事件摘要、从 L2 展开出来的 L1 证据、以及 L3 画像——最终只返回 top_k 条 memories + profile。
+  </div>
+  <div class="legend">
+    <div class="legend-item"><div class="legend-color" style="background:#c8e6c9"></div> L1 事实</div>
+    <div class="legend-item"><div class="legend-color" style="background:#fff9c4"></div> L2 事件</div>
+    <div class="legend-item"><div class="legend-color" style="background:#bbdefb"></div> L3 画像</div>
+  </div>
+  <div class="chart-box">
+    <script type="text/mermaid" class="mermaid-source">
+flowchart TD
+    Q[用户查询] --> S1
+    S1["① query 词形归一化<br/>lemmatize_for_bm25"] --> S2
+    S2["② 抽取查询实体"] --> S3
+    S3["③ 生成 query embedding<br/>BGE-M3"] --> S4
+
+    S4["④ 向量召回 L1 + L2<br/>pgvector over-fetch<br/>≥ max top_k×4, 60 条<br/>L1 和 L2 同表一起召回"] --> S5
+
+    S5["⑤ BM25 关键词召回<br/>PostgreSQL to_tsvector<br/>to_tsquery"] --> S6
+    S6["⑥ sigmoid 归一化 BM25"] --> S7
+    S7["⑦ 实体链接加权"] --> S8
+
+    S8["⑧ 语义 + BM25 候选并集<br/>关键词独立命中也能进候选<br/>（2026-09-04 修复）"] --> S9
+
+    S9["⑨ 组合打分 + 冲突消解<br/>score = (semantic + bm25 + entity + temporal) / max<br/>冲突消解过滤 superseded 旧值<br/>（前移到截断前，可补位）"]
+
+    S9 --> S10["L2 证据展开<br/>命中 L2 → 按 source_memory_ids<br/>把同 scope L1 事实拉入精排池"]
+
+    S10 --> S11["⑩ 附加 L3 画像<br/>按 tenant_id + user_id 主键直读<br/>不走向量召回"]
+
+    S11 --> S12["⑩ LLM 语义精排<br/>输入：query + 当前日期 + 画像<br/>+ 候选（L1 + L2 + 展开L1）<br/>输出：selected_ids → top_k"]
+
+    S12 --> R["返回 SearchResult<br/>memories: 精排后 top_k<br/>profile: L3 画像"]
+
+    S4 -.->|读| PG[(PostgreSQL)]
+    S5 -.->|读| PG
+    S11 -.->|读| PG
+    S3 -.->|embedding| EMB[BGE-M3]
+    S12 -.->|LLM| LLM[LLM Qwen/DeepSeek]
+
+    style S4 fill:#c8e6c9,stroke:#2e7d32,stroke-width:2px
+    style S8 fill:#c8e6c9,stroke:#2e7d32,stroke-width:2px
+    style S9 fill:#fff9c4,stroke:#f9a825,stroke-width:2px
+    style S10 fill:#fff9c4,stroke:#f9a825
+    style S11 fill:#bbdefb,stroke:#1565c0,stroke-width:2px
+    style S12 fill:#bbdefb,stroke:#1565c0,stroke-width:2px
+    </script>
+    <div class="mermaid-target"></div>
+  </div>
+  <table>
+    <tr><th>打分分量</th><th>最大权重</th><th>说明</th></tr>
+    <tr><td>semantic</td><td>1.0</td><td>cosine 相似度（1.0 - distance）</td></tr>
+    <tr><td>bm25</td><td>1.0</td><td>sigmoid 归一化后的 BM25</td></tr>
+    <tr><td>entity_boost</td><td>0.5</td><td>实体链接加权</td></tr>
+    <tr><td>temporal_bonus</td><td>0.15</td><td>30 天半衰期 <code>exp(-ln2 * days / 30)</code></td></tr>
+  </table>
+</div>
+
+<!-- ============ 三层记忆模型 ============ -->
+<div class="section" id="layers">
+  <h1>三层记忆模型：L1 / L2 / L3</h1>
+  <div class="desc">
+    <strong>L1</strong> 是事实真源，ADD-only 不可变。<strong>L2</strong> 和 <strong>L3</strong> 都从 L1 派生，可重建。LLM 只提 JSON 建议，Python 校验后写库。<br/>
+    L2 和 L1 存同一张 <code>memory_items</code>（要参与向量召回），L3 存独立表 <code>profile_beliefs</code>（主键直读，不进 HNSW 索引）。
+  </div>
+  <div class="chart-box">
+    <script type="text/mermaid" class="mermaid-source">
+flowchart LR
+    subgraph L1G ["L1 Fact — 事实真源"]
+        L1A["原子事实 A<br/>用户喜欢空调 22 度"]
+        L1B["原子事实 B<br/>用户去了公园"]
+        L1C["原子事实 C<br/>用户改为 26 度"]
+        L1D["原子事实 D<br/>用户常听爵士乐"]
+    end
+
+    subgraph L2G ["L2 Episode — 事件摘要"]
+        E1["去公园的经历<br/>occurred_at: 08-28T15:30<br/>source_memory_ids: B"]
+        E2["空调偏好调整<br/>occurred_at: 09-01T10:00<br/>source_memory_ids: A,C"]
+    end
+
+    subgraph L3G ["L3 Profile — 当前画像"]
+        P1["空调温度: 26 度<br/>status: active<br/>stability: recurring"]
+        P2["音乐偏好: 爵士乐<br/>status: active<br/>stability: recurring"]
+        P3["空调温度: 22 度<br/>status: superseded"]
+    end
+
+    L1B -.->|聚合| E1
+    L1A -.->|聚合| E2
+    L1C -.->|聚合| E2
+
+    L1A -.->|派生| P3
+    L1C -.->|SUPERSEDE| P1
+    L1D -.->|派生| P2
+
+    style L1G fill:#e8f5e9,stroke:#2e7d32,stroke-width:2px
+    style L2G fill:#fff3e0,stroke:#ef6c00,stroke-width:2px
+    style L3G fill:#e3f2fd,stroke:#1565c0,stroke-width:2px
+    style P3 fill:#ffcdd2,stroke:#c62828
+    </script>
+    <div class="mermaid-target"></div>
+  </div>
+  <table>
+    <tr><th>层级</th><th>存什么</th><th>存哪</th><th>怎么读</th><th>可重建</th></tr>
+    <tr><td><strong>L1 Fact</strong></td><td>自包含原子事实</td><td><code>memory_items</code>, <code>semantic_memory</code></td><td>向量 + BM25 + 实体 + 时间</td><td>真源</td></tr>
+    <tr><td><strong>L2 Episode</strong></td><td>一次经历的摘要</td><td><strong>同一张</strong> <code>memory_items</code>, <code>episodic_memory</code></td><td>与 L1 一起向量召回</td><td>可由 L1 重建</td></tr>
+    <tr><td><strong>L3 Profile</strong></td><td>当前有效信念/偏好</td><td><strong>独立表</strong> <code>profile_beliefs</code></td><td>按 tenant+user 主键直读</td><td>可由 L1/L2 重建</td></tr>
+  </table>
+  <div class="desc" style="margin-top:16px">
+    <strong>为什么 L2 和 L3 存放位置不同？</strong><br/>
+    L2 要能被"上次那次去公园"<strong>语义召回</strong>，所以要有 embedding，和 L1 共用 pgvector HNSW 索引。<br/>
+    L3 回答"这个人现在是什么样"，访问方式是<strong>主键读取</strong>不是 cosine top-k。如果把信念也写成普通向量行，稳定画像会被一年海量事实淹没。
+  </div>
+</div>
+
+<!-- ============ 部署形态 ============ -->
+<div class="section" id="deploy">
+  <h1>部署形态：前后端分离</h1>
+  <div class="desc">
+    Docker Compose 运行 postgres + api 两容器。API 映射到 <code>127.0.0.1:8766</code>，默认不暴露公网。<br/>
+    LLM Proxy 是独立 FastAPI 服务，隔离模型密钥。前端拿到记忆 API 的 search 结果后，把 <code>memory_context</code> 发给 Proxy 生成最终对话回复。
+  </div>
+  <div class="chart-box">
+    <script type="text/mermaid" class="mermaid-source">
+flowchart LR
+    subgraph 车机侧
+        FE[车机前端<br/>cockpit_frontend.html]
+    end
+
+    subgraph 云端容器
+        API[FastAPI 记忆 API<br/>127.0.0.1:8766<br/>Docker: api]
+        PROXY[LLM Proxy<br/>拼接车机 Prompt<br/>Docker: 独立/同机]
+        PG[(PostgreSQL 16<br/>+ pgvector<br/>Docker: postgres)]
+        SQLITE[(SQLite history.db<br/>Docker volume)]
+    end
+
+    subgraph 外部模型服务
+        LLM[Qwen / DeepSeek<br/>LLM]
+        EMB[BGE-M3<br/>Embedding 1024d]
+    end
+
+    FE -->|POST /v1/memories 写入| API
+    FE -->|POST /v1/memories/search 检索| API
+    API -->|返回 memories + profile| FE
+
+    FE -->|memory_context + question| PROXY
+    PROXY -->|拼接车机 Prompt| LLM
+    LLM -->|reply| PROXY
+    PROXY -->|reply| FE
+
+    API --> PG
+    API --> SQLITE
+    API --> LLM
+    API --> EMB
+
+    style API fill:#c8e6c9,stroke:#2e7d32,stroke-width:2px
+    style PROXY fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px
+    style PG fill:#e3f2fd,stroke:#1565c0
+    </script>
+    <div class="mermaid-target"></div>
+  </div>
+  <table>
+    <tr><th>接口</th><th>方法</th><th>说明</th></tr>
+    <tr><td><code>/v1/memories</code></td><td>POST</td><td>写入对话并抽取记忆</td></tr>
+    <tr><td><code>/v1/memories/search</code></td><td>POST</td><td>语义检索，响应含 profile</td></tr>
+    <tr><td><code>/v1/users/{user_id}/memories</code></td><td>GET</td><td>列出用户记忆</td></tr>
+    <tr><td><code>/v1/users/{user_id}/memories/{memory_id}/history</code></td><td>GET</td><td>记忆历史（已修复 scope 校验）</td></tr>
+    <tr><td><code>/v1/users/{user_id}/memories/{memory_id}</code></td><td>DELETE</td><td>删除单条（校验归属）</td></tr>
+    <tr><td><code>/v1/users/{user_id}/profile</code></td><td>GET</td><td>当前画像</td></tr>
+  </table>
+</div>
+
+<script type="module">
+  import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
+  mermaid.initialize({
+    startOnLoad: false,
+    theme: 'base',
+    themeVariables: {
+      primaryColor: '#e3f2fd',
+      primaryTextColor: '#1a1a2e',
+      primaryBorderColor: '#1565c0',
+      lineColor: '#546e7a',
+      secondaryColor: '#fff9c4',
+      tertiaryColor: '#f5f5f5',
+      fontSize: '15px',
+      fontFamily: '"Microsoft YaHei", sans-serif'
+    },
+    flowchart: {
+      htmlLabels: true,
+      curve: 'basis',
+      padding: 18,
+      nodeSpacing: 50,
+      rankSpacing: 70,
+      useMaxWidth: false
+    }
+  });
+
+  const rendered = new Set();
+
+  async function renderSection(id) {
+    const section = document.getElementById(id);
+    const source = section.querySelector('.mermaid-source');
+    const target = section.querySelector('.mermaid-target');
+    if (!source || !target || rendered.has(id)) return;
+    rendered.add(id);
+    const code = source.textContent.trim();
+    try {
+      const { svg } = await mermaid.render('svg-' + id, code);
+      target.innerHTML = svg;
+    } catch (err) {
+      target.innerHTML = '<pre style="color:#c62828;font-size:13px;padding:12px;white-space:pre-wrap">' + err.message + '</pre>';
+    }
+  }
+
+  function show(id) {
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('.nav button').forEach(b => b.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    const btns = document.querySelectorAll('.nav button');
+    btns.forEach(b => {
+      if (b.getAttribute('onclick') && b.getAttribute('onclick').includes("'" + id + "'"))
+        b.classList.add('active');
+    });
+    const box = document.querySelector('#' + id + ' .chart-box');
+    if (box) box.scrollLeft = 0;
+    renderSection(id);
+  }
+  window.show = show;
+
+  window.addEventListener('load', () => show('overview'));
+</script>
+</body>
+</html>

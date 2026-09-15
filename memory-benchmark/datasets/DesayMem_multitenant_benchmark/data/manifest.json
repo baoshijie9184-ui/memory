@@ -1,0 +1,81 @@
+{
+  "dataset": "multitenant_cockpit_sessions",
+  "time_range": {
+    "start": "2025-09-08",
+    "end": "2026-09-07",
+    "timezone": "Asia/Shanghai"
+  },
+  "seed": 20260907,
+  "session_count": 814,
+  "matrix": {
+    "oem_sedan_biz": {
+      "vehicles": {
+        "veh_sed_001": {
+          "users": {
+            "usr_father": {
+              "sessions": 46
+            }
+          }
+        }
+      }
+    },
+    "oem_suv_family": {
+      "vehicles": {
+        "veh_suv_001": {
+          "users": {
+            "_shared_multi_occupant": {
+              "sessions": 27
+            },
+            "usr_child": {
+              "sessions": 69
+            },
+            "usr_father": {
+              "sessions": 474
+            },
+            "usr_grandma": {
+              "sessions": 81
+            },
+            "usr_mother": {
+              "sessions": 92
+            }
+          }
+        },
+        "veh_suv_002": {
+          "users": {
+            "usr_father": {
+              "sessions": 25
+            }
+          }
+        }
+      }
+    }
+  },
+  "tag_counts": {
+    "child": 78,
+    "father": 524,
+    "grandma": 90,
+    "mother": 80,
+    "usr_father": 30,
+    "usr_mother": 12,
+    "亲子餐厅": 26,
+    "保养习惯": 3,
+    "偶发偏离": 17,
+    "儿童请求": 69,
+    "充电习惯": 6,
+    "公司配车": 46,
+    "医院行程": 50,
+    "单次收藏": 1,
+    "周三透析": 50,
+    "咖啡偏好": 26,
+    "孩子喜欢": 26,
+    "家庭出行": 27,
+    "戏曲偏好": 31,
+    "相似亲子餐厅": 1,
+    "空气差老规矩": 6,
+    "西餐习惯": 12,
+    "通勤习惯": 459,
+    "闲聊": 25,
+    "露营习惯": 25,
+    "饮食偏好": 31
+  }
+}

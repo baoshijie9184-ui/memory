@@ -1,0 +1,8 @@
+{
+  "include": ["src", "tests", "scripts"],
+  "extraPaths": ["src"],
+  "venvPath": "/data/pengshuang/memory-benchmark/envs",
+  "venv": "desaymem",
+  "pythonVersion": "3.11",
+  "typeCheckingMode": "off"
+}

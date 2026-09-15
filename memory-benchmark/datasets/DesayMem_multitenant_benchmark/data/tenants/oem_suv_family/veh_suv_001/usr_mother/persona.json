@@ -1,0 +1,52 @@
+{
+  "user_id": "usr_mother",
+  "role": "第二驾驶者（father 出差周接管通勤）+ 副驾乘客",
+  "occupant": "driver",
+  "expected_habits": [
+    "通勤导航惠州西湖，避开高速走市内道路",
+    "通勤空调24度 + 爵士歌单",
+    "亲子餐厅首选麦田（与 father 的童梦森林区分）",
+    "健康轻食：藜麦沙拉+少糖拿铁",
+    "拿铁固定少糖+燕麦奶"
+  ],
+  "expected_noise": [
+    "偶发听有声书"
+  ],
+  "recall_anchors": [
+    {
+      "topic": "通勤",
+      "query": "导航去上班",
+      "expected": [
+        "惠州西湖",
+        "市内道路"
+      ]
+    },
+    {
+      "topic": "亲子餐厅",
+      "query": "我们经常去的亲子餐厅",
+      "expected": [
+        "麦田"
+      ],
+      "not_expected_top1": [
+        "童梦森林"
+      ]
+    },
+    {
+      "topic": "咖啡",
+      "query": "我的拿铁怎么点",
+      "expected": [
+        "少糖",
+        "燕麦奶"
+      ]
+    },
+    {
+      "topic": "轻食",
+      "query": "我中午吃什么比较健康",
+      "expected": [
+        "藜麦沙拉"
+      ]
+    }
+  ],
+  "tenant_id": "oem_suv_family",
+  "vehicle_id": "veh_suv_001"
+}

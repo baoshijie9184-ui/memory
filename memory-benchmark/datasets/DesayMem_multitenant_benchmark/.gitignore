@@ -1,0 +1,8 @@
+# temp files
+_run_all.log
+_*.txt
+_*.log
+*.pyc
+__pycache__/
+.pytest_cache/
+reports/

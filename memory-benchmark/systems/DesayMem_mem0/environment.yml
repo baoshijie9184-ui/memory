@@ -1,0 +1,10 @@
+name: DesayMem_mem0
+channels:
+  - conda-forge
+dependencies:
+  - python=3.12
+  - postgresql=16
+  - pgvector
+  - pip
+  - pip:
+      - -e .[dev]

@@ -1,0 +1,16 @@
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.test-tmp/
+pytest-cache-files-*/
+pytest-cache-files-*/
+.ruff_cache/
+.coverage
+htmlcov/
+.venv/
+.env
+dist/
+build/
+*.egg-info/
+data/
+/json_mirror/

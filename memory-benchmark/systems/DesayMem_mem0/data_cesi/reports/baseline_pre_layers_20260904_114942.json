@@ -1,0 +1,2716 @@
+{
+  "label": "baseline_pre_layers",
+  "recorded_at": "2026-09-04T11:49:39+08:00",
+  "base_url": "http://47.115.228.135/memory",
+  "dataset": "D:\\workspace\\Desay_mem0_data\\yearlong_cockpit_memory_dataset\\yearlong_cockpit_sessions.jsonl",
+  "gold": "D:\\workspace\\Desay_mem0_data\\yearlong_cockpit_memory_dataset\\yearlong_fuzzy_memory_gold.json",
+  "profile": "core",
+  "validation": {
+    "valid": true,
+    "session_count": 495,
+    "first_started_at": "2025-09-03T08:12:00+08:00",
+    "last_started_at": "2026-09-02T18:24:00+08:00",
+    "gold_case_count": 5,
+    "missing_required_evidence": [],
+    "gold_time_range": {
+      "start": "2025-09-03",
+      "end": "2026-09-02",
+      "timezone": "Asia/Shanghai"
+    }
+  },
+  "metric_definitions": {
+    "must_fact_recall": "命中的 must 事实数 / must 事实总数",
+    "precision_at_k": "Top-K 中带 MUST 标签的条数 / K",
+    "mrr": "1 / 第一条 MUST 命中的名次",
+    "top1_expected": "Top1 文本是否包含 expected_top_aliases",
+    "store_coverage_at_k": "库内匹配 must 的记忆中，有多少出现在本次 Top-K",
+    "passed_fact": "must_fact_recall >= 0.8"
+  },
+  "health": {
+    "status": "ok",
+    "app": "DesayMem_mem0",
+    "database": "ok",
+    "embedding_dims": 1024,
+    "llm_model": "qwen3.8-flash",
+    "embedding_model": "qwen3.7-text-embedding-flash"
+  },
+  "store_count": 92,
+  "store": {
+    "total": 92,
+    "by_scene": {
+      "family_dining": 56,
+      "dining_preference": 15,
+      "western_dining": 13,
+      "poor_air_quality": 7,
+      "recommendation_feedback": 1
+    },
+    "by_memory_type": {
+      "semantic_memory": 92
+    },
+    "topics": [
+      {
+        "id": "tongmeng",
+        "label": "童梦森林",
+        "count": 20,
+        "sample_contents": [
+          "用户于2026年8月29日确认童梦森林亲子餐厅孩子很喜欢且停车方便，决定下次亲子用餐优先考虑该餐厅。",
+          "用户于2026年8月29日带孩子去童梦森林亲子餐厅，距离3.2公里，强调需要有宝宝椅和儿童活动区。",
+          "用户于2026年8月8日确认童梦森林亲子餐厅孩子很喜欢且停车方便，决定下次亲子用餐优先考虑该餐厅。",
+          "用户于2026年8月8日带孩子去童梦森林亲子餐厅，再次强调需要有宝宝椅和儿童活动区。",
+          "用户于2026年6月27日确认童梦森林亲子餐厅孩子很喜欢且停车方便，决定下次亲子用餐优先考虑该餐厅。"
+        ]
+      },
+      {
+        "id": "maitian",
+        "label": "麦田亲子",
+        "count": 19,
+        "sample_contents": [
+          "用户于2026年8月22日带孩子去麦田亲子餐厅，再次强调需要有宝宝椅和儿童活动区。",
+          "用户于2026年8月22日确认麦田亲子餐厅孩子很喜欢且停车方便，决定下次亲子用餐优先考虑该餐厅。",
+          "用户于2026年7月11日带孩子去麦田亲子餐厅，再次强调需要有宝宝椅和儿童活动区。",
+          "用户于2026年7月11日确认麦田亲子餐厅孩子很喜欢且停车方便，决定下次亲子用餐优先考虑该餐厅。",
+          "用户于2026年5月30日确认麦田亲子餐厅孩子很喜欢且停车方便，决定下次亲子用餐优先考虑该餐厅。"
+        ]
+      },
+      {
+        "id": "xiaoxiang",
+        "label": "小象花园",
+        "count": 17,
+        "sample_contents": [
+          "用户于2026年7月25日确认小象花园家庭餐厅孩子很喜欢且停车方便，决定下次亲子用餐优先考虑该餐厅。",
+          "用户于2026年7月25日带孩子去小象花园家庭餐厅，再次强调需要有宝宝椅和儿童活动区。",
+          "用户于2026年6月13日确认小象花园家庭餐厅孩子很喜欢且停车方便，决定下次亲子用餐优先考虑该餐厅。",
+          "用户于2026年6月13日带孩子去小象花园家庭餐厅，再次强调需要有宝宝椅和儿童活动区。",
+          "用户于2026年5月2日带孩子去小象花园家庭餐厅，再次强调需要有宝宝椅和儿童活动区。"
+        ]
+      },
+      {
+        "id": "tongqudao",
+        "label": "童趣岛(一次收藏)",
+        "count": 1,
+        "sample_contents": [
+          "用户于2026年9月1日收藏了童趣岛家庭餐厅，计划下次预订。该餐厅距用户4.1公里，提供儿童活动区、宝宝椅和停车场，主营粤菜简餐，人均约110元。用户认为该餐厅与其上周去的餐厅相似。"
+        ]
+      },
+      {
+        "id": "diet_pref",
+        "label": "饮食偏好(少油/香菜/清淡/粤菜)",
+        "count": 49,
+        "sample_contents": [
+          "用户于2026年9月1日收藏了童趣岛家庭餐厅，计划下次预订。该餐厅距用户4.1公里，提供儿童活动区、宝宝椅和停车场，主营粤菜简餐，人均约110元。用户认为该餐厅与其上周去的餐厅相似。",
+          "用户于2026年8月29日确认童梦森林亲子餐厅孩子很喜欢且停车方便，决定下次亲子用餐优先考虑该餐厅。",
+          "用户于2026年8月29日带孩子去童梦森林亲子餐厅，距离3.2公里，强调需要有宝宝椅和儿童活动区。",
+          "用户于2026年8月23日计划前往橡木厨房用餐，并确认沿用其标准点餐习惯：西冷牛排七分熟、蘑菇汤、柠檬水不加冰，且备注不要香菜。",
+          "用户于2026年8月18日计划前往湖畔牛排馆用餐，并确认沿用其标准点餐习惯：西冷牛排七分熟、蘑菇汤、柠檬水不加冰，且备注不要香菜。"
+        ]
+      },
+      {
+        "id": "air_habit",
+        "label": "空气老规矩",
+        "count": 6,
+        "sample_contents": [
+          "用户于2026年8月31日17:40因外部空气质量指数（AQI）为170，指示助手按照既定协议处理，即关闭车窗、切换至内循环并将空气净化调至3档。",
+          "用户于2026年8月20日17:10因外部空气质量指数（AQI）为196，指示助手按照既定协议处理，即关闭车窗、切换至内循环并将空气净化调至3档。",
+          "用户于2026年2月27日17:10因外部空气质量指数（AQI）为177，指示助手按照既定协议处理，即关闭车窗、切换至内循环并将空气净化调至3档。",
+          "用户于2026年1月29日17:40因外部空气质量指数（AQI）为162，指示助手按照既定协议处理，即关闭车窗、切换至内循环并将空气净化调至3档。",
+          "用户于2025年12月31日17:25因外部空气质量指数（AQI）为165，指示助手按照既定协议处理，即关闭车窗、切换至内循环并将空气净化调至3档。"
+        ]
+      },
+      {
+        "id": "western",
+        "label": "西餐习惯",
+        "count": 13,
+        "sample_contents": [
+          "用户于2026年8月23日计划前往橡木厨房用餐，并确认沿用其标准点餐习惯：西冷牛排七分熟、蘑菇汤、柠檬水不加冰，且备注不要香菜。",
+          "用户于2026年8月18日计划前往湖畔牛排馆用餐，并确认沿用其标准点餐习惯：西冷牛排七分熟、蘑菇汤、柠檬水不加冰，且备注不要香菜。",
+          "用户于2026年7月18日计划前往橡木厨房用餐，并确认沿用其标准点餐习惯：西冷牛排七分熟、蘑菇汤、柠檬水不加冰，且备注不要香菜。",
+          "用户于2026年6月17日计划前往蓝岸西餐厅用餐，并确认沿用其标准点餐习惯：西冷牛排七分熟、蘑菇汤、柠檬水不加冰，且备注不要香菜。",
+          "用户于2026年5月17日计划前往湖畔牛排馆用餐，并确认沿用其标准点餐习惯：西冷牛排七分熟、蘑菇汤、柠檬水不加冰，且备注不要香菜。"
+        ]
+      },
+      {
+        "id": "last_week_anchor",
+        "label": "上周锚点(8-29)",
+        "count": 2,
+        "sample_contents": [
+          "用户于2026年8月29日确认童梦森林亲子餐厅孩子很喜欢且停车方便，决定下次亲子用餐优先考虑该餐厅。",
+          "用户于2026年8月29日带孩子去童梦森林亲子餐厅，距离3.2公里，强调需要有宝宝椅和儿童活动区。"
+        ]
+      }
+    ],
+    "memories": [
+      {
+        "id": "3314b2fe-f199-40dd-a574-ee76d933e754",
+        "memory_type": "semantic_memory",
+        "scene": "recommendation_feedback",
+        "content": "用户于2026年9月1日收藏了童趣岛家庭餐厅，计划下次预订。该餐厅距用户4.1公里，提供儿童活动区、宝宝椅和停车场，主营粤菜简餐，人均约110元。用户认为该餐厅与其上周去的餐厅相似。",
+        "created_at": "2026-09-03T13:25:31.248230+00:00",
+        "occurred_at": "2026-09-01T20:10:00+08:00"
+      },
+      {
+        "id": "4f9b0d53-4df8-4267-9121-9dd66dc7e805",
+        "memory_type": "semantic_memory",
+        "scene": "poor_air_quality",
+        "content": "用户于2026年8月31日17:40因外部空气质量指数（AQI）为170，指示助手按照既定协议处理，即关闭车窗、切换至内循环并将空气净化调至3档。",
+        "created_at": "2026-09-03T13:25:12.065163+00:00",
+        "occurred_at": "2026-08-31T17:40:00+08:00"
+      },
+      {
+        "id": "4bc7fe37-7634-434f-8547-1ae6b629c446",
+        "memory_type": "semantic_memory",
+        "scene": "family_dining",
+        "content": "用户于2026年8月29日确认童梦森林亲子餐厅孩子很喜欢且停车方便，决定下次亲子用餐优先考虑该餐厅。",
+        "created_at": "2026-09-03T13:25:03.977537+00:00",
+        "occurred_at": "2026-08-29T11:20:00+08:00"
+      },
+      {
+        "id": "c1fba905-d427-43d9-ad59-6323b315b35c",
+        "memory_type": "semantic_memory",
+        "scene": "family_dining",
+        "content": "用户于2026年8月29日带孩子去童梦森林亲子餐厅，距离3.2公里，强调需要有宝宝椅和儿童活动区。",
+        "created_at": "2026-09-03T13:25:03.977537+00:00",
+        "occurred_at": "2026-08-29T11:20:00+08:00"
+      },
+      {
+        "id": "3dbf9994-fb3c-472e-b7e5-e4197450772c",
+        "memory_type": "semantic_memory",
+        "scene": "western_dining",
+        "content": "用户于2026年8月23日计划前往橡木厨房用餐，并确认沿用其标准点餐习惯：西冷牛排七分熟、蘑菇汤、柠檬水不加冰，且备注不要香菜。",
+        "created_at": "2026-09-03T13:24:47.754697+00:00",
+        "occurred_at": "2026-08-23T18:35:00+08:00"
+      },
+      {
+        "id": "7b99d98b-026a-4a4c-9222-aab23a4ec771",
+        "memory_type": "semantic_memory",
+        "scene": "family_dining",
+        "content": "用户于2026年8月22日带孩子去麦田亲子餐厅，再次强调需要有宝宝椅和儿童活动区。",
+        "created_at": "2026-09-03T13:24:37.416600+00:00",
+        "occurred_at": "2026-08-22T11:25:00+08:00"
+      },
+      {
+        "id": "2eb746b7-9b49-4f76-a02c-5b2714085e9f",
+        "memory_type": "semantic_memory",
+        "scene": "family_dining",
+        "content": "用户于2026年8月22日确认麦田亲子餐厅孩子很喜欢且停车方便，决定下次亲子用餐优先考虑该餐厅。",
+        "created_at": "2026-09-03T13:24:37.416600+00:00",
+        "occurred_at": "2026-08-22T11:25:00+08:00"
+      },
+      {
+        "id": "da306553-7151-4198-9bef-efd1de031fca",
+        "memory_type": "semantic_memory",
+        "scene": "poor_air_quality",
+        "content": "用户于2026年8月20日17:10因外部空气质量指数（AQI）为196，指示助手按照既定协议处理，即关闭车窗、切换至内循环并将空气净化调至3档。",
+        "created_at": "2026-09-03T13:24:18.100069+00:00",
+        "occurred_at": "2026-08-20T17:10:00+08:00"
+      },
+      {
+        "id": "38102db7-c8a3-49d2-a6e8-9474f61d9cd1",
+        "memory_type": "semantic_memory",
+        "scene": "western_dining",
+        "content": "用户于2026年8月18日计划前往湖畔牛排馆用餐，并确认沿用其标准点餐习惯：西冷牛排七分熟、蘑菇汤、柠檬水不加冰，且备注不要香菜。",
+        "created_at": "2026-09-03T13:24:10.365598+00:00",
+        "occurred_at": "2026-08-18T18:35:00+08:00"
+      },
+      {
+        "id": "f6fa2dff-5bc9-439b-9d32-7dc2f1dd5f97",
+        "memory_type": "semantic_memory",
+        "scene": "dining_preference",
+        "content": "用户于2026年8月13日偏好食用客家酿豆腐，要求少油、不要香菜，口味清淡。",
+        "created_at": "2026-09-03T13:23:56.679408+00:00",
+        "occurred_at": "2026-08-13T12:19:00+08:00"
+      },
+      {
+        "id": "ed791eed-5e72-4467-9569-2fcab87c6a0e",
+        "memory_type": "semantic_memory",
+        "scene": "family_dining",
+        "content": "用户于2026年8月8日确认童梦森林亲子餐厅孩子很喜欢且停车方便，决定下次亲子用餐优先考虑该餐厅。",
+        "created_at": "2026-09-03T13:23:41.486292+00:00",
+        "occurred_at": "2026-08-08T11:24:00+08:00"
+      },
+      {
+        "id": "f0d24796-8d63-4a4e-bd54-652b6c8f3534",
+        "memory_type": "semantic_memory",
+        "scene": "family_dining",
+        "content": "用户于2026年8月8日带孩子去童梦森林亲子餐厅，再次强调需要有宝宝椅和儿童活动区。",
+        "created_at": "2026-09-03T13:23:41.486292+00:00",
+        "occurred_at": "2026-08-08T11:24:00+08:00"
+      },
+      {
+        "id": "6d9b22e9-8496-4921-a385-82bb4f403c6b",
+        "memory_type": "semantic_memory",
+        "scene": "family_dining",
+        "content": "用户于2026年7月25日确认小象花园家庭餐厅孩子很喜欢且停车方便，决定下次亲子用餐优先考虑该餐厅。",
+        "created_at": "2026-09-03T13:23:27.287210+00:00",
+        "occurred_at": "2026-07-25T11:23:00+08:00"
+      },
+      {
+        "id": "0ce3bf6b-8ec5-4978-ad5e-55552124f82b",
+        "memory_type": "semantic_memory",
+        "scene": "family_dining",
+        "content": "用户于2026年7月25日带孩子去小象花园家庭餐厅，再次强调需要有宝宝椅和儿童活动区。",
+        "created_at": "2026-09-03T13:23:27.287210+00:00",
+        "occurred_at": "2026-07-25T11:23:00+08:00"
+      },
+      {
+        "id": "a65edc05-4163-47e9-9500-3896016a6e62",
+        "memory_type": "semantic_memory",
+        "scene": "dining_preference",
+        "content": "用户于2026年7月21日偏好食用白灼虾，要求少油、不要香菜，口味清淡。",
+        "created_at": "2026-09-03T13:23:15.806158+00:00",
+        "occurred_at": "2026-07-21T12:18:00+08:00"
+      },
+      {
+        "id": "6cc5177e-c872-4896-ab25-acae481e8218",
+        "memory_type": "semantic_memory",
+        "scene": "western_dining",
+        "content": "用户于2026年7月18日计划前往橡木厨房用餐，并确认沿用其标准点餐习惯：西冷牛排七分熟、蘑菇汤、柠檬水不加冰，且备注不要香菜。",
+        "created_at": "2026-09-03T13:23:05.405299+00:00",
+        "occurred_at": "2026-07-18T18:35:00+08:00"
+      },
+      {
+        "id": "847de2e4-62dc-40f7-9bb5-ed6602b48139",
+        "memory_type": "semantic_memory",
+        "scene": "family_dining",
+        "content": "用户于2026年7月11日带孩子去麦田亲子餐厅，再次强调需要有宝宝椅和儿童活动区。",
+        "created_at": "2026-09-03T13:22:52.672041+00:00",
+        "occurred_at": "2026-07-11T11:22:00+08:00"
+      },
+      {
+        "id": "738aed5c-afef-4b5e-8772-459ebdf12a70",
+        "memory_type": "semantic_memory",
+        "scene": "family_dining",
+        "content": "用户于2026年7月11日确认麦田亲子餐厅孩子很喜欢且停车方便，决定下次亲子用餐优先考虑该餐厅。",
+        "created_at": "2026-09-03T13:22:52.672041+00:00",
+        "occurred_at": "2026-07-11T11:22:00+08:00"
+      },
+      {
+        "id": "08f5640f-d615-4f1b-9695-cb44d189191a",
+        "memory_type": "semantic_memory",
+        "scene": "dining_preference",
+        "content": "用户于2026年6月28日偏好食用清蒸鲈鱼，要求少油、不要香菜，口味清淡。",
+        "created_at": "2026-09-03T13:22:39.714483+00:00",
+        "occurred_at": "2026-06-28T12:17:00+08:00"
+      },
+      {
+        "id": "8a51ff46-fc78-4fce-bed0-62393e5bb7d9",
+        "memory_type": "semantic_memory",
+        "scene": "family_dining",
+        "content": "用户于2026年6月27日确认童梦森林亲子餐厅孩子很喜欢且停车方便，决定下次亲子用餐优先考虑该餐厅。",
+        "created_at": "2026-09-03T13:22:29.646661+00:00",
+        "occurred_at": "2026-06-27T11:21:00+08:00"
+      },
+      {
+        "id": "acb020cd-942e-4a9c-a74c-dc4fa26b5edb",
+        "memory_type": "semantic_memory",
+        "scene": "family_dining",
+        "content": "用户于2026年6月27日带孩子去童梦森林亲子餐厅，再次强调需要有宝宝椅和儿童活动区。",
+        "created_at": "2026-09-03T13:22:29.646661+00:00",
+        "occurred_at": "2026-06-27T11:21:00+08:00"
+      },
+      {
+        "id": "38ffc556-66da-47fc-9e52-bf43a4569d34",
+        "memory_type": "semantic_memory",
+        "scene": "western_dining",
+        "content": "用户于2026年6月17日计划前往蓝岸西餐厅用餐，并确认沿用其标准点餐习惯：西冷牛排七分熟、蘑菇汤、柠檬水不加冰，且备注不要香菜。",
+        "created_at": "2026-09-03T13:22:04.692374+00:00",
+        "occurred_at": "2026-06-17T18:35:00+08:00"
+      },
+      {
+        "id": "02157e03-3e36-46cc-a0ee-b6e3dcb60f27",
+        "memory_type": "semantic_memory",
+        "scene": "family_dining",
+        "content": "用户于2026年6月13日确认小象花园家庭餐厅孩子很喜欢且停车方便，决定下次亲子用餐优先考虑该餐厅。",
+        "created_at": "2026-09-03T13:21:56.730989+00:00",
+        "occurred_at": "2026-06-13T11:20:00+08:00"
+      },
+      {
+        "id": "c6e3a0e0-9091-4f81-a33c-a3718058e644",
+        "memory_type": "semantic_memory",
+        "scene": "family_dining",
+        "content": "用户于2026年6月13日带孩子去小象花园家庭餐厅，再次强调需要有宝宝椅和儿童活动区。",
+        "created_at": "2026-09-03T13:21:56.730989+00:00",
+        "occurred_at": "2026-06-13T11:20:00+08:00"
+      },
+      {
+        "id": "47335ec1-df7a-4375-afe8-6e58d7970adf",
+        "memory_type": "semantic_memory",
+        "scene": "dining_preference",
+        "content": "用户于2026年6月5日偏好食用客家酿豆腐，要求少油、不要香菜，口味清淡。",
+        "created_at": "2026-09-03T13:21:34.287656+00:00",
+        "occurred_at": "2026-06-05T12:16:00+08:00"
+      },
+      {
+        "id": "363f35c6-cd02-4711-a5b0-9f5d8fb8e81e",
+        "memory_type": "semantic_memory",
+        "scene": "family_dining",
+        "content": "用户于2026年5月30日确认麦田亲子餐厅孩子很喜欢且停车方便，决定下次亲子用餐优先考虑该餐厅。",
+        "created_at": "2026-09-03T13:21:27.214661+00:00",
+        "occurred_at": "2026-05-30T11:39:00+08:00"
+      },
+      {
+        "id": "aa774dc8-729b-40b2-9adb-f0c3fe0f6eaa",
+        "memory_type": "semantic_memory",
+        "scene": "family_dining",
+        "content": "用户于2026年5月30日带孩子去麦田亲子餐厅，再次强调需要有宝宝椅和儿童活动区。",
+        "created_at": "2026-09-03T13:21:27.214661+00:00",
+        "occurred_at": "2026-05-30T11:39:00+08:00"
+      },
+      {
+        "id": "ddb6c210-3c25-404d-9ffa-b7b029a673d4",
+        "memory_type": "semantic_memory",
+        "scene": "western_dining",
+        "content": "用户于2026年5月17日计划前往湖畔牛排馆用餐，并确认沿用其标准点餐习惯：西冷牛排七分熟、蘑菇汤、柠檬水不加冰，且备注不要香菜。",
+        "created_at": "2026-09-03T13:21:01.257073+00:00",
+        "occurred_at": "2026-05-17T18:35:00+08:00"
+      },
+      {
+        "id": "7264b9e3-e2ed-498d-96ce-ffa1d198e9b5",
+        "memory_type": "semantic_memory",
+        "scene": "family_dining",
+        "content": "用户于2026年5月16日带孩子去童梦森林亲子餐厅，再次强调需要有宝宝椅和儿童活动区。",
+        "created_at": "2026-09-03T13:20:54.838997+00:00",
+        "occurred_at": "2026-05-16T11:38:00+08:00"
+      },
+      {
+        "id": "3adb0849-43b8-4240-bade-7e569ba12c12",
+        "memory_type": "semantic_memory",
+        "scene": "family_dining",
+        "content": "用户于2026年5月16日确认童梦森林亲子餐厅孩子很喜欢且停车方便，决定下次亲子用餐优先考虑该餐厅。",
+        "created_at": "2026-09-03T13:20:54.838997+00:00",
+        "occurred_at": "2026-05-16T11:38:00+08:00"
+      },
+      {
+        "id": "8521e08a-f308-4b44-ac71-e91f90abbdad",
+        "memory_type": "semantic_memory",
+        "scene": "dining_preference",
+        "content": "用户于2026年5月13日偏好食用白灼虾，要求少油、不要香菜，口味清淡。",
+        "created_at": "2026-09-03T13:20:27.834406+00:00",
+        "occurred_at": "2026-05-13T12:15:00+08:00"
+      },
+      {
+        "id": "e4842b2e-ea92-49bb-8dab-0a9bd5e9955b",
+        "memory_type": "semantic_memory",
+        "scene": "family_dining",
+        "content": "用户于2026年5月2日带孩子去小象花园家庭餐厅，再次强调需要有宝宝椅和儿童活动区。",
+        "created_at": "2026-09-03T13:20:16.647550+00:00",
+        "occurred_at": "2026-05-02T11:37:00+08:00"
+      },
+      {
+        "id": "b631e4c5-f1f0-43e4-9a64-cb2952d66545",
+        "memory_type": "semantic_memory",
+        "scene": "family_dining",
+        "content": "用户于2026年5月2日确认小象花园家庭餐厅孩子很喜欢且停车方便，决定下次亲子用餐优先考虑该餐厅。",
+        "created_at": "2026-09-03T13:20:16.647550+00:00",
+        "occurred_at": "2026-05-02T11:37:00+08:00"
+      },
+      {
+        "id": "1fd277fe-e000-430b-908a-bf8c6c16abba",
+        "memory_type": "semantic_memory",
+        "scene": "dining_preference",
+        "content": "用户于2026年4月20日偏好食用清蒸鲈鱼，要求少油、不要香菜，口味清淡。",
+        "created_at": "2026-09-03T13:20:03.562997+00:00",
+        "occurred_at": "2026-04-20T12:14:00+08:00"
+      },
+      {
+        "id": "67838902-13f1-458f-8322-14ffb4a27e28",
+        "memory_type": "semantic_memory",
+        "scene": "family_dining",
+        "content": "用户于2026年4月18日带孩子去麦田亲子餐厅，再次强调需要有宝宝椅和儿童活动区。",
+        "created_at": "2026-09-03T13:19:57.445030+00:00",
+        "occurred_at": "2026-04-18T11:36:00+08:00"
+      },
+      {
+        "id": "6fc6b615-2c78-4239-9915-2a56a5f8209c",
+        "memory_type": "semantic_memory",
+        "scene": "family_dining",
+        "content": "用户于2026年4月18日确认麦田亲子餐厅孩子很喜欢且停车方便，决定下次亲子用餐优先考虑该餐厅。",
+        "created_at": "2026-09-03T13:19:57.445030+00:00",
+        "occurred_at": "2026-04-18T11:36:00+08:00"
+      },
+      {
+        "id": "858883d4-7de4-45fd-a774-ebf0bb75472c",
+        "memory_type": "semantic_memory",
+        "scene": "western_dining",
+        "content": "用户于2026年4月16日计划前往橡木厨房用餐，并确认沿用其标准点餐习惯：西冷牛排七分熟、蘑菇汤、柠檬水不加冰，且备注不要香菜。",
+        "created_at": "2026-09-03T13:19:44.264904+00:00",
+        "occurred_at": "2026-04-16T18:35:00+08:00"
+      },
+      {
+        "id": "ab2459b1-a76b-492f-b111-a020430585e2",
+        "memory_type": "semantic_memory",
+        "scene": "family_dining",
+        "content": "用户于2026年4月4日带孩子去童梦森林亲子餐厅，再次强调需要有宝宝椅和儿童活动区。",
+        "created_at": "2026-09-03T13:19:33.410940+00:00",
+        "occurred_at": "2026-04-04T11:35:00+08:00"
+      },
+      {
+        "id": "00a3b291-a96e-437b-b412-b12bd1172c14",
+        "memory_type": "semantic_memory",
+        "scene": "family_dining",
+        "content": "用户于2026年4月4日确认童梦森林亲子餐厅孩子很喜欢且停车方便，决定下次亲子用餐优先考虑该餐厅。",
+        "created_at": "2026-09-03T13:19:33.410940+00:00",
+        "occurred_at": "2026-04-04T11:35:00+08:00"
+      },
+      {
+        "id": "b8f6f2bf-9a73-4519-bd35-8fa1d9deec38",
+        "memory_type": "semantic_memory",
+        "scene": "dining_preference",
+        "content": "用户于2026年3月28日偏好食用客家酿豆腐，要求少油、不要香菜，口味清淡。",
+        "created_at": "2026-09-03T13:19:14.688322+00:00",
+        "occurred_at": "2026-03-28T12:13:00+08:00"
+      },
+      {
+        "id": "2cfc21b4-8caf-4e1f-8146-f1d0591fdb10",
+        "memory_type": "semantic_memory",
+        "scene": "family_dining",
+        "content": "用户于2026年3月21日带孩子去小象花园家庭餐厅，再次强调需要有宝宝椅和儿童活动区。",
+        "created_at": "2026-09-03T13:19:09.230077+00:00",
+        "occurred_at": "2026-03-21T11:34:00+08:00"
+      },
+      {
+        "id": "18e65fb2-be18-46f6-bfb7-2d655da23c8c",
+        "memory_type": "semantic_memory",
+        "scene": "family_dining",
+        "content": "用户于2026年3月21日确认小象花园家庭餐厅孩子很喜欢且停车方便，决定下次亲子用餐优先考虑该餐厅。",
+        "created_at": "2026-09-03T13:19:09.230077+00:00",
+        "occurred_at": "2026-03-21T11:34:00+08:00"
+      },
+      {
+        "id": "930a2209-519e-4d48-a774-79367c56752d",
+        "memory_type": "semantic_memory",
+        "scene": "western_dining",
+        "content": "用户于2026年3月16日计划前往蓝岸西餐厅用餐，并确认沿用其标准点餐习惯：西冷牛排七分熟、蘑菇汤、柠檬水不加冰，且备注不要香菜。",
+        "created_at": "2026-09-03T13:18:57.130926+00:00",
+        "occurred_at": "2026-03-16T18:35:00+08:00"
+      },
+      {
+        "id": "165236ef-dd18-4821-b4b6-3e2ded3a501c",
+        "memory_type": "semantic_memory",
+        "scene": "family_dining",
+        "content": "用户于2026年3月7日确认麦田亲子餐厅孩子很喜欢且停车方便，决定下次亲子用餐优先考虑该餐厅。",
+        "created_at": "2026-09-03T13:18:42.359502+00:00",
+        "occurred_at": "2026-03-07T11:33:00+08:00"
+      },
+      {
+        "id": "1692d82b-149b-4dc3-b5cb-f43b79fd581c",
+        "memory_type": "semantic_memory",
+        "scene": "family_dining",
+        "content": "用户于2026年3月7日带孩子去麦田亲子餐厅，再次强调需要有宝宝椅和儿童活动区。",
+        "created_at": "2026-09-03T13:18:42.359502+00:00",
+        "occurred_at": "2026-03-07T11:33:00+08:00"
+      },
+      {
+        "id": "311944b3-e6a4-4a2e-8180-fa3b38d82967",
+        "memory_type": "semantic_memory",
+        "scene": "dining_preference",
+        "content": "用户于2026年3月5日偏好食用白灼虾，要求少油、不要香菜，口味清淡。",
+        "created_at": "2026-09-03T13:18:25.639048+00:00",
+        "occurred_at": "2026-03-05T12:12:00+08:00"
+      },
+      {
+        "id": "4bb8123c-50de-4a84-87e6-c73cd530cf83",
+        "memory_type": "semantic_memory",
+        "scene": "poor_air_quality",
+        "content": "用户于2026年2月27日17:10因外部空气质量指数（AQI）为177，指示助手按照既定协议处理，即关闭车窗、切换至内循环并将空气净化调至3档。",
+        "created_at": "2026-09-03T13:18:19.733810+00:00",
+        "occurred_at": "2026-02-27T17:10:00+08:00"
+      },
+      {
+        "id": "0bf3068b-edeb-49b1-99f0-6751988d42aa",
+        "memory_type": "semantic_memory",
+        "scene": "family_dining",
+        "content": "用户于2026年2月21日确认童梦森林亲子餐厅孩子很喜欢且停车方便，决定下次亲子用餐优先考虑该餐厅。",
+        "created_at": "2026-09-03T13:18:13.117673+00:00",
+        "occurred_at": "2026-02-21T11:32:00+08:00"
+      },
+      {
+        "id": "84e8dc5b-fbe1-40ca-8655-522da36938d5",
+        "memory_type": "semantic_memory",
+        "scene": "family_dining",
+        "content": "用户于2026年2月21日带孩子去童梦森林亲子餐厅，再次强调需要有宝宝椅和儿童活动区。",
+        "created_at": "2026-09-03T13:18:13.117673+00:00",
+        "occurred_at": "2026-02-21T11:32:00+08:00"
+      },
+      {
+        "id": "eb004e0d-bffb-4fc9-ada8-840af8bbf5e0",
+        "memory_type": "semantic_memory",
+        "scene": "western_dining",
+        "content": "用户于2026年2月13日计划前往湖畔牛排馆用餐，并确认沿用其标准点餐习惯：西冷牛排七分熟、蘑菇汤、柠檬水不加冰，且备注不要香菜。",
+        "created_at": "2026-09-03T13:18:01.403288+00:00",
+        "occurred_at": "2026-02-13T18:35:00+08:00"
+      },
+      {
+        "id": "3bd6822e-487e-42a0-a180-faeb01c44ef5",
+        "memory_type": "semantic_memory",
+        "scene": "dining_preference",
+        "content": "用户于2026年2月10日偏好食用清蒸鲈鱼，要求少油、不要香菜，口味清淡。",
+        "created_at": "2026-09-03T13:17:52.817257+00:00",
+        "occurred_at": "2026-02-10T12:11:00+08:00"
+      },
+      {
+        "id": "3a014566-1b35-4cdf-a2ef-a101b89e1c93",
+        "memory_type": "semantic_memory",
+        "scene": "family_dining",
+        "content": "用户于2026年2月7日带孩子去小象花园家庭餐厅，再次强调需要有宝宝椅和儿童活动区。",
+        "created_at": "2026-09-03T13:17:46.284615+00:00",
+        "occurred_at": "2026-02-07T11:31:00+08:00"
+      },
+      {
+        "id": "b5c9799c-67c2-43b5-89ad-fad8f1161e73",
+        "memory_type": "semantic_memory",
+        "scene": "family_dining",
+        "content": "用户于2026年2月7日确认小象花园家庭餐厅孩子很喜欢且停车方便，决定下次亲子用餐优先考虑该餐厅。",
+        "created_at": "2026-09-03T13:17:46.284615+00:00",
+        "occurred_at": "2026-02-07T11:31:00+08:00"
+      },
+      {
+        "id": "b61ed584-9df8-4a97-a439-902bd6e24c4d",
+        "memory_type": "semantic_memory",
+        "scene": "poor_air_quality",
+        "content": "用户于2026年1月29日17:40因外部空气质量指数（AQI）为162，指示助手按照既定协议处理，即关闭车窗、切换至内循环并将空气净化调至3档。",
+        "created_at": "2026-09-03T13:17:27.264089+00:00",
+        "occurred_at": "2026-01-29T17:40:00+08:00"
+      },
+      {
+        "id": "9bdd910c-ccf0-4113-8527-ce595885ec40",
+        "memory_type": "semantic_memory",
+        "scene": "family_dining",
+        "content": "用户于2026年1月24日确认麦田亲子餐厅孩子很喜欢且停车方便，决定下次亲子用餐优先考虑该餐厅。",
+        "created_at": "2026-09-03T13:17:07.395291+00:00",
+        "occurred_at": "2026-01-24T11:30:00+08:00"
+      },
+      {
+        "id": "0fd5ea2c-08e5-495d-8e44-a5dcc8cf2930",
+        "memory_type": "semantic_memory",
+        "scene": "family_dining",
+        "content": "用户于2026年1月24日带孩子去麦田亲子餐厅，再次强调需要有宝宝椅和儿童活动区。",
+        "created_at": "2026-09-03T13:17:07.395291+00:00",
+        "occurred_at": "2026-01-24T11:30:00+08:00"
+      },
+      {
+        "id": "421cf53b-6413-4cde-818f-72a8895a8e95",
+        "memory_type": "semantic_memory",
+        "scene": "dining_preference",
+        "content": "用户于2026年1月18日偏好食用客家酿豆腐，要求少油、不要香菜，口味清淡。",
+        "created_at": "2026-09-03T13:16:47.677357+00:00",
+        "occurred_at": "2026-01-18T12:10:00+08:00"
+      },
+      {
+        "id": "7c55304a-11e4-45e1-8dfc-d02024196f1a",
+        "memory_type": "semantic_memory",
+        "scene": "western_dining",
+        "content": "用户于2026年1月13日计划前往橡木厨房用餐，并确认沿用其标准点餐习惯：西冷牛排七分熟、蘑菇汤、柠檬水不加冰，且备注不要香菜。",
+        "created_at": "2026-09-03T13:16:10.071659+00:00",
+        "occurred_at": "2026-01-13T18:35:00+08:00"
+      },
+      {
+        "id": "209c23c5-f29d-402e-9713-b997dfc9aaf6",
+        "memory_type": "semantic_memory",
+        "scene": "family_dining",
+        "content": "用户于2026年1月10日带孩子去童梦森林亲子餐厅，再次强调需要有宝宝椅和儿童活动区。",
+        "created_at": "2026-09-03T13:16:02.112712+00:00",
+        "occurred_at": "2026-01-10T11:29:00+08:00"
+      },
+      {
+        "id": "88c04097-5085-4d93-a19d-0a338a27fe8f",
+        "memory_type": "semantic_memory",
+        "scene": "family_dining",
+        "content": "用户于2026年1月10日确认童梦森林亲子餐厅孩子很喜欢且停车方便，决定下次亲子用餐优先考虑该餐厅。",
+        "created_at": "2026-09-03T13:16:02.112712+00:00",
+        "occurred_at": "2026-01-10T11:29:00+08:00"
+      },
+      {
+        "id": "bc27bf2f-33cb-46ab-b844-9dc8f8349033",
+        "memory_type": "semantic_memory",
+        "scene": "poor_air_quality",
+        "content": "用户于2025年12月31日17:25因外部空气质量指数（AQI）为165，指示助手按照既定协议处理，即关闭车窗、切换至内循环并将空气净化调至3档。",
+        "created_at": "2026-09-03T13:15:42.737569+00:00",
+        "occurred_at": "2025-12-31T17:25:00+08:00"
+      },
+      {
+        "id": "7186d382-95cd-4cc3-bfe4-c51ca03fe6f7",
+        "memory_type": "semantic_memory",
+        "scene": "family_dining",
+        "content": "用户于2025年12月27日确认小象花园家庭餐厅孩子很喜欢且停车方便，决定下次亲子用餐优先考虑该餐厅。",
+        "created_at": "2026-09-03T13:15:30.982528+00:00",
+        "occurred_at": "2025-12-27T11:28:00+08:00"
+      },
+      {
+        "id": "78a3b33b-a123-4eb9-8985-e25512c7da3e",
+        "memory_type": "semantic_memory",
+        "scene": "family_dining",
+        "content": "用户于2025年12月27日带孩子去小象花园家庭餐厅，再次强调需要有宝宝椅和儿童活动区。",
+        "created_at": "2026-09-03T13:15:30.982528+00:00",
+        "occurred_at": "2025-12-27T11:28:00+08:00"
+      },
+      {
+        "id": "e930958e-bf1a-4881-a355-2c690f017d43",
+        "memory_type": "semantic_memory",
+        "scene": "dining_preference",
+        "content": "用户于2025年12月26日偏好食用白灼虾，要求少油、不要香菜，口味清淡。",
+        "created_at": "2026-09-03T13:15:16.106946+00:00",
+        "occurred_at": "2025-12-26T12:09:00+08:00"
+      },
+      {
+        "id": "dc94720a-2d4e-4046-8f25-06d8e658466f",
+        "memory_type": "semantic_memory",
+        "scene": "western_dining",
+        "content": "用户于2025年12月13日计划前往蓝岸西餐厅用餐，并确认沿用其标准点餐习惯：西冷牛排七分熟、蘑菇汤、柠檬水不加冰，且备注不要香菜。",
+        "created_at": "2026-09-03T13:15:11.399166+00:00",
+        "occurred_at": "2025-12-13T18:35:00+08:00"
+      },
+      {
+        "id": "b173156d-c463-4f0a-a6fa-9f02a498e37a",
+        "memory_type": "semantic_memory",
+        "scene": "family_dining",
+        "content": "用户于2025年12月13日确认麦田亲子餐厅孩子很喜欢且停车方便，决定下次亲子用餐优先考虑该餐厅。",
+        "created_at": "2026-09-03T13:15:02.141990+00:00",
+        "occurred_at": "2025-12-13T11:27:00+08:00"
+      },
+      {
+        "id": "a156f58d-0be0-499c-9d3a-5e14f45efe32",
+        "memory_type": "semantic_memory",
+        "scene": "family_dining",
+        "content": "用户于2025年12月13日带孩子去麦田亲子餐厅，再次强调需要有宝宝椅和儿童活动区。",
+        "created_at": "2026-09-03T13:15:02.141990+00:00",
+        "occurred_at": "2025-12-13T11:27:00+08:00"
+      },
+      {
+        "id": "7550aa8f-1f6d-4991-858a-b2d0ac6e3aea",
+        "memory_type": "semantic_memory",
+        "scene": "dining_preference",
+        "content": "用户于2025年12月3日偏好食用清蒸鲈鱼，要求少油、不要香菜，口味清淡。",
+        "created_at": "2026-09-03T13:14:48.172838+00:00",
+        "occurred_at": "2025-12-03T12:08:00+08:00"
+      },
+      {
+        "id": "07ca4f38-b9dc-4f8c-8c39-9e19b03b048d",
+        "memory_type": "semantic_memory",
+        "scene": "poor_air_quality",
+        "content": "用户于2025年12月2日17:40因外部空气质量指数（AQI）为158，指示助手按照既定协议处理，即关闭车窗、切换至内循环并将空气净化调至3档。",
+        "created_at": "2026-09-03T13:14:42.632445+00:00",
+        "occurred_at": "2025-12-02T17:40:00+08:00"
+      },
+      {
+        "id": "bbb5d508-4378-413a-962a-c7753313d5bf",
+        "memory_type": "semantic_memory",
+        "scene": "family_dining",
+        "content": "用户于2025年11月29日确认童梦森林亲子餐厅孩子很喜欢且停车方便，决定下次亲子用餐优先考虑该餐厅。",
+        "created_at": "2026-09-03T13:14:32.228149+00:00",
+        "occurred_at": "2025-11-29T11:26:00+08:00"
+      },
+      {
+        "id": "8f43d7f1-5116-42c7-943b-d5ebd8231e73",
+        "memory_type": "semantic_memory",
+        "scene": "family_dining",
+        "content": "用户于2025年11月29日带孩子去童梦森林亲子餐厅，再次强调需要有宝宝椅和儿童活动区。",
+        "created_at": "2026-09-03T13:14:32.228149+00:00",
+        "occurred_at": "2025-11-29T11:26:00+08:00"
+      },
+      {
+        "id": "1998ef2e-f3f5-4b18-8e04-b74ad5007c95",
+        "memory_type": "semantic_memory",
+        "scene": "family_dining",
+        "content": "用户于2025年11月15日确认小象花园家庭餐厅孩子很喜欢且停车方便，决定下次亲子用餐优先考虑该餐厅。",
+        "created_at": "2026-09-03T13:14:14.823168+00:00",
+        "occurred_at": "2025-11-15T11:25:00+08:00"
+      },
+      {
+        "id": "abd5c13a-081e-4901-88f8-097129199aa8",
+        "memory_type": "semantic_memory",
+        "scene": "family_dining",
+        "content": "用户于2025年11月15日带孩子去小象花园家庭餐厅，再次强调需要有宝宝椅和儿童活动区。",
+        "created_at": "2026-09-03T13:14:14.823168+00:00",
+        "occurred_at": "2025-11-15T11:25:00+08:00"
+      },
+      {
+        "id": "ad1cbceb-5120-4cac-a041-f89e820ef497",
+        "memory_type": "semantic_memory",
+        "scene": "western_dining",
+        "content": "用户于2025年11月12日计划前往湖畔牛排馆用餐，并确认沿用其标准点餐习惯：西冷牛排七分熟、蘑菇汤、柠檬水不加冰，且备注不要香菜。",
+        "created_at": "2026-09-03T13:13:59.563484+00:00",
+        "occurred_at": "2025-11-12T18:35:00+08:00"
+      },
+      {
+        "id": "b44644cf-a22d-4b9f-9017-0cf533a04118",
+        "memory_type": "semantic_memory",
+        "scene": "dining_preference",
+        "content": "用户于2025年11月10日偏好食用客家酿豆腐，要求少油、不要香菜，口味清淡。",
+        "created_at": "2026-09-03T13:13:52.692478+00:00",
+        "occurred_at": "2025-11-10T12:07:00+08:00"
+      },
+      {
+        "id": "26e05226-f82c-4059-a875-a129540f7a01",
+        "memory_type": "semantic_memory",
+        "scene": "family_dining",
+        "content": "用户于2025年11月1日再次确认麦田亲子餐厅停车方便且孩子很喜欢，决定下次亲子用餐优先考虑该餐厅。",
+        "created_at": "2026-09-03T13:13:44.564770+00:00",
+        "occurred_at": "2025-11-01T11:24:00+08:00"
+      },
+      {
+        "id": "23940fbe-db64-44bd-b51e-d4aa2643da02",
+        "memory_type": "semantic_memory",
+        "scene": "family_dining",
+        "content": "用户于2025年11月1日带孩子去麦田亲子餐厅，再次强调需要有宝宝椅和儿童活动区。",
+        "created_at": "2026-09-03T13:13:44.564770+00:00",
+        "occurred_at": "2025-11-01T11:24:00+08:00"
+      },
+      {
+        "id": "a72b44fe-834e-4bf2-be9a-2176dbfc188f",
+        "memory_type": "semantic_memory",
+        "scene": "dining_preference",
+        "content": "用户于2025年10月18日偏好食用白灼虾，要求少油、不要香菜，口味清淡。",
+        "created_at": "2026-09-03T13:13:12.928234+00:00",
+        "occurred_at": "2025-10-18T12:06:00+08:00"
+      },
+      {
+        "id": "302238b4-5a46-4b21-836f-1b3b5d8385f2",
+        "memory_type": "semantic_memory",
+        "scene": "family_dining",
+        "content": "用户发现童梦森林亲子餐厅停车方便且孩子很喜欢，决定下次亲子用餐优先考虑该餐厅。",
+        "created_at": "2026-09-03T13:13:05.431314+00:00",
+        "occurred_at": "2025-10-18T11:23:00+08:00"
+      },
+      {
+        "id": "144204c8-a9c0-42af-9752-4cdf25e0365d",
+        "memory_type": "semantic_memory",
+        "scene": "family_dining",
+        "content": "用户于2025年10月18日带孩子去童梦森林亲子餐厅，距离3.2公里，强调需要有宝宝椅和儿童活动区。",
+        "created_at": "2026-09-03T13:13:05.431314+00:00",
+        "occurred_at": "2025-10-18T11:23:00+08:00"
+      },
+      {
+        "id": "a9364849-f84a-4f94-ae47-e1db92ba4050",
+        "memory_type": "semantic_memory",
+        "scene": "western_dining",
+        "content": "用户于2025年10月12日计划前往橡木厨房用餐，并确认沿用其标准点餐习惯：西冷牛排七分熟、蘑菇汤、柠檬水不加冰，且备注不要香菜。",
+        "created_at": "2026-09-03T13:12:49.613323+00:00",
+        "occurred_at": "2025-10-12T18:35:00+08:00"
+      },
+      {
+        "id": "0c1db2e2-b707-4598-9a06-2d20df777225",
+        "memory_type": "semantic_memory",
+        "scene": "family_dining",
+        "content": "用户于2025年10月4日带孩子去小象花园家庭餐厅，强调需要有宝宝椅和儿童活动区。",
+        "created_at": "2026-09-03T13:12:40.589678+00:00",
+        "occurred_at": "2025-10-04T11:22:00+08:00"
+      },
+      {
+        "id": "623ba562-0aa4-4b8d-9e7e-570fdf3f0dd0",
+        "memory_type": "semantic_memory",
+        "scene": "family_dining",
+        "content": "用户发现小象花园家庭餐厅停车方便且孩子很喜欢，决定下次亲子用餐优先考虑该餐厅。",
+        "created_at": "2026-09-03T13:12:40.589678+00:00",
+        "occurred_at": "2025-10-04T11:22:00+08:00"
+      },
+      {
+        "id": "64c5bab1-1ae1-40e2-a604-b100c85030fe",
+        "memory_type": "semantic_memory",
+        "scene": "family_dining",
+        "content": "小象花园家庭餐厅距离用户当前位置7.4公里。",
+        "created_at": "2026-09-03T13:12:40.589678+00:00",
+        "occurred_at": "2025-10-04T11:22:00+08:00"
+      },
+      {
+        "id": "9963d9df-c1b8-460a-a392-5ad30bc60289",
+        "memory_type": "semantic_memory",
+        "scene": "dining_preference",
+        "content": "用户于2025年9月25日偏好食用清蒸鲈鱼，要求少油、不要香菜，口味清淡。",
+        "created_at": "2026-09-03T13:12:26.209557+00:00",
+        "occurred_at": "2025-09-25T12:05:00+08:00"
+      },
+      {
+        "id": "4eadb5da-90f4-438e-8d1a-fbbe4649d884",
+        "memory_type": "semantic_memory",
+        "scene": "family_dining",
+        "content": "用户于2025年9月20日带孩子去麦田亲子餐厅，强调需要有宝宝椅和儿童活动区。",
+        "created_at": "2026-09-03T13:12:18.580085+00:00",
+        "occurred_at": "2025-09-20T11:21:00+08:00"
+      },
+      {
+        "id": "d8bb270c-868c-4e7b-98f6-25aca96734c2",
+        "memory_type": "semantic_memory",
+        "scene": "family_dining",
+        "content": "麦田亲子餐厅距离用户当前位置5.8公里。",
+        "created_at": "2026-09-03T13:12:18.580085+00:00",
+        "occurred_at": "2025-09-20T11:21:00+08:00"
+      },
+      {
+        "id": "5be40fc0-c0dc-4e76-903d-0ebd4626137a",
+        "memory_type": "semantic_memory",
+        "scene": "family_dining",
+        "content": "用户发现麦田亲子餐厅停车方便且孩子很喜欢，决定下次亲子用餐优先考虑该餐厅。",
+        "created_at": "2026-09-03T13:12:18.580085+00:00",
+        "occurred_at": "2025-09-20T11:21:00+08:00"
+      },
+      {
+        "id": "df35aac4-60ad-423e-9f2a-d0498f0bb5d3",
+        "memory_type": "semantic_memory",
+        "scene": "western_dining",
+        "content": "User's dining habits at 蓝岸西餐厅 include ordering sirloin steak medium (七分熟), mushroom soup, lemon water without ice, and requesting no cilantro.",
+        "created_at": "2026-09-03T13:12:06.674053+00:00",
+        "occurred_at": "2025-09-11T18:35:00+08:00"
+      },
+      {
+        "id": "da804c96-8646-462e-8a26-143012550aea",
+        "memory_type": "semantic_memory",
+        "scene": "poor_air_quality",
+        "content": "User's preferred protocol for handling poor air quality (AQI 200) is to close car windows, switch to internal air circulation, and set the air purifier to level 3.",
+        "created_at": "2026-09-03T13:11:52.597408+00:00",
+        "occurred_at": "2025-09-06T17:10:00+08:00"
+      },
+      {
+        "id": "813700a5-9dec-4eb4-a26a-ceb42f195863",
+        "memory_type": "semantic_memory",
+        "scene": "family_dining",
+        "content": "User found 童梦森林亲子餐厅 convenient for parking and suitable for children, deciding to prioritize it for future parent-child dining.",
+        "created_at": "2026-09-03T13:11:42.965912+00:00",
+        "occurred_at": "2025-09-06T11:20:00+08:00"
+      },
+      {
+        "id": "92a4654f-6304-4aa3-8183-6b14e40add2f",
+        "memory_type": "semantic_memory",
+        "scene": "family_dining",
+        "content": "User visited 童梦森林亲子餐厅 with their child on September 6, 2025, noting the importance of having baby chairs and a children's activity area.",
+        "created_at": "2026-09-03T13:11:42.965912+00:00",
+        "occurred_at": "2025-09-06T11:20:00+08:00"
+      }
+    ]
+  },
+  "search": {
+    "aggregate": {
+      "cases": 5,
+      "fact_pass": 3,
+      "fact_pass_rate": 0.6,
+      "keyword_pass": 4,
+      "keyword_pass_rate": 0.8,
+      "macro_must_recall": 0.8,
+      "macro_precision_at_k": 0.52,
+      "macro_mrr": 0.5833,
+      "top1_hit_rate": 0.4
+    },
+    "passed_keyword": 4,
+    "total": 5,
+    "pass_rate": 0.8,
+    "profile_endpoint": null,
+    "evaluations": [
+      {
+        "case_id": "fuzzy_01",
+        "query": "我们经常去的亲子餐厅",
+        "gold_expect": "高频到访应指向童梦森林；童趣岛只收藏过一次，不能当成经常去。",
+        "metrics": {
+          "top_k": 10,
+          "must_fact_recall": 1.0,
+          "must_facts_hit": 1,
+          "must_facts_total": 1,
+          "should_fact_recall": 1.0,
+          "precision_at_k": 0.5,
+          "mrr": 0.3333,
+          "first_relevant_rank": 3,
+          "top1_expected": false,
+          "trap_top1": false,
+          "noise_ratio": 0.5,
+          "keyword_recall": 1.0,
+          "store_must_written": 20,
+          "store_coverage_at_k": 0.25,
+          "profile_attached": false,
+          "episode_hits": 0,
+          "passed_fact": true,
+          "passed_keyword": true
+        },
+        "flags": [],
+        "expected": {
+          "must": [
+            {
+              "id": "habit_place",
+              "label": "童梦森林（经常去）",
+              "aliases": [
+                "童梦森林"
+              ],
+              "written_count": 20,
+              "written_samples": [
+                "用户于2026年8月29日确认童梦森林亲子餐厅孩子很喜欢且停车方便，决定下次亲子用餐优先考虑该餐厅。",
+                "用户于2026年8月29日带孩子去童梦森林亲子餐厅，距离3.2公里，强调需要有宝宝椅和儿童活动区。",
+                "用户于2026年8月8日确认童梦森林亲子餐厅孩子很喜欢且停车方便，决定下次亲子用餐优先考虑该餐厅。"
+              ],
+              "retrieved": true,
+              "matched_aliases": [
+                "童梦森林"
+              ],
+              "first_rank": 3,
+              "retrieved_hits": [
+                {
+                  "rank": 3,
+                  "id": "c1fba905-d427-43d9-ad59-6323b315b35c",
+                  "content": "用户于2026年8月29日带孩子去童梦森林亲子餐厅，距离3.2公里，强调需要有宝宝椅和儿童活动区。",
+                  "score": 0.6322882817483477
+                },
+                {
+                  "rank": 4,
+                  "id": "8f43d7f1-5116-42c7-943b-d5ebd8231e73",
+                  "content": "用户于2025年11月29日带孩子去童梦森林亲子餐厅，再次强调需要有宝宝椅和儿童活动区。",
+                  "score": 0.6316831383074689
+                },
+                {
+                  "rank": 6,
+                  "id": "144204c8-a9c0-42af-9752-4cdf25e0365d",
+                  "content": "用户于2025年10月18日带孩子去童梦森林亲子餐厅，距离3.2公里，强调需要有宝宝椅和儿童活动区。",
+                  "score": 0.6305149303934698
+                },
+                {
+                  "rank": 7,
+                  "id": "acb020cd-942e-4a9c-a74c-dc4fa26b5edb",
+                  "content": "用户于2026年6月27日带孩子去童梦森林亲子餐厅，再次强调需要有宝宝椅和儿童活动区。",
+                  "score": 0.6293585705595391
+                },
+                {
+                  "rank": 9,
+                  "id": "f0d24796-8d63-4a4e-bd54-652b6c8f3534",
+                  "content": "用户于2026年8月8日带孩子去童梦森林亲子餐厅，再次强调需要有宝宝椅和儿童活动区。",
+                  "score": 0.6288423240624336
+                }
+              ]
+            }
+          ],
+          "should": [
+            {
+              "id": "child_amenity",
+              "label": "宝宝椅/儿童活动区",
+              "aliases": [
+                "宝宝椅",
+                "儿童活动区"
+              ],
+              "written_count": 57,
+              "written_samples": [
+                "用户于2026年9月1日收藏了童趣岛家庭餐厅，计划下次预订。该餐厅距用户4.1公里，提供儿童活动区、宝宝椅和停车场，主营粤菜简餐，人均约110元。用户认为该餐厅与其上周去的餐厅相似。",
+                "用户于2026年8月29日确认童梦森林亲子餐厅孩子很喜欢且停车方便，决定下次亲子用餐优先考虑该餐厅。",
+                "用户于2026年8月29日带孩子去童梦森林亲子餐厅，距离3.2公里，强调需要有宝宝椅和儿童活动区。"
+              ],
+              "retrieved": true,
+              "matched_aliases": [
+                "宝宝椅",
+                "儿童活动区"
+              ],
+              "first_rank": 1,
+              "retrieved_hits": [
+                {
+                  "rank": 1,
+                  "id": "7b99d98b-026a-4a4c-9222-aab23a4ec771",
+                  "content": "用户于2026年8月22日带孩子去麦田亲子餐厅，再次强调需要有宝宝椅和儿童活动区。",
+                  "score": 0.636403020302333
+                },
+                {
+                  "rank": 2,
+                  "id": "23940fbe-db64-44bd-b51e-d4aa2643da02",
+                  "content": "用户于2025年11月1日带孩子去麦田亲子餐厅，再次强调需要有宝宝椅和儿童活动区。",
+                  "score": 0.634340020057539
+                },
+                {
+                  "rank": 3,
+                  "id": "c1fba905-d427-43d9-ad59-6323b315b35c",
+                  "content": "用户于2026年8月29日带孩子去童梦森林亲子餐厅，距离3.2公里，强调需要有宝宝椅和儿童活动区。",
+                  "score": 0.6322882817483477
+                },
+                {
+                  "rank": 4,
+                  "id": "8f43d7f1-5116-42c7-943b-d5ebd8231e73",
+                  "content": "用户于2025年11月29日带孩子去童梦森林亲子餐厅，再次强调需要有宝宝椅和儿童活动区。",
+                  "score": 0.6316831383074689
+                },
+                {
+                  "rank": 5,
+                  "id": "847de2e4-62dc-40f7-9bb5-ed6602b48139",
+                  "content": "用户于2026年7月11日带孩子去麦田亲子餐厅，再次强调需要有宝宝椅和儿童活动区。",
+                  "score": 0.631227628948839
+                }
+              ]
+            }
+          ],
+          "trap": [
+            {
+              "id": "one_shot",
+              "label": "童趣岛（仅收藏一次）",
+              "aliases": [
+                "童趣岛"
+              ],
+              "written_count": 1,
+              "written_samples": [
+                "用户于2026年9月1日收藏了童趣岛家庭餐厅，计划下次预订。该餐厅距用户4.1公里，提供儿童活动区、宝宝椅和停车场，主营粤菜简餐，人均约110元。用户认为该餐厅与其上周去的餐厅相似。"
+              ],
+              "retrieved": false,
+              "matched_aliases": [],
+              "first_rank": null,
+              "retrieved_hits": []
+            }
+          ],
+          "noise": [
+            {
+              "id": "also_frequent",
+              "label": "麦田/小象（也常去，但gold顶位是童梦）",
+              "aliases": [
+                "麦田亲子",
+                "麦田",
+                "小象花园",
+                "小象"
+              ],
+              "written_count": 36,
+              "written_samples": [
+                "用户于2026年8月22日带孩子去麦田亲子餐厅，再次强调需要有宝宝椅和儿童活动区。",
+                "用户于2026年8月22日确认麦田亲子餐厅孩子很喜欢且停车方便，决定下次亲子用餐优先考虑该餐厅。",
+                "用户于2026年7月25日确认小象花园家庭餐厅孩子很喜欢且停车方便，决定下次亲子用餐优先考虑该餐厅。"
+              ],
+              "retrieved": true,
+              "matched_aliases": [
+                "麦田亲子",
+                "麦田"
+              ],
+              "first_rank": 1,
+              "retrieved_hits": [
+                {
+                  "rank": 1,
+                  "id": "7b99d98b-026a-4a4c-9222-aab23a4ec771",
+                  "content": "用户于2026年8月22日带孩子去麦田亲子餐厅，再次强调需要有宝宝椅和儿童活动区。",
+                  "score": 0.636403020302333
+                },
+                {
+                  "rank": 2,
+                  "id": "23940fbe-db64-44bd-b51e-d4aa2643da02",
+                  "content": "用户于2025年11月1日带孩子去麦田亲子餐厅，再次强调需要有宝宝椅和儿童活动区。",
+                  "score": 0.634340020057539
+                },
+                {
+                  "rank": 5,
+                  "id": "847de2e4-62dc-40f7-9bb5-ed6602b48139",
+                  "content": "用户于2026年7月11日带孩子去麦田亲子餐厅，再次强调需要有宝宝椅和儿童活动区。",
+                  "score": 0.631227628948839
+                },
+                {
+                  "rank": 8,
+                  "id": "67838902-13f1-458f-8322-14ffb4a27e28",
+                  "content": "用户于2026年4月18日带孩子去麦田亲子餐厅，再次强调需要有宝宝椅和儿童活动区。",
+                  "score": 0.6292443863168132
+                },
+                {
+                  "rank": 10,
+                  "id": "aa774dc8-729b-40b2-9adb-f0c3fe0f6eaa",
+                  "content": "用户于2026年5月30日带孩子去麦田亲子餐厅，再次强调需要有宝宝椅和儿童活动区。",
+                  "score": 0.6286833392409905
+                }
+              ]
+            }
+          ]
+        },
+        "actual_hits": [
+          {
+            "rank": 1,
+            "id": "7b99d98b-026a-4a4c-9222-aab23a4ec771",
+            "memory_type": "semantic_memory",
+            "content": "用户于2026年8月22日带孩子去麦田亲子餐厅，再次强调需要有宝宝椅和儿童活动区。",
+            "score": 0.636403020302333,
+            "scene": "family_dining",
+            "created_at": "2026-09-03T13:24:37.416600+00:00",
+            "occurred_at": "2026-08-22T11:25:00+08:00",
+            "labels": [
+              "SHOULD",
+              "NOISE"
+            ]
+          },
+          {
+            "rank": 2,
+            "id": "23940fbe-db64-44bd-b51e-d4aa2643da02",
+            "memory_type": "semantic_memory",
+            "content": "用户于2025年11月1日带孩子去麦田亲子餐厅，再次强调需要有宝宝椅和儿童活动区。",
+            "score": 0.634340020057539,
+            "scene": "family_dining",
+            "created_at": "2026-09-03T13:13:44.564770+00:00",
+            "occurred_at": "2025-11-01T11:24:00+08:00",
+            "labels": [
+              "SHOULD",
+              "NOISE"
+            ]
+          },
+          {
+            "rank": 3,
+            "id": "c1fba905-d427-43d9-ad59-6323b315b35c",
+            "memory_type": "semantic_memory",
+            "content": "用户于2026年8月29日带孩子去童梦森林亲子餐厅，距离3.2公里，强调需要有宝宝椅和儿童活动区。",
+            "score": 0.6322882817483477,
+            "scene": "family_dining",
+            "created_at": "2026-09-03T13:25:03.977537+00:00",
+            "occurred_at": "2026-08-29T11:20:00+08:00",
+            "labels": [
+              "MUST",
+              "SHOULD"
+            ]
+          },
+          {
+            "rank": 4,
+            "id": "8f43d7f1-5116-42c7-943b-d5ebd8231e73",
+            "memory_type": "semantic_memory",
+            "content": "用户于2025年11月29日带孩子去童梦森林亲子餐厅，再次强调需要有宝宝椅和儿童活动区。",
+            "score": 0.6316831383074689,
+            "scene": "family_dining",
+            "created_at": "2026-09-03T13:14:32.228149+00:00",
+            "occurred_at": "2025-11-29T11:26:00+08:00",
+            "labels": [
+              "MUST",
+              "SHOULD"
+            ]
+          },
+          {
+            "rank": 5,
+            "id": "847de2e4-62dc-40f7-9bb5-ed6602b48139",
+            "memory_type": "semantic_memory",
+            "content": "用户于2026年7月11日带孩子去麦田亲子餐厅，再次强调需要有宝宝椅和儿童活动区。",
+            "score": 0.631227628948839,
+            "scene": "family_dining",
+            "created_at": "2026-09-03T13:22:52.672041+00:00",
+            "occurred_at": "2026-07-11T11:22:00+08:00",
+            "labels": [
+              "SHOULD",
+              "NOISE"
+            ]
+          },
+          {
+            "rank": 6,
+            "id": "144204c8-a9c0-42af-9752-4cdf25e0365d",
+            "memory_type": "semantic_memory",
+            "content": "用户于2025年10月18日带孩子去童梦森林亲子餐厅，距离3.2公里，强调需要有宝宝椅和儿童活动区。",
+            "score": 0.6305149303934698,
+            "scene": "family_dining",
+            "created_at": "2026-09-03T13:13:05.431314+00:00",
+            "occurred_at": "2025-10-18T11:23:00+08:00",
+            "labels": [
+              "MUST",
+              "SHOULD"
+            ]
+          },
+          {
+            "rank": 7,
+            "id": "acb020cd-942e-4a9c-a74c-dc4fa26b5edb",
+            "memory_type": "semantic_memory",
+            "content": "用户于2026年6月27日带孩子去童梦森林亲子餐厅，再次强调需要有宝宝椅和儿童活动区。",
+            "score": 0.6293585705595391,
+            "scene": "family_dining",
+            "created_at": "2026-09-03T13:22:29.646661+00:00",
+            "occurred_at": "2026-06-27T11:21:00+08:00",
+            "labels": [
+              "MUST",
+              "SHOULD"
+            ]
+          },
+          {
+            "rank": 8,
+            "id": "67838902-13f1-458f-8322-14ffb4a27e28",
+            "memory_type": "semantic_memory",
+            "content": "用户于2026年4月18日带孩子去麦田亲子餐厅，再次强调需要有宝宝椅和儿童活动区。",
+            "score": 0.6292443863168132,
+            "scene": "family_dining",
+            "created_at": "2026-09-03T13:19:57.445030+00:00",
+            "occurred_at": "2026-04-18T11:36:00+08:00",
+            "labels": [
+              "SHOULD",
+              "NOISE"
+            ]
+          },
+          {
+            "rank": 9,
+            "id": "f0d24796-8d63-4a4e-bd54-652b6c8f3534",
+            "memory_type": "semantic_memory",
+            "content": "用户于2026年8月8日带孩子去童梦森林亲子餐厅，再次强调需要有宝宝椅和儿童活动区。",
+            "score": 0.6288423240624336,
+            "scene": "family_dining",
+            "created_at": "2026-09-03T13:23:41.486292+00:00",
+            "occurred_at": "2026-08-08T11:24:00+08:00",
+            "labels": [
+              "MUST",
+              "SHOULD"
+            ]
+          },
+          {
+            "rank": 10,
+            "id": "aa774dc8-729b-40b2-9adb-f0c3fe0f6eaa",
+            "memory_type": "semantic_memory",
+            "content": "用户于2026年5月30日带孩子去麦田亲子餐厅，再次强调需要有宝宝椅和儿童活动区。",
+            "score": 0.6286833392409905,
+            "scene": "family_dining",
+            "created_at": "2026-09-03T13:21:27.214661+00:00",
+            "occurred_at": "2026-05-30T11:39:00+08:00",
+            "labels": [
+              "SHOULD",
+              "NOISE"
+            ]
+          }
+        ],
+        "keyword_matched": [
+          "童梦森林",
+          "亲子",
+          "孩子"
+        ],
+        "keyword_missing": [],
+        "profile": null,
+        "passed_keyword": true,
+        "keyword_recall": 1.0,
+        "matched": [
+          "童梦森林",
+          "亲子",
+          "孩子"
+        ],
+        "missing": []
+      },
+      {
+        "case_id": "fuzzy_02",
+        "query": "根据我爱吃的菜，找个最近的地方",
+        "gold_expect": "记忆只应给出饮食偏好；不能编造最近的具体餐厅。",
+        "metrics": {
+          "top_k": 10,
+          "must_fact_recall": 0.25,
+          "must_facts_hit": 1,
+          "must_facts_total": 4,
+          "should_fact_recall": null,
+          "precision_at_k": 0.1,
+          "mrr": 0.3333,
+          "first_relevant_rank": 3,
+          "top1_expected": false,
+          "trap_top1": false,
+          "noise_ratio": 0.2,
+          "keyword_recall": 0.3333,
+          "store_must_written": 49,
+          "store_coverage_at_k": 0.0204,
+          "profile_attached": false,
+          "episode_hits": 0,
+          "passed_fact": false,
+          "passed_keyword": false
+        },
+        "flags": [],
+        "expected": {
+          "must": [
+            {
+              "id": "no_oil",
+              "label": "少油",
+              "aliases": [
+                "少油"
+              ],
+              "written_count": 15,
+              "written_samples": [
+                "用户于2026年8月13日偏好食用客家酿豆腐，要求少油、不要香菜，口味清淡。",
+                "用户于2026年7月21日偏好食用白灼虾，要求少油、不要香菜，口味清淡。",
+                "用户于2026年6月28日偏好食用清蒸鲈鱼，要求少油、不要香菜，口味清淡。"
+              ],
+              "retrieved": false,
+              "matched_aliases": [],
+              "first_rank": null,
+              "retrieved_hits": []
+            },
+            {
+              "id": "no_cilantro",
+              "label": "不要香菜",
+              "aliases": [
+                "香菜"
+              ],
+              "written_count": 28,
+              "written_samples": [
+                "用户于2026年8月23日计划前往橡木厨房用餐，并确认沿用其标准点餐习惯：西冷牛排七分熟、蘑菇汤、柠檬水不加冰，且备注不要香菜。",
+                "用户于2026年8月18日计划前往湖畔牛排馆用餐，并确认沿用其标准点餐习惯：西冷牛排七分熟、蘑菇汤、柠檬水不加冰，且备注不要香菜。",
+                "用户于2026年8月13日偏好食用客家酿豆腐，要求少油、不要香菜，口味清淡。"
+              ],
+              "retrieved": false,
+              "matched_aliases": [],
+              "first_rank": null,
+              "retrieved_hits": []
+            },
+            {
+              "id": "cantonese_or_light",
+              "label": "粤菜/清淡",
+              "aliases": [
+                "粤菜",
+                "清淡"
+              ],
+              "written_count": 36,
+              "written_samples": [
+                "用户于2026年9月1日收藏了童趣岛家庭餐厅，计划下次预订。该餐厅距用户4.1公里，提供儿童活动区、宝宝椅和停车场，主营粤菜简餐，人均约110元。用户认为该餐厅与其上周去的餐厅相似。",
+                "用户于2026年8月29日确认童梦森林亲子餐厅孩子很喜欢且停车方便，决定下次亲子用餐优先考虑该餐厅。",
+                "用户于2026年8月29日带孩子去童梦森林亲子餐厅，距离3.2公里，强调需要有宝宝椅和儿童活动区。"
+              ],
+              "retrieved": true,
+              "matched_aliases": [
+                "粤菜"
+              ],
+              "first_rank": 3,
+              "retrieved_hits": [
+                {
+                  "rank": 3,
+                  "id": "3314b2fe-f199-40dd-a574-ee76d933e754",
+                  "content": "用户于2026年9月1日收藏了童趣岛家庭餐厅，计划下次预订。该餐厅距用户4.1公里，提供儿童活动区、宝宝椅和停车场，主营粤菜简餐，人均约110元。用户认为该餐厅与其上周去的餐厅相似。",
+                  "score": 0.5453228922560405
+                }
+              ]
+            },
+            {
+              "id": "favorite_dish",
+              "label": "鲈鱼/白灼虾/酿豆腐",
+              "aliases": [
+                "鲈鱼",
+                "白灼虾",
+                "酿豆腐"
+              ],
+              "written_count": 15,
+              "written_samples": [
+                "用户于2026年8月13日偏好食用客家酿豆腐，要求少油、不要香菜，口味清淡。",
+                "用户于2026年7月21日偏好食用白灼虾，要求少油、不要香菜，口味清淡。",
+                "用户于2026年6月28日偏好食用清蒸鲈鱼，要求少油、不要香菜，口味清淡。"
+              ],
+              "retrieved": false,
+              "matched_aliases": [],
+              "first_rank": null,
+              "retrieved_hits": []
+            }
+          ],
+          "should": [],
+          "trap": [],
+          "noise": [
+            {
+              "id": "poi_distance",
+              "label": "距离/餐厅POI（偏好缺失时属噪声）",
+              "aliases": [
+                "公里",
+                "距离"
+              ],
+              "written_count": 5,
+              "written_samples": [
+                "用户于2026年9月1日收藏了童趣岛家庭餐厅，计划下次预订。该餐厅距用户4.1公里，提供儿童活动区、宝宝椅和停车场，主营粤菜简餐，人均约110元。用户认为该餐厅与其上周去的餐厅相似。",
+                "用户于2026年8月29日带孩子去童梦森林亲子餐厅，距离3.2公里，强调需要有宝宝椅和儿童活动区。",
+                "用户于2025年10月18日带孩子去童梦森林亲子餐厅，距离3.2公里，强调需要有宝宝椅和儿童活动区。"
+              ],
+              "retrieved": true,
+              "matched_aliases": [
+                "公里",
+                "距离"
+              ],
+              "first_rank": 1,
+              "retrieved_hits": [
+                {
+                  "rank": 1,
+                  "id": "d8bb270c-868c-4e7b-98f6-25aca96734c2",
+                  "content": "麦田亲子餐厅距离用户当前位置5.8公里。",
+                  "score": 0.5837038466607837
+                },
+                {
+                  "rank": 2,
+                  "id": "64c5bab1-1ae1-40e2-a604-b100c85030fe",
+                  "content": "小象花园家庭餐厅距离用户当前位置7.4公里。",
+                  "score": 0.5810437684189214
+                },
+                {
+                  "rank": 3,
+                  "id": "3314b2fe-f199-40dd-a574-ee76d933e754",
+                  "content": "用户于2026年9月1日收藏了童趣岛家庭餐厅，计划下次预订。该餐厅距用户4.1公里，提供儿童活动区、宝宝椅和停车场，主营粤菜简餐，人均约110元。用户认为该餐厅与其上周去的餐厅相似。",
+                  "score": 0.5453228922560405
+                }
+              ]
+            }
+          ]
+        },
+        "actual_hits": [
+          {
+            "rank": 1,
+            "id": "d8bb270c-868c-4e7b-98f6-25aca96734c2",
+            "memory_type": "semantic_memory",
+            "content": "麦田亲子餐厅距离用户当前位置5.8公里。",
+            "score": 0.5837038466607837,
+            "scene": "family_dining",
+            "created_at": "2026-09-03T13:12:18.580085+00:00",
+            "occurred_at": "2025-09-20T11:21:00+08:00",
+            "labels": [
+              "NOISE"
+            ]
+          },
+          {
+            "rank": 2,
+            "id": "64c5bab1-1ae1-40e2-a604-b100c85030fe",
+            "memory_type": "semantic_memory",
+            "content": "小象花园家庭餐厅距离用户当前位置7.4公里。",
+            "score": 0.5810437684189214,
+            "scene": "family_dining",
+            "created_at": "2026-09-03T13:12:40.589678+00:00",
+            "occurred_at": "2025-10-04T11:22:00+08:00",
+            "labels": [
+              "NOISE"
+            ]
+          },
+          {
+            "rank": 3,
+            "id": "3314b2fe-f199-40dd-a574-ee76d933e754",
+            "memory_type": "semantic_memory",
+            "content": "用户于2026年9月1日收藏了童趣岛家庭餐厅，计划下次预订。该餐厅距用户4.1公里，提供儿童活动区、宝宝椅和停车场，主营粤菜简餐，人均约110元。用户认为该餐厅与其上周去的餐厅相似。",
+            "score": 0.5453228922560405,
+            "scene": "recommendation_feedback",
+            "created_at": "2026-09-03T13:25:31.248230+00:00",
+            "occurred_at": "2026-09-01T20:10:00+08:00",
+            "labels": [
+              "MUST",
+              "NOISE"
+            ]
+          },
+          {
+            "rank": 4,
+            "id": "6fc6b615-2c78-4239-9915-2a56a5f8209c",
+            "memory_type": "semantic_memory",
+            "content": "用户于2026年4月18日确认麦田亲子餐厅孩子很喜欢且停车方便，决定下次亲子用餐优先考虑该餐厅。",
+            "score": 0.5086671471256891,
+            "scene": "family_dining",
+            "created_at": "2026-09-03T13:19:57.445030+00:00",
+            "occurred_at": "2026-04-18T11:36:00+08:00",
+            "labels": [
+              "OTHER"
+            ]
+          },
+          {
+            "rank": 5,
+            "id": "b173156d-c463-4f0a-a6fa-9f02a498e37a",
+            "memory_type": "semantic_memory",
+            "content": "用户于2025年12月13日确认麦田亲子餐厅孩子很喜欢且停车方便，决定下次亲子用餐优先考虑该餐厅。",
+            "score": 0.5060563294786173,
+            "scene": "family_dining",
+            "created_at": "2026-09-03T13:15:02.141990+00:00",
+            "occurred_at": "2025-12-13T11:27:00+08:00",
+            "labels": [
+              "OTHER"
+            ]
+          },
+          {
+            "rank": 6,
+            "id": "738aed5c-afef-4b5e-8772-459ebdf12a70",
+            "memory_type": "semantic_memory",
+            "content": "用户于2026年7月11日确认麦田亲子餐厅孩子很喜欢且停车方便，决定下次亲子用餐优先考虑该餐厅。",
+            "score": 0.5029156031620943,
+            "scene": "family_dining",
+            "created_at": "2026-09-03T13:22:52.672041+00:00",
+            "occurred_at": "2026-07-11T11:22:00+08:00",
+            "labels": [
+              "OTHER"
+            ]
+          },
+          {
+            "rank": 7,
+            "id": "363f35c6-cd02-4711-a5b0-9f5d8fb8e81e",
+            "memory_type": "semantic_memory",
+            "content": "用户于2026年5月30日确认麦田亲子餐厅孩子很喜欢且停车方便，决定下次亲子用餐优先考虑该餐厅。",
+            "score": 0.5023813987293827,
+            "scene": "family_dining",
+            "created_at": "2026-09-03T13:21:27.214661+00:00",
+            "occurred_at": "2026-05-30T11:39:00+08:00",
+            "labels": [
+              "OTHER"
+            ]
+          },
+          {
+            "rank": 8,
+            "id": "165236ef-dd18-4821-b4b6-3e2ded3a501c",
+            "memory_type": "semantic_memory",
+            "content": "用户于2026年3月7日确认麦田亲子餐厅孩子很喜欢且停车方便，决定下次亲子用餐优先考虑该餐厅。",
+            "score": 0.5012825787002677,
+            "scene": "family_dining",
+            "created_at": "2026-09-03T13:18:42.359502+00:00",
+            "occurred_at": "2026-03-07T11:33:00+08:00",
+            "labels": [
+              "OTHER"
+            ]
+          },
+          {
+            "rank": 9,
+            "id": "9bdd910c-ccf0-4113-8527-ce595885ec40",
+            "memory_type": "semantic_memory",
+            "content": "用户于2026年1月24日确认麦田亲子餐厅孩子很喜欢且停车方便，决定下次亲子用餐优先考虑该餐厅。",
+            "score": 0.49840351393167276,
+            "scene": "family_dining",
+            "created_at": "2026-09-03T13:17:07.395291+00:00",
+            "occurred_at": "2026-01-24T11:30:00+08:00",
+            "labels": [
+              "OTHER"
+            ]
+          },
+          {
+            "rank": 10,
+            "id": "5be40fc0-c0dc-4e76-903d-0ebd4626137a",
+            "memory_type": "semantic_memory",
+            "content": "用户发现麦田亲子餐厅停车方便且孩子很喜欢，决定下次亲子用餐优先考虑该餐厅。",
+            "score": 0.4968765909562911,
+            "scene": "family_dining",
+            "created_at": "2026-09-03T13:12:18.580085+00:00",
+            "occurred_at": "2025-09-20T11:21:00+08:00",
+            "labels": [
+              "OTHER"
+            ]
+          }
+        ],
+        "keyword_matched": [
+          "粤菜"
+        ],
+        "keyword_missing": [
+          "少油",
+          "香菜"
+        ],
+        "profile": null,
+        "passed_keyword": false,
+        "keyword_recall": 0.3333,
+        "matched": [
+          "粤菜"
+        ],
+        "missing": [
+          "少油",
+          "香菜"
+        ]
+      },
+      {
+        "case_id": "fuzzy_03",
+        "query": "外面的空气质量不好，按老规矩给我调整一下",
+        "gold_expect": "召回关窗+内循环+净化3档+23度这一组；记忆层不负责是否自动执行。",
+        "metrics": {
+          "top_k": 10,
+          "must_fact_recall": 0.75,
+          "must_facts_hit": 3,
+          "must_facts_total": 4,
+          "should_fact_recall": null,
+          "precision_at_k": 0.7,
+          "mrr": 1.0,
+          "first_relevant_rank": 1,
+          "top1_expected": true,
+          "trap_top1": false,
+          "noise_ratio": 0.0,
+          "keyword_recall": 1.0,
+          "store_must_written": 7,
+          "store_coverage_at_k": 1.0,
+          "profile_attached": false,
+          "episode_hits": 0,
+          "passed_fact": false,
+          "passed_keyword": true
+        },
+        "flags": [
+          "expected_never_written"
+        ],
+        "expected": {
+          "must": [
+            {
+              "id": "windows",
+              "label": "关窗",
+              "aliases": [
+                "车窗",
+                "关窗"
+              ],
+              "written_count": 6,
+              "written_samples": [
+                "用户于2026年8月31日17:40因外部空气质量指数（AQI）为170，指示助手按照既定协议处理，即关闭车窗、切换至内循环并将空气净化调至3档。",
+                "用户于2026年8月20日17:10因外部空气质量指数（AQI）为196，指示助手按照既定协议处理，即关闭车窗、切换至内循环并将空气净化调至3档。",
+                "用户于2026年2月27日17:10因外部空气质量指数（AQI）为177，指示助手按照既定协议处理，即关闭车窗、切换至内循环并将空气净化调至3档。"
+              ],
+              "retrieved": true,
+              "matched_aliases": [
+                "车窗"
+              ],
+              "first_rank": 1,
+              "retrieved_hits": [
+                {
+                  "rank": 1,
+                  "id": "4bb8123c-50de-4a84-87e6-c73cd530cf83",
+                  "content": "用户于2026年2月27日17:10因外部空气质量指数（AQI）为177，指示助手按照既定协议处理，即关闭车窗、切换至内循环并将空气净化调至3档。",
+                  "score": 0.6494967896256709
+                },
+                {
+                  "rank": 3,
+                  "id": "4f9b0d53-4df8-4267-9121-9dd66dc7e805",
+                  "content": "用户于2026年8月31日17:40因外部空气质量指数（AQI）为170，指示助手按照既定协议处理，即关闭车窗、切换至内循环并将空气净化调至3档。",
+                  "score": 0.6276447147666726
+                },
+                {
+                  "rank": 4,
+                  "id": "da306553-7151-4198-9bef-efd1de031fca",
+                  "content": "用户于2026年8月20日17:10因外部空气质量指数（AQI）为196，指示助手按照既定协议处理，即关闭车窗、切换至内循环并将空气净化调至3档。",
+                  "score": 0.6165657729395729
+                },
+                {
+                  "rank": 5,
+                  "id": "07ca4f38-b9dc-4f8c-8c39-9e19b03b048d",
+                  "content": "用户于2025年12月2日17:40因外部空气质量指数（AQI）为158，指示助手按照既定协议处理，即关闭车窗、切换至内循环并将空气净化调至3档。",
+                  "score": 0.6083525508010972
+                },
+                {
+                  "rank": 6,
+                  "id": "b61ed584-9df8-4a97-a439-902bd6e24c4d",
+                  "content": "用户于2026年1月29日17:40因外部空气质量指数（AQI）为162，指示助手按照既定协议处理，即关闭车窗、切换至内循环并将空气净化调至3档。",
+                  "score": 0.5938320275734172
+                }
+              ]
+            },
+            {
+              "id": "recirc",
+              "label": "内循环",
+              "aliases": [
+                "内循环",
+                "internal"
+              ],
+              "written_count": 7,
+              "written_samples": [
+                "用户于2026年8月31日17:40因外部空气质量指数（AQI）为170，指示助手按照既定协议处理，即关闭车窗、切换至内循环并将空气净化调至3档。",
+                "用户于2026年8月20日17:10因外部空气质量指数（AQI）为196，指示助手按照既定协议处理，即关闭车窗、切换至内循环并将空气净化调至3档。",
+                "用户于2026年2月27日17:10因外部空气质量指数（AQI）为177，指示助手按照既定协议处理，即关闭车窗、切换至内循环并将空气净化调至3档。"
+              ],
+              "retrieved": true,
+              "matched_aliases": [
+                "内循环",
+                "internal"
+              ],
+              "first_rank": 1,
+              "retrieved_hits": [
+                {
+                  "rank": 1,
+                  "id": "4bb8123c-50de-4a84-87e6-c73cd530cf83",
+                  "content": "用户于2026年2月27日17:10因外部空气质量指数（AQI）为177，指示助手按照既定协议处理，即关闭车窗、切换至内循环并将空气净化调至3档。",
+                  "score": 0.6494967896256709
+                },
+                {
+                  "rank": 2,
+                  "id": "da804c96-8646-462e-8a26-143012550aea",
+                  "content": "User's preferred protocol for handling poor air quality (AQI 200) is to close car windows, switch to internal air circulation, and set the air purifier to level 3.",
+                  "score": 0.6302209597733509
+                },
+                {
+                  "rank": 3,
+                  "id": "4f9b0d53-4df8-4267-9121-9dd66dc7e805",
+                  "content": "用户于2026年8月31日17:40因外部空气质量指数（AQI）为170，指示助手按照既定协议处理，即关闭车窗、切换至内循环并将空气净化调至3档。",
+                  "score": 0.6276447147666726
+                },
+                {
+                  "rank": 4,
+                  "id": "da306553-7151-4198-9bef-efd1de031fca",
+                  "content": "用户于2026年8月20日17:10因外部空气质量指数（AQI）为196，指示助手按照既定协议处理，即关闭车窗、切换至内循环并将空气净化调至3档。",
+                  "score": 0.6165657729395729
+                },
+                {
+                  "rank": 5,
+                  "id": "07ca4f38-b9dc-4f8c-8c39-9e19b03b048d",
+                  "content": "用户于2025年12月2日17:40因外部空气质量指数（AQI）为158，指示助手按照既定协议处理，即关闭车窗、切换至内循环并将空气净化调至3档。",
+                  "score": 0.6083525508010972
+                }
+              ]
+            },
+            {
+              "id": "purifier_3",
+              "label": "净化3档",
+              "aliases": [
+                "3档",
+                "3挡",
+                "level 3"
+              ],
+              "written_count": 7,
+              "written_samples": [
+                "用户于2026年8月31日17:40因外部空气质量指数（AQI）为170，指示助手按照既定协议处理，即关闭车窗、切换至内循环并将空气净化调至3档。",
+                "用户于2026年8月20日17:10因外部空气质量指数（AQI）为196，指示助手按照既定协议处理，即关闭车窗、切换至内循环并将空气净化调至3档。",
+                "用户于2026年2月27日17:10因外部空气质量指数（AQI）为177，指示助手按照既定协议处理，即关闭车窗、切换至内循环并将空气净化调至3档。"
+              ],
+              "retrieved": true,
+              "matched_aliases": [
+                "3档",
+                "level 3"
+              ],
+              "first_rank": 1,
+              "retrieved_hits": [
+                {
+                  "rank": 1,
+                  "id": "4bb8123c-50de-4a84-87e6-c73cd530cf83",
+                  "content": "用户于2026年2月27日17:10因外部空气质量指数（AQI）为177，指示助手按照既定协议处理，即关闭车窗、切换至内循环并将空气净化调至3档。",
+                  "score": 0.6494967896256709
+                },
+                {
+                  "rank": 2,
+                  "id": "da804c96-8646-462e-8a26-143012550aea",
+                  "content": "User's preferred protocol for handling poor air quality (AQI 200) is to close car windows, switch to internal air circulation, and set the air purifier to level 3.",
+                  "score": 0.6302209597733509
+                },
+                {
+                  "rank": 3,
+                  "id": "4f9b0d53-4df8-4267-9121-9dd66dc7e805",
+                  "content": "用户于2026年8月31日17:40因外部空气质量指数（AQI）为170，指示助手按照既定协议处理，即关闭车窗、切换至内循环并将空气净化调至3档。",
+                  "score": 0.6276447147666726
+                },
+                {
+                  "rank": 4,
+                  "id": "da306553-7151-4198-9bef-efd1de031fca",
+                  "content": "用户于2026年8月20日17:10因外部空气质量指数（AQI）为196，指示助手按照既定协议处理，即关闭车窗、切换至内循环并将空气净化调至3档。",
+                  "score": 0.6165657729395729
+                },
+                {
+                  "rank": 5,
+                  "id": "07ca4f38-b9dc-4f8c-8c39-9e19b03b048d",
+                  "content": "用户于2025年12月2日17:40因外部空气质量指数（AQI）为158，指示助手按照既定协议处理，即关闭车窗、切换至内循环并将空气净化调至3档。",
+                  "score": 0.6083525508010972
+                }
+              ]
+            },
+            {
+              "id": "climate_23",
+              "label": "23度",
+              "aliases": [
+                "23度",
+                "23℃",
+                "23 C",
+                "23°",
+                "climate:23"
+              ],
+              "written_count": 0,
+              "written_samples": [],
+              "retrieved": false,
+              "matched_aliases": [],
+              "first_rank": null,
+              "retrieved_hits": []
+            }
+          ],
+          "should": [],
+          "trap": [],
+          "noise": []
+        },
+        "actual_hits": [
+          {
+            "rank": 1,
+            "id": "4bb8123c-50de-4a84-87e6-c73cd530cf83",
+            "memory_type": "semantic_memory",
+            "content": "用户于2026年2月27日17:10因外部空气质量指数（AQI）为177，指示助手按照既定协议处理，即关闭车窗、切换至内循环并将空气净化调至3档。",
+            "score": 0.6494967896256709,
+            "scene": "poor_air_quality",
+            "created_at": "2026-09-03T13:18:19.733810+00:00",
+            "occurred_at": "2026-02-27T17:10:00+08:00",
+            "labels": [
+              "MUST"
+            ]
+          },
+          {
+            "rank": 2,
+            "id": "da804c96-8646-462e-8a26-143012550aea",
+            "memory_type": "semantic_memory",
+            "content": "User's preferred protocol for handling poor air quality (AQI 200) is to close car windows, switch to internal air circulation, and set the air purifier to level 3.",
+            "score": 0.6302209597733509,
+            "scene": "poor_air_quality",
+            "created_at": "2026-09-03T13:11:52.597408+00:00",
+            "occurred_at": "2025-09-06T17:10:00+08:00",
+            "labels": [
+              "MUST"
+            ]
+          },
+          {
+            "rank": 3,
+            "id": "4f9b0d53-4df8-4267-9121-9dd66dc7e805",
+            "memory_type": "semantic_memory",
+            "content": "用户于2026年8月31日17:40因外部空气质量指数（AQI）为170，指示助手按照既定协议处理，即关闭车窗、切换至内循环并将空气净化调至3档。",
+            "score": 0.6276447147666726,
+            "scene": "poor_air_quality",
+            "created_at": "2026-09-03T13:25:12.065163+00:00",
+            "occurred_at": "2026-08-31T17:40:00+08:00",
+            "labels": [
+              "MUST"
+            ]
+          },
+          {
+            "rank": 4,
+            "id": "da306553-7151-4198-9bef-efd1de031fca",
+            "memory_type": "semantic_memory",
+            "content": "用户于2026年8月20日17:10因外部空气质量指数（AQI）为196，指示助手按照既定协议处理，即关闭车窗、切换至内循环并将空气净化调至3档。",
+            "score": 0.6165657729395729,
+            "scene": "poor_air_quality",
+            "created_at": "2026-09-03T13:24:18.100069+00:00",
+            "occurred_at": "2026-08-20T17:10:00+08:00",
+            "labels": [
+              "MUST"
+            ]
+          },
+          {
+            "rank": 5,
+            "id": "07ca4f38-b9dc-4f8c-8c39-9e19b03b048d",
+            "memory_type": "semantic_memory",
+            "content": "用户于2025年12月2日17:40因外部空气质量指数（AQI）为158，指示助手按照既定协议处理，即关闭车窗、切换至内循环并将空气净化调至3档。",
+            "score": 0.6083525508010972,
+            "scene": "poor_air_quality",
+            "created_at": "2026-09-03T13:14:42.632445+00:00",
+            "occurred_at": "2025-12-02T17:40:00+08:00",
+            "labels": [
+              "MUST"
+            ]
+          },
+          {
+            "rank": 6,
+            "id": "b61ed584-9df8-4a97-a439-902bd6e24c4d",
+            "memory_type": "semantic_memory",
+            "content": "用户于2026年1月29日17:40因外部空气质量指数（AQI）为162，指示助手按照既定协议处理，即关闭车窗、切换至内循环并将空气净化调至3档。",
+            "score": 0.5938320275734172,
+            "scene": "poor_air_quality",
+            "created_at": "2026-09-03T13:17:27.264089+00:00",
+            "occurred_at": "2026-01-29T17:40:00+08:00",
+            "labels": [
+              "MUST"
+            ]
+          },
+          {
+            "rank": 7,
+            "id": "bc27bf2f-33cb-46ab-b844-9dc8f8349033",
+            "memory_type": "semantic_memory",
+            "content": "用户于2025年12月31日17:25因外部空气质量指数（AQI）为165，指示助手按照既定协议处理，即关闭车窗、切换至内循环并将空气净化调至3档。",
+            "score": 0.5929110532022027,
+            "scene": "poor_air_quality",
+            "created_at": "2026-09-03T13:15:42.737569+00:00",
+            "occurred_at": "2025-12-31T17:25:00+08:00",
+            "labels": [
+              "MUST"
+            ]
+          },
+          {
+            "rank": 8,
+            "id": "6cc5177e-c872-4896-ab25-acae481e8218",
+            "memory_type": "semantic_memory",
+            "content": "用户于2026年7月18日计划前往橡木厨房用餐，并确认沿用其标准点餐习惯：西冷牛排七分熟、蘑菇汤、柠檬水不加冰，且备注不要香菜。",
+            "score": 0.43279082470578,
+            "scene": "western_dining",
+            "created_at": "2026-09-03T13:23:05.405299+00:00",
+            "occurred_at": "2026-07-18T18:35:00+08:00",
+            "labels": [
+              "OTHER"
+            ]
+          },
+          {
+            "rank": 9,
+            "id": "7c55304a-11e4-45e1-8dfc-d02024196f1a",
+            "memory_type": "semantic_memory",
+            "content": "用户于2026年1月13日计划前往橡木厨房用餐，并确认沿用其标准点餐习惯：西冷牛排七分熟、蘑菇汤、柠檬水不加冰，且备注不要香菜。",
+            "score": 0.4212729104155362,
+            "scene": "western_dining",
+            "created_at": "2026-09-03T13:16:10.071659+00:00",
+            "occurred_at": "2026-01-13T18:35:00+08:00",
+            "labels": [
+              "OTHER"
+            ]
+          },
+          {
+            "rank": 10,
+            "id": "3dbf9994-fb3c-472e-b7e5-e4197450772c",
+            "memory_type": "semantic_memory",
+            "content": "用户于2026年8月23日计划前往橡木厨房用餐，并确认沿用其标准点餐习惯：西冷牛排七分熟、蘑菇汤、柠檬水不加冰，且备注不要香菜。",
+            "score": 0.4207815686296701,
+            "scene": "western_dining",
+            "created_at": "2026-09-03T13:24:47.754697+00:00",
+            "occurred_at": "2026-08-23T18:35:00+08:00",
+            "labels": [
+              "OTHER"
+            ]
+          }
+        ],
+        "keyword_matched": [
+          "车窗",
+          "内循环",
+          "空气净化",
+          "3档",
+          "23"
+        ],
+        "keyword_missing": [],
+        "profile": null,
+        "passed_keyword": true,
+        "keyword_recall": 1.0,
+        "matched": [
+          "车窗",
+          "内循环",
+          "空气净化",
+          "3档",
+          "23"
+        ],
+        "missing": []
+      },
+      {
+        "case_id": "fuzzy_04",
+        "query": "帮我找一下西餐厅，按照习惯进行点餐",
+        "gold_expect": "召回固定套餐即可；未选店就声称点餐成功算硬失败（本脚本只测记忆召回）。",
+        "metrics": {
+          "top_k": 10,
+          "must_fact_recall": 1.0,
+          "must_facts_hit": 3,
+          "must_facts_total": 3,
+          "should_fact_recall": 1.0,
+          "precision_at_k": 1.0,
+          "mrr": 1.0,
+          "first_relevant_rank": 1,
+          "top1_expected": true,
+          "trap_top1": false,
+          "noise_ratio": 0.0,
+          "keyword_recall": 1.0,
+          "store_must_written": 13,
+          "store_coverage_at_k": 0.7692,
+          "profile_attached": false,
+          "episode_hits": 0,
+          "passed_fact": true,
+          "passed_keyword": true
+        },
+        "flags": [],
+        "expected": {
+          "must": [
+            {
+              "id": "steak",
+              "label": "西冷牛排七分熟",
+              "aliases": [
+                "西冷",
+                "七分熟"
+              ],
+              "written_count": 13,
+              "written_samples": [
+                "用户于2026年8月23日计划前往橡木厨房用餐，并确认沿用其标准点餐习惯：西冷牛排七分熟、蘑菇汤、柠檬水不加冰，且备注不要香菜。",
+                "用户于2026年8月18日计划前往湖畔牛排馆用餐，并确认沿用其标准点餐习惯：西冷牛排七分熟、蘑菇汤、柠檬水不加冰，且备注不要香菜。",
+                "用户于2026年7月18日计划前往橡木厨房用餐，并确认沿用其标准点餐习惯：西冷牛排七分熟、蘑菇汤、柠檬水不加冰，且备注不要香菜。"
+              ],
+              "retrieved": true,
+              "matched_aliases": [
+                "西冷",
+                "七分熟"
+              ],
+              "first_rank": 1,
+              "retrieved_hits": [
+                {
+                  "rank": 1,
+                  "id": "dc94720a-2d4e-4046-8f25-06d8e658466f",
+                  "content": "用户于2025年12月13日计划前往蓝岸西餐厅用餐，并确认沿用其标准点餐习惯：西冷牛排七分熟、蘑菇汤、柠檬水不加冰，且备注不要香菜。",
+                  "score": 0.6815854442912721
+                },
+                {
+                  "rank": 2,
+                  "id": "38ffc556-66da-47fc-9e52-bf43a4569d34",
+                  "content": "用户于2026年6月17日计划前往蓝岸西餐厅用餐，并确认沿用其标准点餐习惯：西冷牛排七分熟、蘑菇汤、柠檬水不加冰，且备注不要香菜。",
+                  "score": 0.6662727783754314
+                },
+                {
+                  "rank": 3,
+                  "id": "930a2209-519e-4d48-a774-79367c56752d",
+                  "content": "用户于2026年3月16日计划前往蓝岸西餐厅用餐，并确认沿用其标准点餐习惯：西冷牛排七分熟、蘑菇汤、柠檬水不加冰，且备注不要香菜。",
+                  "score": 0.6584421593968578
+                },
+                {
+                  "rank": 4,
+                  "id": "ddb6c210-3c25-404d-9ffa-b7b029a673d4",
+                  "content": "用户于2026年5月17日计划前往湖畔牛排馆用餐，并确认沿用其标准点餐习惯：西冷牛排七分熟、蘑菇汤、柠檬水不加冰，且备注不要香菜。",
+                  "score": 0.6471969178360496
+                },
+                {
+                  "rank": 5,
+                  "id": "eb004e0d-bffb-4fc9-ada8-840af8bbf5e0",
+                  "content": "用户于2026年2月13日计划前往湖畔牛排馆用餐，并确认沿用其标准点餐习惯：西冷牛排七分熟、蘑菇汤、柠檬水不加冰，且备注不要香菜。",
+                  "score": 0.6371230362033309
+                }
+              ]
+            },
+            {
+              "id": "soup",
+              "label": "蘑菇汤",
+              "aliases": [
+                "蘑菇汤"
+              ],
+              "written_count": 13,
+              "written_samples": [
+                "用户于2026年8月23日计划前往橡木厨房用餐，并确认沿用其标准点餐习惯：西冷牛排七分熟、蘑菇汤、柠檬水不加冰，且备注不要香菜。",
+                "用户于2026年8月18日计划前往湖畔牛排馆用餐，并确认沿用其标准点餐习惯：西冷牛排七分熟、蘑菇汤、柠檬水不加冰，且备注不要香菜。",
+                "用户于2026年7月18日计划前往橡木厨房用餐，并确认沿用其标准点餐习惯：西冷牛排七分熟、蘑菇汤、柠檬水不加冰，且备注不要香菜。"
+              ],
+              "retrieved": true,
+              "matched_aliases": [
+                "蘑菇汤"
+              ],
+              "first_rank": 1,
+              "retrieved_hits": [
+                {
+                  "rank": 1,
+                  "id": "dc94720a-2d4e-4046-8f25-06d8e658466f",
+                  "content": "用户于2025年12月13日计划前往蓝岸西餐厅用餐，并确认沿用其标准点餐习惯：西冷牛排七分熟、蘑菇汤、柠檬水不加冰，且备注不要香菜。",
+                  "score": 0.6815854442912721
+                },
+                {
+                  "rank": 2,
+                  "id": "38ffc556-66da-47fc-9e52-bf43a4569d34",
+                  "content": "用户于2026年6月17日计划前往蓝岸西餐厅用餐，并确认沿用其标准点餐习惯：西冷牛排七分熟、蘑菇汤、柠檬水不加冰，且备注不要香菜。",
+                  "score": 0.6662727783754314
+                },
+                {
+                  "rank": 3,
+                  "id": "930a2209-519e-4d48-a774-79367c56752d",
+                  "content": "用户于2026年3月16日计划前往蓝岸西餐厅用餐，并确认沿用其标准点餐习惯：西冷牛排七分熟、蘑菇汤、柠檬水不加冰，且备注不要香菜。",
+                  "score": 0.6584421593968578
+                },
+                {
+                  "rank": 4,
+                  "id": "ddb6c210-3c25-404d-9ffa-b7b029a673d4",
+                  "content": "用户于2026年5月17日计划前往湖畔牛排馆用餐，并确认沿用其标准点餐习惯：西冷牛排七分熟、蘑菇汤、柠檬水不加冰，且备注不要香菜。",
+                  "score": 0.6471969178360496
+                },
+                {
+                  "rank": 5,
+                  "id": "eb004e0d-bffb-4fc9-ada8-840af8bbf5e0",
+                  "content": "用户于2026年2月13日计划前往湖畔牛排馆用餐，并确认沿用其标准点餐习惯：西冷牛排七分熟、蘑菇汤、柠檬水不加冰，且备注不要香菜。",
+                  "score": 0.6371230362033309
+                }
+              ]
+            },
+            {
+              "id": "lemon",
+              "label": "柠檬水",
+              "aliases": [
+                "柠檬水"
+              ],
+              "written_count": 13,
+              "written_samples": [
+                "用户于2026年8月23日计划前往橡木厨房用餐，并确认沿用其标准点餐习惯：西冷牛排七分熟、蘑菇汤、柠檬水不加冰，且备注不要香菜。",
+                "用户于2026年8月18日计划前往湖畔牛排馆用餐，并确认沿用其标准点餐习惯：西冷牛排七分熟、蘑菇汤、柠檬水不加冰，且备注不要香菜。",
+                "用户于2026年7月18日计划前往橡木厨房用餐，并确认沿用其标准点餐习惯：西冷牛排七分熟、蘑菇汤、柠檬水不加冰，且备注不要香菜。"
+              ],
+              "retrieved": true,
+              "matched_aliases": [
+                "柠檬水"
+              ],
+              "first_rank": 1,
+              "retrieved_hits": [
+                {
+                  "rank": 1,
+                  "id": "dc94720a-2d4e-4046-8f25-06d8e658466f",
+                  "content": "用户于2025年12月13日计划前往蓝岸西餐厅用餐，并确认沿用其标准点餐习惯：西冷牛排七分熟、蘑菇汤、柠檬水不加冰，且备注不要香菜。",
+                  "score": 0.6815854442912721
+                },
+                {
+                  "rank": 2,
+                  "id": "38ffc556-66da-47fc-9e52-bf43a4569d34",
+                  "content": "用户于2026年6月17日计划前往蓝岸西餐厅用餐，并确认沿用其标准点餐习惯：西冷牛排七分熟、蘑菇汤、柠檬水不加冰，且备注不要香菜。",
+                  "score": 0.6662727783754314
+                },
+                {
+                  "rank": 3,
+                  "id": "930a2209-519e-4d48-a774-79367c56752d",
+                  "content": "用户于2026年3月16日计划前往蓝岸西餐厅用餐，并确认沿用其标准点餐习惯：西冷牛排七分熟、蘑菇汤、柠檬水不加冰，且备注不要香菜。",
+                  "score": 0.6584421593968578
+                },
+                {
+                  "rank": 4,
+                  "id": "ddb6c210-3c25-404d-9ffa-b7b029a673d4",
+                  "content": "用户于2026年5月17日计划前往湖畔牛排馆用餐，并确认沿用其标准点餐习惯：西冷牛排七分熟、蘑菇汤、柠檬水不加冰，且备注不要香菜。",
+                  "score": 0.6471969178360496
+                },
+                {
+                  "rank": 5,
+                  "id": "eb004e0d-bffb-4fc9-ada8-840af8bbf5e0",
+                  "content": "用户于2026年2月13日计划前往湖畔牛排馆用餐，并确认沿用其标准点餐习惯：西冷牛排七分熟、蘑菇汤、柠檬水不加冰，且备注不要香菜。",
+                  "score": 0.6371230362033309
+                }
+              ]
+            }
+          ],
+          "should": [
+            {
+              "id": "no_cilantro",
+              "label": "不要香菜",
+              "aliases": [
+                "香菜"
+              ],
+              "written_count": 28,
+              "written_samples": [
+                "用户于2026年8月23日计划前往橡木厨房用餐，并确认沿用其标准点餐习惯：西冷牛排七分熟、蘑菇汤、柠檬水不加冰，且备注不要香菜。",
+                "用户于2026年8月18日计划前往湖畔牛排馆用餐，并确认沿用其标准点餐习惯：西冷牛排七分熟、蘑菇汤、柠檬水不加冰，且备注不要香菜。",
+                "用户于2026年8月13日偏好食用客家酿豆腐，要求少油、不要香菜，口味清淡。"
+              ],
+              "retrieved": true,
+              "matched_aliases": [
+                "香菜"
+              ],
+              "first_rank": 1,
+              "retrieved_hits": [
+                {
+                  "rank": 1,
+                  "id": "dc94720a-2d4e-4046-8f25-06d8e658466f",
+                  "content": "用户于2025年12月13日计划前往蓝岸西餐厅用餐，并确认沿用其标准点餐习惯：西冷牛排七分熟、蘑菇汤、柠檬水不加冰，且备注不要香菜。",
+                  "score": 0.6815854442912721
+                },
+                {
+                  "rank": 2,
+                  "id": "38ffc556-66da-47fc-9e52-bf43a4569d34",
+                  "content": "用户于2026年6月17日计划前往蓝岸西餐厅用餐，并确认沿用其标准点餐习惯：西冷牛排七分熟、蘑菇汤、柠檬水不加冰，且备注不要香菜。",
+                  "score": 0.6662727783754314
+                },
+                {
+                  "rank": 3,
+                  "id": "930a2209-519e-4d48-a774-79367c56752d",
+                  "content": "用户于2026年3月16日计划前往蓝岸西餐厅用餐，并确认沿用其标准点餐习惯：西冷牛排七分熟、蘑菇汤、柠檬水不加冰，且备注不要香菜。",
+                  "score": 0.6584421593968578
+                },
+                {
+                  "rank": 4,
+                  "id": "ddb6c210-3c25-404d-9ffa-b7b029a673d4",
+                  "content": "用户于2026年5月17日计划前往湖畔牛排馆用餐，并确认沿用其标准点餐习惯：西冷牛排七分熟、蘑菇汤、柠檬水不加冰，且备注不要香菜。",
+                  "score": 0.6471969178360496
+                },
+                {
+                  "rank": 5,
+                  "id": "eb004e0d-bffb-4fc9-ada8-840af8bbf5e0",
+                  "content": "用户于2026年2月13日计划前往湖畔牛排馆用餐，并确认沿用其标准点餐习惯：西冷牛排七分熟、蘑菇汤、柠檬水不加冰，且备注不要香菜。",
+                  "score": 0.6371230362033309
+                }
+              ]
+            }
+          ],
+          "trap": [],
+          "noise": []
+        },
+        "actual_hits": [
+          {
+            "rank": 1,
+            "id": "dc94720a-2d4e-4046-8f25-06d8e658466f",
+            "memory_type": "semantic_memory",
+            "content": "用户于2025年12月13日计划前往蓝岸西餐厅用餐，并确认沿用其标准点餐习惯：西冷牛排七分熟、蘑菇汤、柠檬水不加冰，且备注不要香菜。",
+            "score": 0.6815854442912721,
+            "scene": "western_dining",
+            "created_at": "2026-09-03T13:15:11.399166+00:00",
+            "occurred_at": "2025-12-13T18:35:00+08:00",
+            "labels": [
+              "MUST",
+              "SHOULD"
+            ]
+          },
+          {
+            "rank": 2,
+            "id": "38ffc556-66da-47fc-9e52-bf43a4569d34",
+            "memory_type": "semantic_memory",
+            "content": "用户于2026年6月17日计划前往蓝岸西餐厅用餐，并确认沿用其标准点餐习惯：西冷牛排七分熟、蘑菇汤、柠檬水不加冰，且备注不要香菜。",
+            "score": 0.6662727783754314,
+            "scene": "western_dining",
+            "created_at": "2026-09-03T13:22:04.692374+00:00",
+            "occurred_at": "2026-06-17T18:35:00+08:00",
+            "labels": [
+              "MUST",
+              "SHOULD"
+            ]
+          },
+          {
+            "rank": 3,
+            "id": "930a2209-519e-4d48-a774-79367c56752d",
+            "memory_type": "semantic_memory",
+            "content": "用户于2026年3月16日计划前往蓝岸西餐厅用餐，并确认沿用其标准点餐习惯：西冷牛排七分熟、蘑菇汤、柠檬水不加冰，且备注不要香菜。",
+            "score": 0.6584421593968578,
+            "scene": "western_dining",
+            "created_at": "2026-09-03T13:18:57.130926+00:00",
+            "occurred_at": "2026-03-16T18:35:00+08:00",
+            "labels": [
+              "MUST",
+              "SHOULD"
+            ]
+          },
+          {
+            "rank": 4,
+            "id": "ddb6c210-3c25-404d-9ffa-b7b029a673d4",
+            "memory_type": "semantic_memory",
+            "content": "用户于2026年5月17日计划前往湖畔牛排馆用餐，并确认沿用其标准点餐习惯：西冷牛排七分熟、蘑菇汤、柠檬水不加冰，且备注不要香菜。",
+            "score": 0.6471969178360496,
+            "scene": "western_dining",
+            "created_at": "2026-09-03T13:21:01.257073+00:00",
+            "occurred_at": "2026-05-17T18:35:00+08:00",
+            "labels": [
+              "MUST",
+              "SHOULD"
+            ]
+          },
+          {
+            "rank": 5,
+            "id": "eb004e0d-bffb-4fc9-ada8-840af8bbf5e0",
+            "memory_type": "semantic_memory",
+            "content": "用户于2026年2月13日计划前往湖畔牛排馆用餐，并确认沿用其标准点餐习惯：西冷牛排七分熟、蘑菇汤、柠檬水不加冰，且备注不要香菜。",
+            "score": 0.6371230362033309,
+            "scene": "western_dining",
+            "created_at": "2026-09-03T13:18:01.403288+00:00",
+            "occurred_at": "2026-02-13T18:35:00+08:00",
+            "labels": [
+              "MUST",
+              "SHOULD"
+            ]
+          },
+          {
+            "rank": 6,
+            "id": "ad1cbceb-5120-4cac-a041-f89e820ef497",
+            "memory_type": "semantic_memory",
+            "content": "用户于2025年11月12日计划前往湖畔牛排馆用餐，并确认沿用其标准点餐习惯：西冷牛排七分熟、蘑菇汤、柠檬水不加冰，且备注不要香菜。",
+            "score": 0.63445124198077,
+            "scene": "western_dining",
+            "created_at": "2026-09-03T13:13:59.563484+00:00",
+            "occurred_at": "2025-11-12T18:35:00+08:00",
+            "labels": [
+              "MUST",
+              "SHOULD"
+            ]
+          },
+          {
+            "rank": 7,
+            "id": "a9364849-f84a-4f94-ae47-e1db92ba4050",
+            "memory_type": "semantic_memory",
+            "content": "用户于2025年10月12日计划前往橡木厨房用餐，并确认沿用其标准点餐习惯：西冷牛排七分熟、蘑菇汤、柠檬水不加冰，且备注不要香菜。",
+            "score": 0.6317474737348336,
+            "scene": "western_dining",
+            "created_at": "2026-09-03T13:12:49.613323+00:00",
+            "occurred_at": "2025-10-12T18:35:00+08:00",
+            "labels": [
+              "MUST",
+              "SHOULD"
+            ]
+          },
+          {
+            "rank": 8,
+            "id": "df35aac4-60ad-423e-9f2a-d0498f0bb5d3",
+            "memory_type": "semantic_memory",
+            "content": "User's dining habits at 蓝岸西餐厅 include ordering sirloin steak medium (七分熟), mushroom soup, lemon water without ice, and requesting no cilantro.",
+            "score": 0.6317308847265095,
+            "scene": "western_dining",
+            "created_at": "2026-09-03T13:12:06.674053+00:00",
+            "occurred_at": "2025-09-11T18:35:00+08:00",
+            "labels": [
+              "MUST",
+              "SHOULD"
+            ]
+          },
+          {
+            "rank": 9,
+            "id": "3dbf9994-fb3c-472e-b7e5-e4197450772c",
+            "memory_type": "semantic_memory",
+            "content": "用户于2026年8月23日计划前往橡木厨房用餐，并确认沿用其标准点餐习惯：西冷牛排七分熟、蘑菇汤、柠檬水不加冰，且备注不要香菜。",
+            "score": 0.6285685968715892,
+            "scene": "western_dining",
+            "created_at": "2026-09-03T13:24:47.754697+00:00",
+            "occurred_at": "2026-08-23T18:35:00+08:00",
+            "labels": [
+              "MUST",
+              "SHOULD"
+            ]
+          },
+          {
+            "rank": 10,
+            "id": "38102db7-c8a3-49d2-a6e8-9474f61d9cd1",
+            "memory_type": "semantic_memory",
+            "content": "用户于2026年8月18日计划前往湖畔牛排馆用餐，并确认沿用其标准点餐习惯：西冷牛排七分熟、蘑菇汤、柠檬水不加冰，且备注不要香菜。",
+            "score": 0.628365461668387,
+            "scene": "western_dining",
+            "created_at": "2026-09-03T13:24:10.365598+00:00",
+            "occurred_at": "2026-08-18T18:35:00+08:00",
+            "labels": [
+              "MUST",
+              "SHOULD"
+            ]
+          }
+        ],
+        "keyword_matched": [
+          "西冷牛排",
+          "七分熟",
+          "蘑菇汤",
+          "柠檬水"
+        ],
+        "keyword_missing": [],
+        "profile": null,
+        "passed_keyword": true,
+        "keyword_recall": 1.0,
+        "matched": [
+          "西冷牛排",
+          "七分熟",
+          "蘑菇汤",
+          "柠檬水"
+        ],
+        "missing": []
+      },
+      {
+        "case_id": "fuzzy_05",
+        "query": "根据上周的亲子餐厅，帮我预定一个差不多的餐厅",
+        "gold_expect": "上周锚点是 2026-08-29 童梦森林；8-22 麦田不在该自然周；童趣岛是相似候选不是上周到访。",
+        "metrics": {
+          "top_k": 10,
+          "must_fact_recall": 1.0,
+          "must_facts_hit": 2,
+          "must_facts_total": 2,
+          "should_fact_recall": 1.0,
+          "precision_at_k": 0.3,
+          "mrr": 0.25,
+          "first_relevant_rank": 4,
+          "top1_expected": false,
+          "trap_top1": false,
+          "noise_ratio": 0.6,
+          "keyword_recall": 1.0,
+          "store_must_written": 20,
+          "store_coverage_at_k": 0.15,
+          "profile_attached": false,
+          "episode_hits": 0,
+          "passed_fact": true,
+          "passed_keyword": true
+        },
+        "flags": [
+          "outside_week_outranks_anchor"
+        ],
+        "expected": {
+          "must": [
+            {
+              "id": "last_week_place",
+              "label": "上周到访=童梦森林",
+              "aliases": [
+                "童梦森林"
+              ],
+              "written_count": 20,
+              "written_samples": [
+                "用户于2026年8月29日确认童梦森林亲子餐厅孩子很喜欢且停车方便，决定下次亲子用餐优先考虑该餐厅。",
+                "用户于2026年8月29日带孩子去童梦森林亲子餐厅，距离3.2公里，强调需要有宝宝椅和儿童活动区。",
+                "用户于2026年8月8日确认童梦森林亲子餐厅孩子很喜欢且停车方便，决定下次亲子用餐优先考虑该餐厅。"
+              ],
+              "retrieved": true,
+              "matched_aliases": [
+                "童梦森林"
+              ],
+              "first_rank": 4,
+              "retrieved_hits": [
+                {
+                  "rank": 4,
+                  "id": "4bc7fe37-7634-434f-8547-1ae6b629c446",
+                  "content": "用户于2026年8月29日确认童梦森林亲子餐厅孩子很喜欢且停车方便，决定下次亲子用餐优先考虑该餐厅。",
+                  "score": 0.6662892215497022
+                },
+                {
+                  "rank": 5,
+                  "id": "ed791eed-5e72-4467-9569-2fcab87c6a0e",
+                  "content": "用户于2026年8月8日确认童梦森林亲子餐厅孩子很喜欢且停车方便，决定下次亲子用餐优先考虑该餐厅。",
+                  "score": 0.6650015559902515
+                },
+                {
+                  "rank": 10,
+                  "id": "8a51ff46-fc78-4fce-bed0-62393e5bb7d9",
+                  "content": "用户于2026年6月27日确认童梦森林亲子餐厅孩子很喜欢且停车方便，决定下次亲子用餐优先考虑该餐厅。",
+                  "score": 0.6615054222213006
+                }
+              ]
+            },
+            {
+              "id": "last_week_date",
+              "label": "日期锚点 2026-08-29",
+              "aliases": [
+                "2026-08-29",
+                "8月29",
+                "08-29",
+                "08月29"
+              ],
+              "written_count": 2,
+              "written_samples": [
+                "用户于2026年8月29日确认童梦森林亲子餐厅孩子很喜欢且停车方便，决定下次亲子用餐优先考虑该餐厅。",
+                "用户于2026年8月29日带孩子去童梦森林亲子餐厅，距离3.2公里，强调需要有宝宝椅和儿童活动区。"
+              ],
+              "retrieved": true,
+              "matched_aliases": [
+                "2026-08-29",
+                "8月29",
+                "08-29"
+              ],
+              "first_rank": 4,
+              "retrieved_hits": [
+                {
+                  "rank": 4,
+                  "id": "4bc7fe37-7634-434f-8547-1ae6b629c446",
+                  "content": "用户于2026年8月29日确认童梦森林亲子餐厅孩子很喜欢且停车方便，决定下次亲子用餐优先考虑该餐厅。",
+                  "score": 0.6662892215497022
+                }
+              ]
+            }
+          ],
+          "should": [
+            {
+              "id": "similar_candidate",
+              "label": "相似候选童趣岛",
+              "aliases": [
+                "童趣岛"
+              ],
+              "written_count": 1,
+              "written_samples": [
+                "用户于2026年9月1日收藏了童趣岛家庭餐厅，计划下次预订。该餐厅距用户4.1公里，提供儿童活动区、宝宝椅和停车场，主营粤菜简餐，人均约110元。用户认为该餐厅与其上周去的餐厅相似。"
+              ],
+              "retrieved": true,
+              "matched_aliases": [
+                "童趣岛"
+              ],
+              "first_rank": 1,
+              "retrieved_hits": [
+                {
+                  "rank": 1,
+                  "id": "3314b2fe-f199-40dd-a574-ee76d933e754",
+                  "content": "用户于2026年9月1日收藏了童趣岛家庭餐厅，计划下次预订。该餐厅距用户4.1公里，提供儿童活动区、宝宝椅和停车场，主营粤菜简餐，人均约110元。用户认为该餐厅与其上周去的餐厅相似。",
+                  "score": 0.6976060972979153
+                }
+              ]
+            },
+            {
+              "id": "amenities",
+              "label": "儿童活动区/宝宝椅",
+              "aliases": [
+                "儿童活动区",
+                "宝宝椅"
+              ],
+              "written_count": 57,
+              "written_samples": [
+                "用户于2026年9月1日收藏了童趣岛家庭餐厅，计划下次预订。该餐厅距用户4.1公里，提供儿童活动区、宝宝椅和停车场，主营粤菜简餐，人均约110元。用户认为该餐厅与其上周去的餐厅相似。",
+                "用户于2026年8月29日确认童梦森林亲子餐厅孩子很喜欢且停车方便，决定下次亲子用餐优先考虑该餐厅。",
+                "用户于2026年8月29日带孩子去童梦森林亲子餐厅，距离3.2公里，强调需要有宝宝椅和儿童活动区。"
+              ],
+              "retrieved": true,
+              "matched_aliases": [
+                "儿童活动区",
+                "宝宝椅"
+              ],
+              "first_rank": 1,
+              "retrieved_hits": [
+                {
+                  "rank": 1,
+                  "id": "3314b2fe-f199-40dd-a574-ee76d933e754",
+                  "content": "用户于2026年9月1日收藏了童趣岛家庭餐厅，计划下次预订。该餐厅距用户4.1公里，提供儿童活动区、宝宝椅和停车场，主营粤菜简餐，人均约110元。用户认为该餐厅与其上周去的餐厅相似。",
+                  "score": 0.6976060972979153
+                },
+                {
+                  "rank": 2,
+                  "id": "738aed5c-afef-4b5e-8772-459ebdf12a70",
+                  "content": "用户于2026年7月11日确认麦田亲子餐厅孩子很喜欢且停车方便，决定下次亲子用餐优先考虑该餐厅。",
+                  "score": 0.6707976490048435
+                },
+                {
+                  "rank": 3,
+                  "id": "6fc6b615-2c78-4239-9915-2a56a5f8209c",
+                  "content": "用户于2026年4月18日确认麦田亲子餐厅孩子很喜欢且停车方便，决定下次亲子用餐优先考虑该餐厅。",
+                  "score": 0.670743433759018
+                },
+                {
+                  "rank": 4,
+                  "id": "4bc7fe37-7634-434f-8547-1ae6b629c446",
+                  "content": "用户于2026年8月29日确认童梦森林亲子餐厅孩子很喜欢且停车方便，决定下次亲子用餐优先考虑该餐厅。",
+                  "score": 0.6662892215497022
+                },
+                {
+                  "rank": 5,
+                  "id": "ed791eed-5e72-4467-9569-2fcab87c6a0e",
+                  "content": "用户于2026年8月8日确认童梦森林亲子餐厅孩子很喜欢且停车方便，决定下次亲子用餐优先考虑该餐厅。",
+                  "score": 0.6650015559902515
+                }
+              ]
+            }
+          ],
+          "trap": [],
+          "noise": [
+            {
+              "id": "outside_week",
+              "label": "窗外到访(麦田/小象)",
+              "aliases": [
+                "麦田亲子",
+                "麦田",
+                "小象花园",
+                "小象"
+              ],
+              "written_count": 36,
+              "written_samples": [
+                "用户于2026年8月22日带孩子去麦田亲子餐厅，再次强调需要有宝宝椅和儿童活动区。",
+                "用户于2026年8月22日确认麦田亲子餐厅孩子很喜欢且停车方便，决定下次亲子用餐优先考虑该餐厅。",
+                "用户于2026年7月25日确认小象花园家庭餐厅孩子很喜欢且停车方便，决定下次亲子用餐优先考虑该餐厅。"
+              ],
+              "retrieved": true,
+              "matched_aliases": [
+                "麦田亲子",
+                "麦田",
+                "小象花园",
+                "小象"
+              ],
+              "first_rank": 2,
+              "retrieved_hits": [
+                {
+                  "rank": 2,
+                  "id": "738aed5c-afef-4b5e-8772-459ebdf12a70",
+                  "content": "用户于2026年7月11日确认麦田亲子餐厅孩子很喜欢且停车方便，决定下次亲子用餐优先考虑该餐厅。",
+                  "score": 0.6707976490048435
+                },
+                {
+                  "rank": 3,
+                  "id": "6fc6b615-2c78-4239-9915-2a56a5f8209c",
+                  "content": "用户于2026年4月18日确认麦田亲子餐厅孩子很喜欢且停车方便，决定下次亲子用餐优先考虑该餐厅。",
+                  "score": 0.670743433759018
+                },
+                {
+                  "rank": 6,
+                  "id": "18e65fb2-be18-46f6-bfb7-2d655da23c8c",
+                  "content": "用户于2026年3月21日确认小象花园家庭餐厅孩子很喜欢且停车方便，决定下次亲子用餐优先考虑该餐厅。",
+                  "score": 0.6645123070417489
+                },
+                {
+                  "rank": 7,
+                  "id": "b5c9799c-67c2-43b5-89ad-fad8f1161e73",
+                  "content": "用户于2026年2月7日确认小象花园家庭餐厅孩子很喜欢且停车方便，决定下次亲子用餐优先考虑该餐厅。",
+                  "score": 0.6644585510724925
+                },
+                {
+                  "rank": 8,
+                  "id": "165236ef-dd18-4821-b4b6-3e2ded3a501c",
+                  "content": "用户于2026年3月7日确认麦田亲子餐厅孩子很喜欢且停车方便，决定下次亲子用餐优先考虑该餐厅。",
+                  "score": 0.6643704005809704
+                }
+              ]
+            }
+          ]
+        },
+        "actual_hits": [
+          {
+            "rank": 1,
+            "id": "3314b2fe-f199-40dd-a574-ee76d933e754",
+            "memory_type": "semantic_memory",
+            "content": "用户于2026年9月1日收藏了童趣岛家庭餐厅，计划下次预订。该餐厅距用户4.1公里，提供儿童活动区、宝宝椅和停车场，主营粤菜简餐，人均约110元。用户认为该餐厅与其上周去的餐厅相似。",
+            "score": 0.6976060972979153,
+            "scene": "recommendation_feedback",
+            "created_at": "2026-09-03T13:25:31.248230+00:00",
+            "occurred_at": "2026-09-01T20:10:00+08:00",
+            "labels": [
+              "SHOULD"
+            ]
+          },
+          {
+            "rank": 2,
+            "id": "738aed5c-afef-4b5e-8772-459ebdf12a70",
+            "memory_type": "semantic_memory",
+            "content": "用户于2026年7月11日确认麦田亲子餐厅孩子很喜欢且停车方便，决定下次亲子用餐优先考虑该餐厅。",
+            "score": 0.6707976490048435,
+            "scene": "family_dining",
+            "created_at": "2026-09-03T13:22:52.672041+00:00",
+            "occurred_at": "2026-07-11T11:22:00+08:00",
+            "labels": [
+              "SHOULD",
+              "NOISE"
+            ]
+          },
+          {
+            "rank": 3,
+            "id": "6fc6b615-2c78-4239-9915-2a56a5f8209c",
+            "memory_type": "semantic_memory",
+            "content": "用户于2026年4月18日确认麦田亲子餐厅孩子很喜欢且停车方便，决定下次亲子用餐优先考虑该餐厅。",
+            "score": 0.670743433759018,
+            "scene": "family_dining",
+            "created_at": "2026-09-03T13:19:57.445030+00:00",
+            "occurred_at": "2026-04-18T11:36:00+08:00",
+            "labels": [
+              "SHOULD",
+              "NOISE"
+            ]
+          },
+          {
+            "rank": 4,
+            "id": "4bc7fe37-7634-434f-8547-1ae6b629c446",
+            "memory_type": "semantic_memory",
+            "content": "用户于2026年8月29日确认童梦森林亲子餐厅孩子很喜欢且停车方便，决定下次亲子用餐优先考虑该餐厅。",
+            "score": 0.6662892215497022,
+            "scene": "family_dining",
+            "created_at": "2026-09-03T13:25:03.977537+00:00",
+            "occurred_at": "2026-08-29T11:20:00+08:00",
+            "labels": [
+              "MUST",
+              "SHOULD"
+            ]
+          },
+          {
+            "rank": 5,
+            "id": "ed791eed-5e72-4467-9569-2fcab87c6a0e",
+            "memory_type": "semantic_memory",
+            "content": "用户于2026年8月8日确认童梦森林亲子餐厅孩子很喜欢且停车方便，决定下次亲子用餐优先考虑该餐厅。",
+            "score": 0.6650015559902515,
+            "scene": "family_dining",
+            "created_at": "2026-09-03T13:23:41.486292+00:00",
+            "occurred_at": "2026-08-08T11:24:00+08:00",
+            "labels": [
+              "MUST",
+              "SHOULD"
+            ]
+          },
+          {
+            "rank": 6,
+            "id": "18e65fb2-be18-46f6-bfb7-2d655da23c8c",
+            "memory_type": "semantic_memory",
+            "content": "用户于2026年3月21日确认小象花园家庭餐厅孩子很喜欢且停车方便，决定下次亲子用餐优先考虑该餐厅。",
+            "score": 0.6645123070417489,
+            "scene": "family_dining",
+            "created_at": "2026-09-03T13:19:09.230077+00:00",
+            "occurred_at": "2026-03-21T11:34:00+08:00",
+            "labels": [
+              "SHOULD",
+              "NOISE"
+            ]
+          },
+          {
+            "rank": 7,
+            "id": "b5c9799c-67c2-43b5-89ad-fad8f1161e73",
+            "memory_type": "semantic_memory",
+            "content": "用户于2026年2月7日确认小象花园家庭餐厅孩子很喜欢且停车方便，决定下次亲子用餐优先考虑该餐厅。",
+            "score": 0.6644585510724925,
+            "scene": "family_dining",
+            "created_at": "2026-09-03T13:17:46.284615+00:00",
+            "occurred_at": "2026-02-07T11:31:00+08:00",
+            "labels": [
+              "SHOULD",
+              "NOISE"
+            ]
+          },
+          {
+            "rank": 8,
+            "id": "165236ef-dd18-4821-b4b6-3e2ded3a501c",
+            "memory_type": "semantic_memory",
+            "content": "用户于2026年3月7日确认麦田亲子餐厅孩子很喜欢且停车方便，决定下次亲子用餐优先考虑该餐厅。",
+            "score": 0.6643704005809704,
+            "scene": "family_dining",
+            "created_at": "2026-09-03T13:18:42.359502+00:00",
+            "occurred_at": "2026-03-07T11:33:00+08:00",
+            "labels": [
+              "SHOULD",
+              "NOISE"
+            ]
+          },
+          {
+            "rank": 9,
+            "id": "b631e4c5-f1f0-43e4-9a64-cb2952d66545",
+            "memory_type": "semantic_memory",
+            "content": "用户于2026年5月2日确认小象花园家庭餐厅孩子很喜欢且停车方便，决定下次亲子用餐优先考虑该餐厅。",
+            "score": 0.663874968878529,
+            "scene": "family_dining",
+            "created_at": "2026-09-03T13:20:16.647550+00:00",
+            "occurred_at": "2026-05-02T11:37:00+08:00",
+            "labels": [
+              "SHOULD",
+              "NOISE"
+            ]
+          },
+          {
+            "rank": 10,
+            "id": "8a51ff46-fc78-4fce-bed0-62393e5bb7d9",
+            "memory_type": "semantic_memory",
+            "content": "用户于2026年6月27日确认童梦森林亲子餐厅孩子很喜欢且停车方便，决定下次亲子用餐优先考虑该餐厅。",
+            "score": 0.6615054222213006,
+            "scene": "family_dining",
+            "created_at": "2026-09-03T13:22:29.646661+00:00",
+            "occurred_at": "2026-06-27T11:21:00+08:00",
+            "labels": [
+              "MUST",
+              "SHOULD"
+            ]
+          }
+        ],
+        "keyword_matched": [
+          "2026-08-29",
+          "童梦森林",
+          "儿童活动区",
+          "宝宝椅"
+        ],
+        "keyword_missing": [],
+        "profile": null,
+        "passed_keyword": true,
+        "keyword_recall": 1.0,
+        "matched": [
+          "2026-08-29",
+          "童梦森林",
+          "儿童活动区",
+          "宝宝椅"
+        ],
+        "missing": []
+      }
+    ]
+  }
+}

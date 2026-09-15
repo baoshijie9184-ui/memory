@@ -1,0 +1,20 @@
+[Unit]
+Description=DesayMem Light JSON Mirror Worker
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=desaymem
+Group=desaymem
+WorkingDirectory=/opt/desaymem-light
+EnvironmentFile=/etc/desaymem-light/desaymem-light.env
+ExecStart=/opt/desaymem-light/.venv/bin/desaymem-mirror-worker
+Restart=on-failure
+RestartSec=5
+NoNewPrivileges=true
+PrivateTmp=true
+ReadWritePaths=/var/lib/desaymem-light
+
+[Install]
+WantedBy=multi-user.target

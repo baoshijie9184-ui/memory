@@ -1,0 +1,47 @@
+# 模型配置 — 评测时通过 --model-config <name> 切换
+# api_key 可以直接写在下面, 也可以用环境变量 LLM_API_KEY
+
+models:
+  # DeepSeek (端侧常用, 便宜)
+  deepseek:
+    api_base: "https://api.deepseek.com/v1"
+    api_key: ""                              # 填你的 DeepSeek key, 或设环境变量 LLM_API_KEY
+    model: "deepseek-chat"
+    judge_model: "deepseek-chat"
+    embedding_base: "https://ark.cn-beijing.volces.com/api/v3"
+    embedding_model: "doubao-embedding-vision-251215"
+    embedding_key: ""                        # 填你的火山引擎 key
+    embedding_dim: 2048
+
+  # OpenAI GPT-4o-mini
+  gpt-4o-mini:
+    api_base: "https://api.openai.com/v1"
+    api_key: ""                              # 填你的 OpenAI key
+    model: "gpt-4o-mini"
+    judge_model: "gpt-4o-mini"
+    embedding_base: "https://api.openai.com/v1"
+    embedding_model: "text-embedding-3-small"
+    embedding_key: ""                        # 同上
+    embedding_dim: 1536
+
+  # 通义千问 Qwen
+  qwen:
+    api_base: "https://dashscope.aliyuncs.com/compatible-mode/v1"
+    api_key: ""                              # 填你的 DashScope key
+    model: "qwen-plus"
+    judge_model: "qwen-plus"
+    embedding_base: "https://dashscope.aliyuncs.com/compatible-mode/v1"
+    embedding_model: "text-embedding-v3"
+    embedding_key: ""
+    embedding_dim: 1024
+
+  # 本地 vLLM（Qwen3-32B @20140 + bge-m3 @20141，评测机内网）
+  memory-llm:
+    api_base: "http://127.0.0.1:20140/v1"
+    api_key: "boluoboluomi"
+    model: "memory-llm"
+    judge_model: "memory-llm"
+    embedding_base: "http://127.0.0.1:20141/v1"
+    embedding_model: "bge-m3"
+    embedding_key: "boluoboluomi"
+    embedding_dim: 1024

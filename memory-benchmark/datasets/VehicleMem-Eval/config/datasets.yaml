@@ -1,0 +1,26 @@
+# 数据集配置 — 路径相对仓库根目录
+# 下面的 qa_limit / user_limit / pref_limit / file_range 是冒烟默认值。
+# 官方全集: python run.py --full  (会清零这些限制; VehicleMemBench 跑 1-50)
+
+datasets:
+  locomo:
+    data_file: "datasets/locomo/locomo10.json"
+    num_samples: 10
+    qa_limit: 20                    # 冒烟: 每个对话前 20 题; 0 或 --full = 全部约 1986 题
+
+  longmemeval:
+    data_file: "datasets/longmemeval/longmemeval_s_cleaned.json"  # 官方 LongMemEval_S cleaned, 500 题
+    qa_limit: 5                     # 冒烟只跑前 5 题; --full = 全部 500
+
+  carmem:
+    data_file: "datasets/carmem/dataset.jsonl"
+    user_limit: 5                   # 冒烟用户数; 0 或 --full = 100 用户
+    pref_limit: 2                   # 冒烟每用户偏好条数; 0 或 --full = 全部 10 条
+
+  vehiclemembench:
+    history_dir: "datasets/vehiclemembench/history"
+    qa_dir: "datasets/vehiclemembench/qa_data"
+    file_range: "1"                 # 冒烟只跑 1 个文件; --full 时改为全部 50
+
+  desaymem:
+    case_limit: 26                  # 冒烟=全部 26 用例（数据集本身就是微量级）

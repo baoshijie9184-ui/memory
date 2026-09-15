@@ -1,0 +1,21 @@
+{
+  "user_id": "usr_father",
+  "role": "周末露营车驾驶者（veh_suv_002）",
+  "occupant": "driver",
+  "expected_habits": [
+    "露营模式：后排放倒+空调24度+红花湖营地"
+  ],
+  "expected_noise": [],
+  "recall_anchors": [
+    {
+      "topic": "露营",
+      "query": "露营怎么设置",
+      "expected": [
+        "后排放倒",
+        "24"
+      ]
+    }
+  ],
+  "tenant_id": "oem_suv_family",
+  "vehicle_id": "veh_suv_002"
+}

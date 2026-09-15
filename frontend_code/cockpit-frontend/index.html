@@ -1,0 +1,1647 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DesayMem 车机记忆系统 - 实地测试</title>
+<style>
+:root {
+  --bg: #0d1117;
+  --panel: #161b22;
+  --border: #30363d;
+  --text: #e6edf3;
+  --text-dim: #8b949e;
+  --accent: #4a90d9;
+  --accent-dim: #1f3a5f;
+  --green: #3fb950;
+  --red: #f85149;
+  --yellow: #d29922;
+  --user-bubble: #1f3a5f;
+  --car-bubble: #21262d;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: -apple-system, "Microsoft YaHei", "Segoe UI", sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ── 顶部导航栏 ── */
+.topbar {
+  background: var(--panel);
+  border-bottom: 1px solid var(--border);
+  padding: 8px 20px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-shrink: 0;
+}
+.topbar .logo {
+  font-size: 16px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+.topbar .logo span { color: var(--accent); }
+.status-pill {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--text-dim);
+  margin-left: auto;
+}
+.status-dot {
+  width: 8px; height: 8px; border-radius: 50%;
+}
+.status-dot.ok { background: var(--green); }
+.status-dot.err { background: var(--red); }
+.status-dot.idle { background: var(--yellow); }
+
+/* ── 登录页面 ── */
+.login-overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: var(--bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+}
+.login-overlay.hidden { display: none; }
+.login-box {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 40px;
+  width: 420px;
+  max-width: 90vw;
+}
+.login-box h2 {
+  font-size: 20px;
+  margin-bottom: 6px;
+}
+.login-box p {
+  color: var(--text-dim);
+  font-size: 13px;
+  margin-bottom: 24px;
+}
+.login-form { display: flex; flex-direction: column; gap: 14px; }
+.login-form label {
+  font-size: 12px;
+  color: var(--text-dim);
+  margin-bottom: 4px;
+  display: block;
+}
+.login-form input, .login-form select {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 10px;
+  color: var(--text);
+  font-size: 14px;
+  width: 100%;
+}
+.login-form input:focus, .login-form select:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+.login-form .row { display: flex; gap: 12px; }
+.login-form .row > div { flex: 1; }
+.login-btn {
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 12px;
+  font-size: 15px;
+  cursor: pointer;
+  margin-top: 8px;
+}
+.login-btn:hover { background: #357abd; }
+
+/* ── 主体布局 ── */
+.main-layout {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+}
+.left-panel {
+  width: 240px;
+  background: var(--panel);
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+}
+.center-panel {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+.right-panel {
+  width: 360px;
+  background: var(--panel);
+  border-left: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+}
+
+/* ── 左侧用户信息 ── */
+.user-card {
+  padding: 16px;
+  border-bottom: 1px solid var(--border);
+}
+.user-card .avatar {
+  width: 48px; height: 48px;
+  border-radius: 50%;
+  background: var(--accent-dim);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  margin-bottom: 10px;
+}
+.user-card .name { font-size: 15px; font-weight: 600; }
+.user-card .role { font-size: 12px; color: var(--text-dim); }
+.user-card .detail {
+  font-size: 11px;
+  color: var(--text-dim);
+  margin-top: 2px;
+}
+.switch-btn {
+  margin: 12px 16px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 8px;
+  color: var(--text);
+  font-size: 12px;
+  cursor: pointer;
+  text-align: center;
+}
+.switch-btn:hover { border-color: var(--accent); }
+
+.mem-stat {
+  padding: 16px;
+  border-top: 1px solid var(--border);
+  margin-top: auto;
+}
+.mem-stat .stat-label {
+  font-size: 11px;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.mem-stat .stat-val {
+  font-size: 24px;
+  font-weight: 700;
+  margin-top: 4px;
+}
+
+/* ── 中间对话区 ── */
+.chat-header {
+  padding: 12px 20px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.chat-header .title { font-size: 14px; font-weight: 600; }
+.chat-header .session {
+  font-size: 11px;
+  color: var(--text-dim);
+}
+.chat-box {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px;
+}
+.chat-msg {
+  margin-bottom: 16px;
+  display: flex;
+  flex-direction: column;
+  max-width: 75%;
+}
+.chat-msg.user { margin-left: auto; align-items: flex-end; }
+.chat-msg.car { margin-right: auto; align-items: flex-start; }
+.chat-msg .bubble {
+  padding: 10px 14px;
+  border-radius: 14px;
+  font-size: 14px;
+  line-height: 1.5;
+  white-space: pre-wrap;
+}
+.chat-msg.user .bubble {
+  background: var(--user-bubble);
+  border-bottom-right-radius: 4px;
+}
+.chat-msg.car .bubble {
+  background: var(--car-bubble);
+  border: 1px solid var(--border);
+  border-bottom-left-radius: 4px;
+}
+.chat-msg .meta {
+  font-size: 10px;
+  color: var(--text-dim);
+  margin-top: 4px;
+}
+.chat-msg .mem-extracted {
+  background: rgba(63, 185, 80, 0.1);
+  border: 1px solid rgba(63, 185, 80, 0.3);
+  border-radius: 8px;
+  padding: 6px 10px;
+  font-size: 11px;
+  color: var(--green);
+  margin-top: 6px;
+  max-width: 100%;
+}
+.chat-msg .mem-extracted .label {
+  font-weight: 600;
+  margin-bottom: 2px;
+}
+.chat-msg .mem-extracted .item {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 2px;
+}
+.chat-msg .mem-extracted .type-badge {
+  background: rgba(63, 185, 80, 0.2);
+  border-radius: 3px;
+  padding: 1px 5px;
+  font-size: 10px;
+}
+.chat-msg .mem-extracted .type-badge.proc {
+  background: rgba(210, 153, 34, 0.2);
+  color: var(--yellow);
+}
+.chat-msg .recall-info {
+  background: rgba(74, 144, 217, 0.1);
+  border: 1px solid rgba(74, 144, 217, 0.3);
+  border-radius: 8px;
+  padding: 6px 10px;
+  font-size: 11px;
+  color: var(--accent);
+  margin-top: 6px;
+  max-width: 100%;
+}
+.chat-msg .recall-info .label {
+  font-weight: 600;
+  margin-bottom: 2px;
+}
+.chat-msg .recall-info .item {
+  margin-top: 2px;
+  color: var(--text-dim);
+}
+
+.chat-input-area {
+  padding: 12px 20px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  gap: 10px;
+  align-items: flex-end;
+}
+.chat-input-area textarea {
+  flex: 1;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 10px 14px;
+  color: var(--text);
+  font-size: 14px;
+  resize: none;
+  height: 42px;
+  max-height: 120px;
+  font-family: inherit;
+}
+.chat-input-area textarea:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+.chat-input-area button {
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  padding: 10px 20px;
+  cursor: pointer;
+  font-size: 14px;
+  white-space: nowrap;
+}
+.chat-input-area button:hover { background: #357abd; }
+.chat-input-area button:disabled { background: var(--border); cursor: not-allowed; }
+
+.quick-actions {
+  padding: 8px 20px;
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+.quick-actions button {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 5px 12px;
+  color: var(--text-dim);
+  font-size: 12px;
+  cursor: pointer;
+}
+.quick-actions button:hover { border-color: var(--accent); color: var(--text); }
+
+/* ── 右侧记忆面板 ── */
+.right-header {
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.right-header .title { font-size: 13px; font-weight: 600; }
+.right-header button {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 4px 8px;
+  color: var(--text-dim);
+  font-size: 11px;
+  cursor: pointer;
+}
+.right-header button:hover { border-color: var(--accent); }
+
+.mem-tabs {
+  display: flex;
+  border-bottom: 1px solid var(--border);
+}
+.mem-tabs button {
+  flex: 1;
+  background: none;
+  border: none;
+  padding: 8px;
+  color: var(--text-dim);
+  font-size: 12px;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+}
+.mem-tabs button.active {
+  color: var(--text);
+  border-bottom-color: var(--accent);
+}
+
+.mem-list {
+  flex: 1;
+  overflow-y: auto;
+  padding: 12px;
+}
+.mem-card {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 12px;
+  margin-bottom: 10px;
+}
+.mem-card .content {
+  font-size: 13px;
+  line-height: 1.4;
+  margin-bottom: 8px;
+}
+.mem-card .footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 10px;
+  color: var(--text-dim);
+}
+.mem-card .type-tag {
+  border-radius: 3px;
+  padding: 1px 6px;
+  font-size: 10px;
+}
+.mem-card .type-tag.semantic { background: rgba(74,144,217,0.2); color: var(--accent); }
+.mem-card .type-tag.procedural { background: rgba(210,153,34,0.2); color: var(--yellow); }
+.mem-card .del-btn {
+  background: none;
+  border: none;
+  color: var(--text-dim);
+  font-size: 11px;
+  cursor: pointer;
+}
+.mem-card .del-btn:hover { color: var(--red); }
+
+.mem-empty {
+  text-align: center;
+  color: var(--text-dim);
+  padding: 40px 0;
+  font-size: 13px;
+}
+
+/* ── 隔离测试面板 ── */
+.iso-panel {
+  border-top: 1px solid var(--border);
+  padding: 12px 16px;
+}
+.iso-panel .iso-title {
+  font-size: 11px;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 8px;
+}
+.iso-panel .iso-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  margin-bottom: 4px;
+}
+.iso-panel .iso-row .val { color: var(--green); }
+.iso-panel .iso-row .val.fail { color: var(--red); }
+
+/* ── 开发者模式面板 ── */
+.dev-toggle {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--text-dim);
+  cursor: pointer;
+}
+.dev-toggle input { cursor: pointer; }
+
+.dev-panel {
+  background: rgba(22, 27, 34, 0.6);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  margin-top: 6px;
+  font-size: 11px;
+  overflow: hidden;
+}
+.dev-panel.dev-hidden { display: none; }
+.dev-panel-header {
+  padding: 6px 10px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  user-select: none;
+  color: var(--text-dim);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.dev-panel-header:hover { color: var(--text); }
+.dev-panel-header .tag {
+  border-radius: 3px;
+  padding: 1px 5px;
+  font-size: 10px;
+}
+.dev-panel-header .tag.sim {
+  background: rgba(210, 153, 34, 0.2);
+  color: var(--yellow);
+}
+.dev-panel-header .tag.prod {
+  background: rgba(63, 185, 80, 0.2);
+  color: var(--green);
+}
+.dev-panel-body {
+  display: none;
+  padding: 8px 10px;
+  border-top: 1px solid var(--border);
+}
+.dev-panel.expanded .dev-panel-body { display: block; }
+.dev-panel-body .row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 3px;
+}
+.dev-panel-body .row .key { color: var(--text-dim); }
+.dev-panel-body .row .val { color: var(--text); text-align: right; }
+.dev-panel-body .section-label {
+  font-weight: 600;
+  color: var(--accent);
+  margin-top: 6px;
+  margin-bottom: 3px;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.dev-panel-body .warn-text { color: var(--yellow); font-size: 10px; margin-top: 4px; }
+
+/* ── Toast ── */
+.toast {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 10px 20px;
+  font-size: 13px;
+  z-index: 200;
+  display: none;
+}
+.toast.show { display: block; animation: fadeIn 0.2s; }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+/* ── Loading ── */
+.loading-indicator {
+  display: none;
+  padding: 8px 20px;
+  font-size: 12px;
+  color: var(--text-dim);
+}
+.loading-indicator.show { display: flex; align-items: center; gap: 8px; }
+.loading-spinner {
+  width: 14px; height: 14px;
+  border: 2px solid var(--border);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ── 记忆观测面板 ── */
+.obs-tabs {
+  display: flex;
+  border-bottom: 1px solid var(--border);
+  flex-wrap: wrap;
+}
+.obs-tabs button {
+  flex: 1;
+  background: none;
+  border: none;
+  padding: 7px 4px;
+  color: var(--text-dim);
+  font-size: 11px;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  white-space: nowrap;
+}
+.obs-tabs button.active {
+  color: var(--text);
+  border-bottom-color: var(--accent);
+}
+.obs-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 12px;
+}
+.obs-section { margin-bottom: 16px; }
+.obs-section .obs-label {
+  font-size: 10px;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 6px;
+}
+.obs-stat-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 6px;
+}
+.obs-stat-box {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 8px 6px;
+  text-align: center;
+}
+.obs-stat-box .num {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--accent);
+}
+.obs-stat-box .lbl {
+  font-size: 9px;
+  color: var(--text-dim);
+  margin-top: 2px;
+}
+.obs-stat-box.l2 .num { color: var(--yellow); }
+.obs-stat-box.l3 .num { color: var(--green); }
+.obs-stat-box.del .num { color: var(--red); }
+
+.obs-card {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 10px;
+  margin-bottom: 8px;
+  font-size: 12px;
+}
+.obs-card .obs-card-content {
+  line-height: 1.4;
+  margin-bottom: 6px;
+  word-break: break-word;
+}
+.obs-card .obs-card-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 10px;
+  color: var(--text-dim);
+  flex-wrap: wrap;
+  gap: 4px;
+}
+.obs-card .obs-tag {
+  border-radius: 3px;
+  padding: 1px 5px;
+  font-size: 10px;
+}
+.obs-tag.active { background: rgba(63,185,80,0.2); color: var(--green); }
+.obs-tag.complete { background: rgba(139,148,158,0.2); color: var(--text-dim); }
+.obs-tag.superseded { background: rgba(210,153,34,0.2); color: var(--yellow); }
+.obs-tag.stab-episode { background: rgba(139,148,158,0.15); color: var(--text-dim); }
+.obs-tag.stab-recurring { background: rgba(74,144,217,0.2); color: var(--accent); }
+.obs-tag.stab-identity { background: rgba(63,185,80,0.2); color: var(--green); }
+.obs-card .obs-del-btn {
+  background: none;
+  border: none;
+  color: var(--text-dim);
+  font-size: 10px;
+  cursor: pointer;
+}
+.obs-card .obs-del-btn:hover { color: var(--red); }
+.obs-card .obs-evidence {
+  font-size: 10px;
+  color: var(--text-dim);
+  margin-top: 4px;
+  cursor: pointer;
+  text-decoration: underline;
+}
+.obs-card .obs-evidence:hover { color: var(--accent); }
+.obs-card .obs-source-l1 {
+  font-size: 10px;
+  color: var(--text-dim);
+  margin-top: 4px;
+  border-top: 1px dashed var(--border);
+  padding-top: 4px;
+}
+
+.obs-event {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 8px 10px;
+  margin-bottom: 6px;
+  font-size: 11px;
+  border-left: 3px solid var(--text-dim);
+}
+.obs-event.ADD, .obs-event.COEXIST { border-left-color: var(--green); }
+.obs-event.UPDATE, .obs-event.CONFIRM { border-left-color: var(--accent); }
+.obs-event.COMPLETE { border-left-color: var(--text-dim); }
+.obs-event.SUPERSEDE { border-left-color: var(--yellow); }
+.obs-event.DELETE { border-left-color: var(--red); }
+.obs-event.FORGET { border-left-color: #a371f7; }
+.obs-event .obs-ev-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 4px;
+}
+.obs-event .obs-ev-layer {
+  font-weight: 600;
+  font-size: 10px;
+}
+.obs-event .obs-ev-time { color: var(--text-dim); font-size: 10px; }
+.obs-event .obs-ev-change {
+  color: var(--text);
+  margin: 2px 0;
+}
+.obs-event .obs-ev-reason {
+  color: var(--text-dim);
+  font-size: 10px;
+  margin-top: 2px;
+}
+.obs-event .obs-ev-arrow { color: var(--yellow); font-weight: 600; }
+
+.obs-filters {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+  margin-bottom: 8px;
+}
+.obs-filters select {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 3px 6px;
+  color: var(--text);
+  font-size: 10px;
+}
+.obs-empty {
+  text-align: center;
+  color: var(--text-dim);
+  padding: 30px 0;
+  font-size: 12px;
+}
+.obs-error {
+  text-align: center;
+  color: var(--red);
+  padding: 20px 0;
+  font-size: 12px;
+}
+.obs-retry {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 4px 10px;
+  color: var(--accent);
+  font-size: 11px;
+  cursor: pointer;
+  margin-top: 8px;
+}
+.obs-forget-status {
+  font-size: 11px;
+  color: var(--text-dim);
+  padding: 8px;
+  background: rgba(139,148,158,0.1);
+  border-radius: 6px;
+  text-align: center;
+  margin-top: 8px;
+}
+.obs-dev-hidden { display: none; }
+
+/* scrollbar */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: #484f58; }
+</style>
+</head>
+<body>
+
+<!-- 登录页面 -->
+<div class="login-overlay" id="loginOverlay">
+  <div class="login-box">
+    <h2>车机启动</h2>
+    <p>选择驾驶员身份后点火启动，系统会自动恢复您的记忆偏好。</p>
+    <div class="login-form">
+      <div>
+        <label>后端记忆服务地址</label>
+        <input id="apiUrl" value="http://10.133.72.161:20144"  placeholder="http://IP:端口">
+      </div>
+      <div>
+        <label>LLM 代理地址（本机自动启动）</label>
+        <input id="llmProxyUrlInput" value="http://127.0.0.1:8767" placeholder="http://localhost:8767">
+      </div>
+      <div class="row">
+        <div>
+          <label>租户（项目）</label>
+          <input id="loginTenant" value="oem_chery">
+        </div>
+        <div>
+          <label>车辆 ID</label>
+          <input id="loginVehicle" value="vehicle_001">
+        </div>
+      </div>
+      <div class="row">
+        <div>
+          <label>驾驶员</label>
+          <select id="loginUserSelect">
+            <option value="user_driver">司机 A</option>
+            <option value="user_passenger">乘客 B</option>
+            <option value="user_driver2">司机 C</option>
+            <option value="custom">自定义...</option>
+          </select>
+        </div>
+        <div>
+          <label>乘员位置</label>
+          <select id="loginOccupant">
+            <option value="driver">主驾</option>
+            <option value="passenger">副驾</option>
+            <option value="rear_left">后排左</option>
+            <option value="rear_right">后排右</option>
+          </select>
+        </div>
+      </div>
+      <div id="customUserRow" style="display:none">
+        <label>自定义用户 ID</label>
+        <input id="loginUserCustom" placeholder="如 user_test">
+      </div>
+      <button class="login-btn" onclick="doLogin()">点火启动</button>
+    </div>
+  </div>
+</div>
+
+<!-- 顶栏 -->
+<div class="topbar">
+  <div class="logo">Desay<span>Mem</span> 车机记忆</div>
+  <div class="status-pill">
+    <div class="status-dot idle" id="statusDot"></div>
+    <span id="statusText">未连接</span>
+  </div>
+  <label class="dev-toggle">
+    <input type="checkbox" id="devModeToggle" checked>
+    开发者模式
+  </label>
+</div>
+
+<!-- 主体 -->
+<div class="main-layout">
+  <!-- 左侧 -->
+  <div class="left-panel">
+    <div class="user-card">
+      <div class="avatar" id="userAvatar">D</div>
+      <div class="name" id="userName">user_driver</div>
+      <div class="role" id="userRole">主驾</div>
+      <div class="detail" id="userTenant">tenant: oem_chery</div>
+      <div class="detail" id="userVehicle">vehicle: vehicle_001</div>
+    </div>
+    <button class="switch-btn" onclick="logout()">熄火 / 切换用户</button>
+    <div class="mem-stat">
+      <div class="stat-label">记忆总数</div>
+      <div class="stat-val" id="memCount">0</div>
+    </div>
+  </div>
+
+  <!-- 中间对话 -->
+  <div class="center-panel">
+    <div class="chat-header">
+      <div class="title">车机对话</div>
+      <div class="session" id="sessionLabel">会话已启动</div>
+    </div>
+    <div class="chat-box" id="chatBox">
+      <div class="chat-msg car">
+        <div class="bubble">系统已就绪。试试说"我开车的时候喜欢把空调调到22度"，我会记住你的偏好，下次上车自动恢复。</div>
+        <div class="meta">车机助手</div>
+      </div>
+    </div>
+    <div class="loading-indicator" id="loadingIndicator">
+      <div class="loading-spinner"></div>
+      <span id="loadingText">正在处理...</span>
+    </div>
+    <div class="quick-actions">
+      <button onclick="quickSend('我开车的时候喜欢把空调调到22度')">空调偏好</button>
+      <button onclick="quickSend('导航去上海迪士尼')">导航</button>
+      <button onclick="quickSend('开车时帮我放周杰伦的歌')">音乐</button>
+      <button onclick="quickSend('帮我把座椅加热打开到3挡')">座椅加热</button>
+      <button onclick="quickSend('我之前说的空调温度是多少度')">召回测试</button>
+      <button onclick="quickSearch('空调温度')">搜索记忆</button>
+    </div>
+    <div class="chat-input-area">
+      <textarea id="msgInput" placeholder="输入对话内容，回车发送..." onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendMessage();}"></textarea>
+      <button id="sendBtn" onclick="sendMessage()">发送</button>
+    </div>
+  </div>
+
+  <!-- 右侧记忆观测 -->
+  <div class="right-panel">
+    <div class="right-header">
+      <div class="title">记忆观测</div>
+      <button onclick="refreshObservation()">刷新记忆状态</button>
+    </div>
+    <div class="obs-tabs">
+      <button class="active" id="obsTabOverview" onclick="switchObsTab('overview')">总览</button>
+      <button id="obsTabL1" onclick="switchObsTab('l1')">L1事实</button>
+      <button id="obsTabL2" onclick="switchObsTab('l2')">L2情景</button>
+      <button id="obsTabL3" onclick="switchObsTab('l3')">L3画像</button>
+      <button id="obsTabEvents" onclick="switchObsTab('events')">演化记录</button>
+    </div>
+    <div class="obs-content" id="obsContent">
+      <div class="obs-empty">登录后加载记忆观测数据</div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ── 集中配置 ──
+const DEFAULT_CONFIG = {
+  memoryBackendUrl: 'http://10.133.72.161:20144',
+  llmProxyUrl: 'http://127.0.0.1:8767'
+};
+
+// 页面加载时用配置填充输入框
+(function initDefaults() {
+  document.getElementById('apiUrl').value = DEFAULT_CONFIG.memoryBackendUrl;
+  document.getElementById('llmProxyUrlInput').value = DEFAULT_CONFIG.llmProxyUrl;
+})();
+
+// ── 开发者模式 ──
+let devMode = localStorage.getItem('cockpit_dev_mode');
+if (devMode === null) { devMode = 'true'; } // 默认开启
+const devToggle = document.getElementById('devModeToggle');
+devToggle.checked = devMode === 'true';
+devToggle.addEventListener('change', function() {
+  devMode = this.checked ? 'true' : 'false';
+  localStorage.setItem('cockpit_dev_mode', devMode);
+});
+
+// ── 全局状态 ──
+let state = {
+  apiUrl: '',
+  llmProxyUrl: '',
+  tenant: '',
+  userId: '',
+  vehicleId: '',
+  occupant: '',
+  sessionId: '',
+  connected: false,
+  memTab: 'all',
+  memories: [],
+  obsTab: 'overview',
+  obsLayers: null,
+  obsEvents: null,
+  obsError: null,
+  obsEventFilter: { layer: '', event: '' },
+};
+
+// ── 登录 ──
+document.getElementById('loginUserSelect').addEventListener('change', function() {
+  document.getElementById('customUserRow').style.display = this.value === 'custom' ? 'block' : 'none';
+});
+
+document.getElementById('loginOccupant').addEventListener('change', function() {
+  const userSelect = document.getElementById('loginUserSelect');
+  if (this.value === 'passenger' && userSelect.value === 'user_driver') {
+    userSelect.value = 'user_passenger';
+  } else if (this.value === 'driver' && userSelect.value === 'user_passenger') {
+    userSelect.value = 'user_driver';
+  }
+});
+
+async function doLogin() {
+  const apiUrl = document.getElementById('apiUrl').value.trim().replace(/\/+$/, '');
+  const llmProxyUrl = document.getElementById('llmProxyUrlInput').value.trim().replace(/\/+$/, '');
+  const tenant = document.getElementById('loginTenant').value.trim();
+  const vehicleId = document.getElementById('loginVehicle').value.trim();
+  const occupant = document.getElementById('loginOccupant').value;
+
+  let userId;
+  const userSelectVal = document.getElementById('loginUserSelect').value;
+  if (userSelectVal === 'custom') {
+    userId = document.getElementById('loginUserCustom').value.trim();
+    if (!userId) { showToast('请输入自定义用户 ID'); return; }
+  } else {
+    userId = userSelectVal;
+  }
+
+  if (!apiUrl || !userId) { showToast('请填写服务地址'); return; }
+
+  state.apiUrl = apiUrl;
+  state.llmProxyUrl = llmProxyUrl;
+  state.tenant = tenant;
+  state.userId = userId;
+  state.vehicleId = vehicleId;
+  state.occupant = occupant;
+  state.sessionId = 'session_' + Date.now();
+
+  // 测试连接
+  try {
+    const resp = await fetch(apiUrl + '/health');
+    if (!resp.ok) throw new Error('HTTP ' + resp.status);
+    state.connected = true;
+    setStatus('ok', '已连接');
+  } catch (e) {
+    state.connected = false;
+    setStatus('err', '连接失败');
+    showToast('连接失败: ' + e.message + ' — 请检查服务地址是否正确');
+    return;
+  }
+
+  document.getElementById('loginOverlay').classList.add('hidden');
+  updateUserCard();
+  await refreshMemories();
+  await refreshObservation();
+
+  if (state.memories.length > 0) {
+    addChatMsg('car', '欢迎回来！已恢复您的历史记忆 ' + state.memories.length + ' 条。');
+  }
+}
+
+function logout() {
+  state.connected = false;
+  state.memories = [];
+  state.obsLayers = null;
+  state.obsEvents = null;
+  state.obsError = null;
+  document.getElementById('loginOverlay').classList.remove('hidden');
+  document.getElementById('chatBox').innerHTML = '';
+  document.getElementById('obsContent').innerHTML = '<div class="obs-empty">登录后加载记忆观测数据</div>';
+  document.getElementById('memCount').textContent = '0';
+  setStatus('idle', '未连接');
+}
+
+function updateUserCard() {
+  document.getElementById('userName').textContent = state.userId;
+  const roleMap = { driver: '主驾', passenger: '副驾', rear_left: '后排左', rear_right: '后排右' };
+  document.getElementById('userRole').textContent = roleMap[state.occupant] || state.occupant;
+  document.getElementById('userTenant').textContent = 'tenant: ' + state.tenant;
+  document.getElementById('userVehicle').textContent = 'vehicle: ' + state.vehicleId;
+  document.getElementById('sessionLabel').textContent = '会话已启动';
+  document.getElementById('userAvatar').textContent = state.userId.charAt(state.userId.lastIndexOf('_') + 1).toUpperCase();
+}
+
+// ── 状态 ──
+function setStatus(state, text) {
+  const dot = document.getElementById('statusDot');
+  const txt = document.getElementById('statusText');
+  dot.className = 'status-dot ' + state;
+  txt.textContent = text;
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+function showLoading(text) {
+  document.getElementById('loadingText').textContent = text || '处理中...';
+  document.getElementById('loadingIndicator').classList.add('show');
+}
+function hideLoading() {
+  document.getElementById('loadingIndicator').classList.remove('show');
+}
+
+// ── 对话 ──
+function addChatMsg(role, text, extraHtml) {
+  const box = document.getElementById('chatBox');
+  const div = document.createElement('div');
+  div.className = 'chat-msg ' + (role === 'user' ? 'user' : 'car');
+  let html = '<div class="bubble">' + escapeHtml(text) + '</div>';
+  html += '<div class="meta">' + (role === 'user' ? '我' : '车机助手') + '</div>';
+  if (extraHtml) html += extraHtml;
+  div.innerHTML = html;
+  box.appendChild(div);
+  box.scrollTop = box.scrollHeight;
+}
+
+function escapeHtml(value) {
+  const div = document.createElement('div');
+  div.textContent = String(value ?? '');
+  return div.innerHTML;
+}
+
+function quickSend(text) {
+  document.getElementById('msgInput').value = text;
+  sendMessage();
+}
+
+function quickSearch(text) {
+  doSearch(text);
+}
+
+async function sendMessage() {
+  if (!state.connected) { showToast('未连接'); return; }
+  const input = document.getElementById('msgInput');
+  const text = input.value.trim();
+  if (!text) return;
+
+  // 搜索模式
+  if (text.startsWith('搜索：') || text.startsWith('搜索:')) {
+    const query = text.replace(/^搜索[：:]\s*/, '');
+    addChatMsg('user', text);
+    input.value = '';
+    await doSearch(query);
+    return;
+  }
+
+  addChatMsg('user', text);
+  input.value = '';
+  document.getElementById('sendBtn').disabled = true;
+
+  let extra = '';
+  let memoriesUsed = [];
+  let memoryDetails = [];
+  let t_mem_start = 0, t_mem_end = 0, t_llm_start = 0, t_llm_end = 0;
+  let memStoreStatus = '未执行';
+
+  try {
+    // Step 1: 检索记忆（后端 /v1/memories/search）
+    showLoading('检索记忆中...');
+    t_mem_start = performance.now();
+    try {
+      const searchCtrl = new AbortController();
+      const searchTimer = setTimeout(() => searchCtrl.abort(), 10000);
+      const searchResp = await fetch(state.apiUrl + '/v1/memories/search', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          tenant_id: state.tenant,
+          user_id: state.userId,
+          query: text,
+          top_k: 5
+        }),
+        signal: searchCtrl.signal
+      });
+      clearTimeout(searchTimer);
+      if (searchResp.ok) {
+        const searchData = await searchResp.json();
+        memoryDetails = (searchData.memories || []).map(m => ({
+          content: m.content,
+          score: m.score,
+          memory_type: m.memory_type
+        }));
+        memoriesUsed = memoryDetails.map(m => m.content);
+      }
+    } catch (e) {
+      // 记忆检索失败不阻断对话
+      if (e.name === 'AbortError') console.warn('记忆检索超时（10秒）');
+    }
+    t_mem_end = performance.now();
+
+    // Step 2: 调本地 LLM 代理生成回复
+    showLoading('车机决策中...');
+    let reply = '';
+    let decision = null;
+    let usage = null;
+    let proxyLatency = 0;
+    let generationSucceeded = false;
+    let errorDetail = '';
+
+    t_llm_start = performance.now();
+    try {
+      const llmCtrl = new AbortController();
+      const llmTimer = setTimeout(() => llmCtrl.abort(), 15000);
+      const proxyResp = await fetch(state.llmProxyUrl + '/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          messages: [{ role: 'user', content: text }],
+          memory_context: memoriesUsed,
+          tool_mode: 'simulation',
+          vehicle_context: {
+            current_location: null,
+            vehicle_id: state.vehicleId,
+            occupant_id: state.occupant
+          },
+          tool_results: []
+        }),
+        signal: llmCtrl.signal
+      });
+      clearTimeout(llmTimer);
+      if (!proxyResp.ok) throw new Error('HTTP ' + proxyResp.status);
+      const proxyData = await proxyResp.json();
+      if (proxyData.error) {
+        errorDetail = proxyData.detail || proxyData.error;
+        throw new Error(proxyData.error);
+      }
+      reply = (proxyData.reply || '').trim();
+      decision = proxyData.decision || null;
+      usage = proxyData.usage || null;
+      proxyLatency = proxyData.latency_ms || 0;
+      if (!reply) {
+        throw new Error('模型未返回有效回答');
+      }
+      generationSucceeded = true;
+    } catch (e) {
+      reply = '车机助手暂时无法回答，请稍后重试。';
+      errorDetail = (e.name === 'AbortError') ? '决策超时（15秒），模型服务可能繁忙' : (errorDetail || e.message);
+      console.warn('LLM proxy error:', e.name === 'AbortError' ? 'timeout (15s)' : e.message);
+    }
+    t_llm_end = performance.now();
+
+    // 长文本兜底警告
+    if (reply.length > 300) {
+      console.warn('回复超过300字符，长度控制可能未生效，当前长度:', reply.length);
+    }
+
+    // 构建开发者面板
+    hideLoading();
+    const memLatency = Math.round(t_mem_end - t_mem_start);
+    const llmLatency = proxyLatency || Math.round(t_llm_end - t_llm_start);
+    const totalLatency = Math.round(t_llm_end - t_mem_start);
+
+    if (devMode === 'true') {
+      // 决策面板
+      if (decision) {
+        extra += buildDecisionPanel(decision);
+      }
+      // 调试面板
+      extra += buildDebugPanel(memoryDetails, memLatency, llmLatency, totalLatency, usage, memStoreStatus, errorDetail);
+    } else if (errorDetail) {
+      // 非开发者模式下也显示简短错误
+      extra += '<div class="mem-extracted"><div class="label">⚠ LLM 调用失败</div><div class="item">' + escapeHtml(errorDetail) + '</div></div>';
+    }
+
+    // 立即显示回复
+    addChatMsg('car', reply, extra);
+
+    // Step 3: 仅在 LLM 成功时异步存储记忆（只存 reply）
+    if (generationSucceeded) {
+      memStoreStatus = '正在写入...';
+      storeMemoryAsync(text, reply);
+    } else {
+      memStoreStatus = '已跳过（模型失败）';
+    }
+
+  } catch (e) {
+    addChatMsg('car', '网络错误: ' + e.message);
+  } finally {
+    document.getElementById('sendBtn').disabled = false;
+    hideLoading();
+  }
+}
+
+// ── 构建决策面板 ──
+function buildDecisionPanel(d) {
+  const isSim = d.tool_mode === 'simulation';
+  const tagClass = isSim ? 'sim' : 'prod';
+  const tagText = isSim ? '模拟' : '生产';
+  const warnText = isSim ? '模拟决策，未执行真实车机操作' : '真实车机上下文';
+
+  let entitiesHtml = '';
+  if (d.entities && Object.keys(d.entities).length > 0) {
+    entitiesHtml = Object.entries(d.entities).map(([k, v]) => {
+      return '<div class="row"><span class="key">' + escapeHtml(k) + '</span><span class="val">' + (v === null || v === undefined ? '未提供' : escapeHtml(String(v))) + '</span></div>';
+    }).join('');
+  } else {
+    entitiesHtml = '<div class="row"><span class="key">无实体</span><span class="val">-</span></div>';
+  }
+
+  let prefsHtml = (d.retrieved_preferences || []).length > 0
+    ? d.retrieved_preferences.map(p => '<div class="row"><span class="key">•</span><span class="val">' + escapeHtml(p) + '</span></div>').join('')
+    : '<div class="row"><span class="key">无</span><span class="val">-</span></div>';
+
+  let missingHtml = (d.missing_information || []).length > 0
+    ? d.missing_information.map(m => '<div class="row"><span class="key">•</span><span class="val">' + escapeHtml(m) + '</span></div>').join('')
+    : '<div class="row"><span class="key">无缺失</span><span class="val">-</span></div>';
+
+  let toolsHtml = (d.next_tools || []).length > 0
+    ? d.next_tools.map(t => '<div class="row"><span class="key">•</span><span class="val">' + escapeHtml(t) + '</span></div>').join('')
+    : '<div class="row"><span class="key">无</span><span class="val">-</span></div>';
+
+  return '<div class="dev-panel" onclick="this.classList.toggle(\'expanded\')">' +
+    '<div class="dev-panel-header">' +
+      '<span>车机决策</span><span class="tag ' + tagClass + '">' + tagText + '</span>' +
+      '<span>｜' + escapeHtml(d.intent || 'other') + '</span>' +
+      '<span>｜缺失' + (d.missing_information || []).length + '项</span>' +
+      '<span>｜置信度' + (d.confidence || 0).toFixed(2) + '</span>' +
+    '</div>' +
+    '<div class="dev-panel-body">' +
+      '<div class="warn-text">' + warnText + '</div>' +
+      '<div class="section-label">意图</div><div class="row"><span class="key">intent</span><span class="val">' + escapeHtml(d.intent || '') + '</span></div>' +
+      '<div class="section-label">已识别实体</div>' + entitiesHtml +
+      '<div class="section-label">使用的用户偏好</div>' + prefsHtml +
+      '<div class="section-label">缺失信息</div>' + missingHtml +
+      '<div class="section-label">当前决策</div><div class="row"><span class="key">action</span><span class="val">' + escapeHtml(d.action || '') + '</span></div>' +
+      '<div class="section-label">下一步工具</div>' + toolsHtml +
+      '<div class="section-label">决策说明</div><div class="row"><span class="key">explanation</span><span class="val">' + escapeHtml(d.explanation || '') + '</span></div>' +
+    '</div>' +
+  '</div>';
+}
+
+// ── 构建调试面板 ──
+function buildDebugPanel(memDetails, memLatency, llmLatency, totalLatency, usage, storeStatus, errorDetail) {
+  let memHtml = '';
+  if (memDetails && memDetails.length > 0) {
+    memDetails.forEach(m => {
+      const score = m.score != null ? m.score.toFixed(3) : '-';
+      const mtype = m.memory_type || 'unknown';
+      memHtml += '<div class="row"><span class="key">' + escapeHtml(mtype) + '</span><span class="val">' + escapeHtml((m.content || '').substring(0, 60)) + ' (' + score + ')</span></div>';
+    });
+  } else {
+    memHtml = '<div class="row"><span class="key">无召回</span><span class="val">-</span></div>';
+  }
+
+  let usageHtml = '';
+  if (usage) {
+    usageHtml = '<div class="row"><span class="key">token用量</span><span class="val">' + (usage.prompt_tokens || 0) + ' → ' + (usage.completion_tokens || 0) + ' (总' + (usage.total_tokens || 0) + ')</span></div>';
+  } else {
+    usageHtml = '<div class="row"><span class="key">token用量</span><span class="val">未提供</span></div>';
+  }
+
+  let errHtml = '';
+  if (errorDetail) {
+    errHtml = '<div class="section-label" style="color:var(--red)">错误信息</div><div class="row"><span class="key">detail</span><span class="val">' + escapeHtml(errorDetail) + '</span></div>';
+  }
+
+  const recallCount = memDetails ? memDetails.length : 0;
+
+  return '<div class="dev-panel" onclick="this.classList.toggle(\'expanded\')">' +
+    '<div class="dev-panel-header">' +
+      '<span>记忆调试</span><span>｜召回' + recallCount + '条</span>' +
+      '<span>｜总耗时' + totalLatency + 'ms</span>' +
+    '</div>' +
+    '<div class="dev-panel-body">' +
+      '<div class="section-label">召回记忆 (' + recallCount + '条)</div>' + memHtml +
+      '<div class="section-label">性能</div>' +
+      '<div class="row"><span class="key">检索耗时</span><span class="val">' + memLatency + 'ms</span></div>' +
+      '<div class="row"><span class="key">模型耗时</span><span class="val">' + llmLatency + 'ms</span></div>' +
+      '<div class="row"><span class="key">总耗时</span><span class="val">' + totalLatency + 'ms</span></div>' +
+      usageHtml +
+      '<div class="row"><span class="key">记忆写入</span><span class="val">' + escapeHtml(storeStatus) + '</span></div>' +
+      errHtml +
+    '</div>' +
+  '</div>';
+}
+
+// 异步存储记忆 — 不阻塞对话体验
+function storeMemoryAsync(userText, assistantReply) {
+  fetch(state.apiUrl + '/v1/memories', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      tenant_id: state.tenant,
+      user_id: state.userId,
+      vehicle_id: state.vehicleId,
+      occupant_id: state.occupant,
+      session_id: state.sessionId,
+      scene: 'driving',
+      messages: [
+        { role: 'user', content: userText },
+        { role: 'assistant', content: assistantReply }
+      ],
+      infer: true
+    })
+  }).then(resp => resp.ok ? resp.json() : null)
+    .then(data => {
+      if (data && data.memories && data.memories.length > 0) {
+        showToast('已记住 ' + data.memories.length + ' 条新记忆');
+      }
+      refreshMemories();
+      refreshObservation();
+    })
+    .catch(e => console.log('存储记忆失败:', e));
+}
+
+async function doSearch(query) {
+  if (!state.connected) { showToast('未连接'); return; }
+  showLoading('正在检索记忆...');
+
+  try {
+    const resp = await fetch(state.apiUrl + '/v1/memories/search', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        tenant_id: state.tenant,
+        user_id: state.userId,
+        query: query,
+        top_k: 5
+      })
+    });
+
+    if (!resp.ok) {
+      addChatMsg('car', '搜索失败: ' + resp.status);
+      return;
+    }
+
+    const data = await resp.json();
+    const hits = data.memories || [];
+
+    let reply, extra = '';
+    if (hits.length === 0) {
+      reply = '没有找到相关记忆。';
+    } else {
+      reply = '找到 ' + hits.length + ' 条相关记忆：';
+      extra = '<div class="recall-info"><div class="label">召回结果</div>';
+      hits.forEach((h, i) => {
+        const score = h.score ? h.score.toFixed(3) : '-';
+        extra += '<div class="item">' + (i+1) + '. ' + escapeHtml(h.content.substring(0, 80)) + ' <span style="color:var(--text-dim)">(score: ' + score + ')</span></div>';
+      });
+      extra += '</div>';
+    }
+
+    addChatMsg('car', reply, extra);
+  } catch (e) {
+    addChatMsg('car', '搜索错误: ' + e.message);
+  } finally {
+    hideLoading();
+  }
+}
+
+// ── 记忆列表（保留用于左侧计数） ──
+async function refreshMemories() {
+  if (!state.connected) return;
+  try {
+    let url = state.apiUrl + '/v1/users/' + state.userId + '/memories?tenant_id=' + state.tenant + '&limit=100';
+    const resp = await fetch(url);
+    if (!resp.ok) return;
+    const data = await resp.json();
+    state.memories = data.memories || [];
+    document.getElementById('memCount').textContent = state.memories.length;
+  } catch (e) {}
+}
+
+// ── 记忆观测面板 ──
+async function refreshObservation() {
+  if (!state.connected) return;
+  state.obsError = null;
+  try {
+    const [layersResp, eventsResp] = await Promise.all([
+      fetch(state.apiUrl + '/v1/users/' + state.userId + '/memory-layers?tenant_id=' + state.tenant + '&occupant_id=' + encodeURIComponent(state.occupant || 'driver') + '&include_inactive=true&l1_limit=500&l2_limit=500&l3_limit=500'),
+      fetch(state.apiUrl + '/v1/users/' + state.userId + '/memory-events?tenant_id=' + state.tenant + '&limit=100')
+    ]);
+    if (!layersResp.ok || !eventsResp.ok) {
+      state.obsError = '记忆观测数据加载失败 (HTTP ' + (layersResp.ok ? eventsResp.status : layersResp.status) + ')';
+      renderObsContent(); return;
+    }
+    state.obsLayers = await layersResp.json();
+    state.obsEvents = await eventsResp.json();
+    renderObsContent();
+  } catch (e) {
+    console.warn('Observation load error:', e.message);
+    state.obsError = '记忆观测数据加载失败';
+    renderObsContent();
+  }
+}
+
+function switchObsTab(tab) {
+  state.obsTab = tab;
+  document.querySelectorAll('.obs-tabs button').forEach(b => b.classList.remove('active'));
+  var tabId = { overview: 'obsTabOverview', l1: 'obsTabL1', l2: 'obsTabL2', l3: 'obsTabL3', events: 'obsTabEvents' }[tab];
+  if (tabId) document.getElementById(tabId).classList.add('active');
+  renderObsContent();
+}
+
+function renderObsContent() {
+  var el = document.getElementById('obsContent');
+  if (state.obsError) {
+    el.innerHTML = '<div class="obs-error">' + escapeHtml(state.obsError) + '<br><button class="obs-retry" onclick="refreshObservation()">重试</button></div>';
+    return;
+  }
+  if (!state.obsLayers) { el.innerHTML = '<div class="obs-empty">加载中...</div>'; return; }
+  if (devMode !== 'true') {
+    el.innerHTML = '<div class="obs-empty">已启用记忆<br><span style="font-size:11px">开启开发者模式查看完整观测面板</span></div>';
+    return;
+  }
+  if (state.obsTab === 'overview') renderOverview(el);
+  else if (state.obsTab === 'l1') renderL1(el);
+  else if (state.obsTab === 'l2') renderL2(el);
+  else if (state.obsTab === 'l3') renderL3(el);
+  else if (state.obsTab === 'events') renderEvents(el);
+}
+
+function fmtTime(ts) {
+  if (!ts) return '';
+  try { return new Date(ts).toLocaleString('zh-CN', {month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit'}); } catch(e) { return ''; }
+}
+
+function renderOverview(el) {
+  var s = (state.obsLayers && state.obsLayers.stats) || {};
+  var events = (state.obsEvents && state.obsEvents.events) || [];
+  var today = new Date().toDateString();
+  var todayEvents = events.filter(function(e) { return e.created_at && new Date(e.created_at).toDateString() === today; });
+  var todayAdd = todayEvents.filter(function(e) { return e.event === 'ADD' || e.event === 'COEXIST'; }).length;
+  var todayUpdate = todayEvents.filter(function(e) { return e.event === 'UPDATE' || e.event === 'CONFIRM' || e.event === 'SUPERSEDE'; }).length;
+  var todayDelete = todayEvents.filter(function(e) { return e.event === 'DELETE'; }).length;
+
+  var html = '<div class="obs-section"><div class="obs-label">记忆统计</div><div class="obs-stat-grid">' +
+    '<div class="obs-stat-box"><div class="num">' + (s.l1_count||0) + '</div><div class="lbl">L1 事实</div></div>' +
+    '<div class="obs-stat-box l2"><div class="num">' + (s.l2_count||0) + '</div><div class="lbl">L2 情景</div></div>' +
+    '<div class="obs-stat-box l3"><div class="num">' + (s.l3_count||0) + '</div><div class="lbl">L3 画像</div></div>' +
+    '</div></div>';
+  html += '<div class="obs-section"><div class="obs-label">L2 情景状态</div><div class="obs-stat-grid">' +
+    '<div class="obs-stat-box l2"><div class="num">' + (s.l2_active_count||0) + '</div><div class="lbl">活跃</div></div>' +
+    '<div class="obs-stat-box l2"><div class="num">' + (s.l2_complete_count||0) + '</div><div class="lbl">已结束</div></div>' +
+    '</div></div>';
+  html += '<div class="obs-section"><div class="obs-label">L3 画像状态</div><div class="obs-stat-grid">' +
+    '<div class="obs-stat-box l3"><div class="num">' + (s.l3_active_count||0) + '</div><div class="lbl">有效</div></div>' +
+    '<div class="obs-stat-box l3"><div class="num">' + (s.l3_superseded_count||0) + '</div><div class="lbl">已替代</div></div>' +
+    '</div></div>';
+  html += '<div class="obs-section"><div class="obs-label">今日演化</div><div class="obs-stat-grid">' +
+    '<div class="obs-stat-box"><div class="num">' + todayAdd + '</div><div class="lbl">新增</div></div>' +
+    '<div class="obs-stat-box"><div class="num">' + todayUpdate + '</div><div class="lbl">更新</div></div>' +
+    '<div class="obs-stat-box del"><div class="num">' + todayDelete + '</div><div class="lbl">删除</div></div>' +
+    '</div></div>';
+  html += '<div class="obs-forget-status">自动遗忘：尚未启用</div>';
+  html += '<div class="obs-section" style="margin-top:12px"><div class="obs-label">用户隔离测试</div>' +
+    '<div class="obs-card"><div class="obs-card-footer"><span>当前用户记忆数</span><span class="obs-tag active">' + (s.l1_count||0) + '</span></div>' +
+    '<div class="obs-card-footer"><span>其他用户可查</span><span id="isoOtherStatus" class="obs-tag">未测试</span></div>' +
+    '<button class="switch-btn" style="margin:6px 0 0;width:100%" onclick="runIsolationTest()">运行隔离测试</button></div></div>';
+  el.innerHTML = html;
+}
+
+function renderL1(el) {
+  var items = (state.obsLayers && state.obsLayers.l1) || [];
+  if (!items.length) { el.innerHTML = '<div class="obs-empty">暂无 L1 原子事实</div>'; return; }
+  el.innerHTML = '<div class="obs-section"><div class="obs-label">从对话中抽取的具体事实，是 L2 和 L3 的事实来源。</div></div>' +
+    items.map(function(m) {
+      var meta = m.metadata || {}, metaHtml = '';
+      Object.keys(meta).forEach(function(k) {
+        if (['observed_at','memory_type','occurred_at'].indexOf(k) >= 0) return;
+        metaHtml += '<div style="font-size:10px;color:var(--text-dim)"><span>' + escapeHtml(k) + ': </span><span>' + escapeHtml(String(meta[k])) + '</span></div>';
+      });
+      return '<div class="obs-card"><div class="obs-card-content">' + escapeHtml(m.content) + '</div>' +
+        '<div class="obs-card-footer"><span class="obs-tag active">' + escapeHtml(m.source||'conversation') + '</span>' +
+        '<span>' + escapeHtml(m.scene||'') + (m.occupant_id ? ' | '+escapeHtml(m.occupant_id) : '') + '</span>' +
+        '<span>' + fmtTime(m.updated_at) + '</span>' +
+        '<button class="obs-del-btn" onclick="deleteMemory(\'' + m.id + '\')">删除</button></div>' + metaHtml + '</div>';
+    }).join('');
+}
+
+function renderL2(el) {
+  var items = (state.obsLayers && state.obsLayers.l2) || [];
+  var l1Map = {};
+  ((state.obsLayers && state.obsLayers.l1) || []).forEach(function(m) { l1Map[m.id] = m; });
+  if (!items.length) { el.innerHTML = '<div class="obs-empty">暂无 L2 情景事件</div>'; return; }
+  el.innerHTML = '<div class="obs-section"><div class="obs-label">事件摘要，由 L1 事实归纳形成。</div></div>' +
+    items.map(function(m) {
+      var meta = m.metadata || {};
+      var status = meta.episode_status || 'active';
+      var statusLabel = status === 'active' ? '当前开放事件' : '事件已经结束';
+      var sourceIds = meta.source_memory_ids || [];
+      var sourceHtml = '';
+      if (sourceIds.length > 0) {
+        sourceHtml = '<div class="obs-source-l1"><span style="color:var(--text-dim)">来源 L1 (' + sourceIds.length + '条):</span> ';
+        var found = sourceIds.map(function(id) { return l1Map[id]; }).filter(Boolean);
+        sourceHtml += found.length ? found.map(function(f) { return escapeHtml((f.content||'').substring(0,40)); }).join('；') : '<span style="color:var(--red)">来源事实已不可用</span>';
+        sourceHtml += '</div>';
+      }
+      return '<div class="obs-card"><div class="obs-card-content">' + escapeHtml(m.content) + '</div>' +
+        '<div class="obs-card-footer"><span class="obs-tag ' + status + '">' + statusLabel + '</span>' +
+        '<span>置信度: ' + (meta.confidence != null ? Number(meta.confidence).toFixed(2) : '-') + '</span>' +
+        '<span>' + fmtTime(m.updated_at) + '</span></div>' +
+        (meta.occurred_at ? '<div style="font-size:10px;color:var(--text-dim)">发生: ' + escapeHtml(meta.occurred_at) + (meta.occurred_end ? ' → '+escapeHtml(meta.occurred_end) : '') + '</div>' : '') +
+        sourceHtml + '</div>';
+    }).join('');
+}
+
+function renderL3(el) {
+  var items = (state.obsLayers && state.obsLayers.l3) || [];
+  if (!items.length) { el.innerHTML = '<div class="obs-empty">暂无 L3 用户画像信念</div>'; return; }
+  el.innerHTML = '<div class="obs-section"><div class="obs-label">用户画像信念，由 L1/L2 证据蒸馏形成。</div></div>' +
+    items.map(function(b) {
+      var stabLabel = { episode:'暂时性判断', recurring:'稳定偏好', identity:'身份类事实' }[b.stability] || b.stability;
+      var statusLabel = b.status === 'active' ? '当前有效' : '已被新信念替代';
+      var condStr = b.conditions && Object.keys(b.conditions).length > 0 ? JSON.stringify(b.conditions) : '';
+      var evidenceHtml = '';
+      if ((b.evidence_memory_ids||[]).length) evidenceHtml += '<div class="obs-evidence" onclick="showEvidence(\'' + (b.evidence_memory_ids||[]).join(',') + '\')">证据 L1: ' + (b.evidence_memory_ids||[]).length + ' 条</div>';
+      if ((b.evidence_episode_ids||[]).length) evidenceHtml += '<div class="obs-evidence" onclick="showEvidence(\'' + (b.evidence_episode_ids||[]).join(',') + '\')">证据 L2: ' + (b.evidence_episode_ids||[]).length + ' 条</div>';
+      return '<div class="obs-card"><div class="obs-card-content"><strong>' + escapeHtml(b.attribute) + '</strong>: ' + escapeHtml(b.value) + (condStr ? ' <span style="color:var(--text-dim)">('+escapeHtml(condStr)+')</span>' : '') + '</div>' +
+        '<div class="obs-card-footer"><span class="obs-tag ' + b.status + '">' + statusLabel + '</span>' +
+        '<span class="obs-tag stab-' + b.stability + '">' + stabLabel + '</span>' +
+        '<span>置信度: ' + (b.confidence != null ? Number(b.confidence).toFixed(2) : '-') + '</span>' +
+        '<span>支持: ' + (b.support_count||0) + '</span><span>' + fmtTime(b.updated_at) + '</span></div>' +
+        (b.valid_from ? '<div style="font-size:10px;color:var(--text-dim)">有效: ' + escapeHtml(b.valid_from) + (b.valid_to ? ' → '+escapeHtml(b.valid_to) : ' → 至今') + '</div>' : '') +
+        evidenceHtml + '</div>';
+    }).join('');
+}
+
+function renderEvents(el) {
+  var events = (state.obsEvents && state.obsEvents.events) || [];
+  var f = state.obsEventFilter;
+  var filtered = events.filter(function(e) { return (!f.layer || e.layer === f.layer) && (!f.event || e.event === f.event); });
+  var html = '<div class="obs-filters">' +
+    '<select onchange="state.obsEventFilter.layer=this.value;renderEvents(document.getElementById(\'obsContent\'))"><option value="">全部层级</option><option value="L1">L1</option><option value="L2">L2</option><option value="L3">L3</option></select>' +
+    '<select onchange="state.obsEventFilter.event=this.value;renderEvents(document.getElementById(\'obsContent\'))"><option value="">全部事件</option><option value="ADD">ADD</option><option value="UPDATE">UPDATE</option><option value="CONFIRM">CONFIRM</option><option value="COMPLETE">COMPLETE</option><option value="SUPERSEDE">SUPERSEDE</option><option value="COEXIST">COEXIST</option><option value="DELETE">DELETE</option></select></div>';
+  if (!filtered.length) { el.innerHTML = html + '<div class="obs-empty">暂无演化记录</div>'; return; }
+  html += filtered.map(function(e) {
+    var ch = '';
+    if (e.old_data && e.new_data) {
+      var ov = e.old_data.value || e.old_data.content || '', nv = e.new_data.value || e.new_data.content || '';
+      ch = (ov && nv) ? '<div class="obs-ev-change">'+escapeHtml(ov)+' <span class="obs-ev-arrow">→</span> '+escapeHtml(nv)+'</div>' : (nv ? '<div class="obs-ev-change">'+escapeHtml(nv)+'</div>' : '');
+    } else if (e.new_data) { var nv2 = e.new_data.value||e.new_data.content||''; if(nv2) ch='<div class="obs-ev-change">'+escapeHtml(nv2)+'</div>'; }
+    else if (e.old_data) { var ov2 = e.old_data.value||e.old_data.content||''; if(ov2) ch='<div class="obs-ev-change">删除: '+escapeHtml(ov2)+'</div>'; }
+    return '<div class="obs-event ' + e.event + '"><div class="obs-ev-header"><span class="obs-ev-layer">' + escapeHtml(e.layer)+' | '+escapeHtml(e.event) + '</span><span class="obs-ev-time">' + fmtTime(e.created_at) + '</span></div>' + ch + (e.reason?'<div class="obs-ev-reason">'+escapeHtml(e.reason)+'</div>':'') + '<div class="obs-ev-reason">来源: '+escapeHtml(e.source||'system')+'</div></div>';
+  }).join('');
+  el.innerHTML = html;
+}
+
+function showEvidence(idsStr) {
+  var ids = idsStr.split(',').filter(Boolean);
+  if (!ids.length) return;
+  var l1Map = {}; ((state.obsLayers&&state.obsLayers.l1)||[]).forEach(function(m){l1Map[m.id]=m;});
+  var l2Map = {}; ((state.obsLayers&&state.obsLayers.l2)||[]).forEach(function(m){l2Map[m.id]=m;});
+  var lines = [];
+  ids.forEach(function(id) { if(l1Map[id]) lines.push('[L1] '+l1Map[id].content); else if(l2Map[id]) lines.push('[L2] '+l2Map[id].content); else lines.push('['+id.substring(0,8)+'] 来源事实已不可用'); });
+  alert(lines.join('\n') || '无证据');
+}
+
+async function deleteMemory(id) {
+  if (!confirm('确认删除这条记忆？')) return;
+  try {
+    await fetch(state.apiUrl + '/v1/users/' + state.userId + '/memories/' + id + '?tenant_id=' + state.tenant, { method: 'DELETE' });
+    showToast('已删除');
+    await refreshMemories();
+    await refreshObservation();
+  } catch (e) {
+    showToast('删除失败');
+  }
+}
+
+// ── 隔离测试 ──
+async function runIsolationTest() {
+  if (!state.connected) { showToast('未连接'); return; }
+  showLoading('正在测试用户隔离...');
+  var fakeUser = state.userId + '_isol_test';
+  try {
+    var resp = await fetch(state.apiUrl + '/v1/memories/search', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ tenant_id: state.tenant, user_id: fakeUser, query: '空调温度', top_k: 5 })
+    });
+    var data = await resp.json();
+    var hits = data.memories || [];
+    var isolated = hits.length === 0;
+    var statusEl = document.getElementById('isoOtherStatus');
+    if (statusEl) {
+      statusEl.textContent = isolated ? '隔离正常' : '隔离失败!';
+      statusEl.className = 'obs-tag ' + (isolated ? 'active' : 'superseded');
+    }
+    showToast(isolated ? '隔离测试通过' : '隔离测试失败！');
+  } catch (e) {
+    showToast('测试失败: ' + e.message);
+  } finally {
+    hideLoading();
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,4 @@
+datasets/longmemeval/*.json filter=lfs diff=lfs merge=lfs -text
+datasets/locomo/*.json filter=lfs diff=lfs merge=lfs -text
+datasets/carmem/*.jsonl filter=lfs diff=lfs merge=lfs -text
+*.json filter=lfs diff=lfs merge=lfs -text

@@ -1,0 +1,25 @@
+# DesayMem_mem0 local / editor ignores
+.env
+.venv/
+.venv*/
+venv/
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+dist/
+build/
+data/
+history.db
+*.db
+*.log
+docker-data/
+postgres-data/
+.pgdata/
+.idea/
+.vscode/
+json_mirror/

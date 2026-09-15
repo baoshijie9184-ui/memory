@@ -1,0 +1,37 @@
+design_version: v1
+generated_at: 2026-09-09
+references:
+  - name: DesayMem_mem0
+    local_path: "D:/agent memory/DesayMem_mem0"
+    revision: "8d81f98f24251776f984f2367643352136e7df5b"
+    borrowed: [cloud_deployment, postgres_pgvector, sqlite_history, temporal_conflict_resolution]
+  - name: mem0
+    local_path: "D:/agent memory/code/mem0"
+    revision: "4fa483907704735ba0bec030e3c946ee1614b50e"
+    local_changes: ["mem0/memory/main.py"]
+    borrowed: [add_pipeline, search_pipeline, history_compatibility]
+    paper: "https://arxiv.org/abs/2504.19413"
+  - name: LightMem
+    local_path: "D:/agent memory/code/LightMem-main"
+    revision: "source_archive_without_git_revision"
+    borrowed: [sensory_buffer, topic_segmentation, short_memory_token_trigger]
+    paper: "https://arxiv.org/abs/2510.18866"
+  - name: StructMem
+    local_path: "D:/agent memory/code/LightMem-main"
+    revision: "source_archive_without_git_revision"
+    borrowed: [event_representation, cross_event_summary]
+    paper: "https://arxiv.org/abs/2604.21748"
+  - name: memos
+    local_path: "D:/agent memory/code/memos"
+    revision: "b3e67399b83bc32cb27dda1f0eaa448b2108e211"
+    borrowed: [tags, time_filters]
+    note: "This repository is the usememos note application; only generic tag/time organization is borrowed."
+  - name: TiMEM
+    local_path: "D:/agent memory/code/TiMEM"
+    revision: "6d279a5f5d40ee229e1995df15c182cb2062c71c"
+    borrowed: [periodic_profile_update, narrative_profile_snapshot]
+    paper: "https://arxiv.org/abs/2601.02845"
+  - name: Zep_Graphiti
+    local_path: "D:/agent memory/code/graphiti"
+    borrowed: [valid_from, valid_to, temporal_invalidation]
+    paper: "https://arxiv.org/abs/2501.13956"

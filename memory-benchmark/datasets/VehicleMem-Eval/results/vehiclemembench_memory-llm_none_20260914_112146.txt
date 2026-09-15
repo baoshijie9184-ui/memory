@@ -1,0 +1,31 @@
+======================================================================
+DesayMem-Eval 评测报告
+数据集: vehiclemembench  |  模型: memory-llm  |  记忆系统: none
+时间: 2026-09-14 11:21:46
+======================================================================
+
+── 官方指标 ──
+协议: VehicleMemBench Tool F1 / Exact Match (score_tool_calls proxy)
+Tool F1 (主指标): 0.00%
+Exact Match (工具集合完全一致): 0.00%  (0/10)
+Tool Precision / Recall: 0.00% / 0.00%
+说明: 完整官方指标是 VehicleWorld 终态 exact match; 此处用 new_answer 工具集合 F1 作为不拉仿真器的对接。
+
+  按类别:
+    conditional_constraint         F1=0.00%  EM=0.00%  (0/3)
+    coreference_resolution         F1=0.00%  EM=0.00%  (0/1)
+    error_correction               F1=0.00%  EM=0.00%  (0/1)
+    preference_conflict            F1=0.00%  EM=0.00%  (0/5)
+
+── 效率 ──
+阶段                 Token In  Token Out      Total    Calls    Runtime
+----------------------------------------------------------------------
+judge                     0          0          0        0       0.0s
+memory_build              0          0          0        0       0.0s
+qa                   21,151        569     21,720       10      14.7s
+retrieval                 0          0          0        0       0.0s
+----------------------------------------------------------------------
+Total                21,151        569     21,720       10      14.7s
+内存峰值             15.8 MB
+
+======================================================================

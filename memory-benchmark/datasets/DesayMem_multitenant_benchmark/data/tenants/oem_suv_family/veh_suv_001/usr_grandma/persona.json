@@ -1,0 +1,32 @@
+{
+  "user_id": "usr_grandma",
+  "role": "副驾老人（每周三透析行程）",
+  "occupant": "passenger_front",
+  "expected_habits": [
+    "每周三市中心医院透析导航（市内道路）",
+    "粤剧频道音量12"
+  ],
+  "expected_noise": [
+    "偶发听评书"
+  ],
+  "recall_anchors": [
+    {
+      "topic": "行程",
+      "query": "周三的行程怎么安排",
+      "expected": [
+        "市中心医院",
+        "透析"
+      ]
+    },
+    {
+      "topic": "戏曲",
+      "query": "我平时听什么",
+      "expected": [
+        "粤剧",
+        "12"
+      ]
+    }
+  ],
+  "tenant_id": "oem_suv_family",
+  "vehicle_id": "veh_suv_001"
+}

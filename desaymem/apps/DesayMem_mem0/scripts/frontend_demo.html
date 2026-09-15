@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DesayMem 车机记忆 Demo</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: -apple-system, "Microsoft YaHei", sans-serif;
+  background: #f0f2f5;
+  color: #333;
+  padding: 20px;
+}
+.container { max-width: 900px; margin: 0 auto; }
+h1 { font-size: 22px; margin-bottom: 4px; }
+.subtitle { color: #888; font-size: 13px; margin-bottom: 20px; }
+.config-bar {
+  background: #fff;
+  border-radius: 8px;
+  padding: 12px 16px;
+  margin-bottom: 16px;
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+}
+.config-bar input {
+  flex: 1;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  padding: 8px 12px;
+  font-size: 14px;
+}
+.config-bar button {
+  background: #4a90d9;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 8px 16px;
+  cursor: pointer;
+  font-size: 14px;
+}
+.config-bar button:hover { background: #357abd; }
+.panels { display: flex; gap: 16px; margin-bottom: 16px; }
+.panel {
+  flex: 1;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+  overflow: hidden;
+}
+.panel-header {
+  padding: 10px 16px;
+  font-weight: 600;
+  font-size: 14px;
+  border-bottom: 1px solid #eee;
+}
+.chat-box {
+  height: 320px;
+  overflow-y: auto;
+  padding: 16px;
+}
+.msg {
+  margin-bottom: 12px;
+  max-width: 85%;
+}
+.msg.user {
+  margin-left: auto;
+  background: #4a90d9;
+  color: #fff;
+  border-radius: 12px 12px 4px 12px;
+  padding: 8px 14px;
+}
+.msg.assistant {
+  background: #f0f0f0;
+  border-radius: 12px 12px 12px 4px;
+  padding: 8px 14px;
+}
+.msg.system {
+  background: #fff3cd;
+  border-radius: 8px;
+  padding: 6px 12px;
+  font-size: 12px;
+  color: #856404;
+  max-width: 100%;
+}
+.input-area {
+  display: flex;
+  gap: 8px;
+  padding: 12px 16px;
+  border-top: 1px solid #eee;
+}
+.input-area textarea {
+  flex: 1;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  padding: 8px 12px;
+  font-size: 14px;
+  resize: none;
+  height: 40px;
+}
+.input-area button {
+  background: #4a90d9;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 8px 20px;
+  cursor: pointer;
+  font-size: 14px;
+}
+.input-area button:hover { background: #357abd; }
+.input-area button:disabled { background: #ccc; cursor: not-allowed; }
+.memories-list {
+  padding: 12px 16px;
+  max-height: 320px;
+  overflow-y: auto;
+}
+.mem-item {
+  background: #f8f9fa;
+  border-left: 3px solid #4a90d9;
+  border-radius: 4px;
+  padding: 8px 12px;
+  margin-bottom: 8px;
+  font-size: 13px;
+}
+.mem-item .type-tag {
+  display: inline-block;
+  background: #e7e7e7;
+  border-radius: 3px;
+  padding: 1px 6px;
+  font-size: 11px;
+  margin-left: 6px;
+  color: #666;
+}
+.mem-item .type-tag.procedural { background: #d4edda; color: #155724; }
+.mem-empty { color: #aaa; text-align: center; padding: 40px 0; font-size: 13px; }
+.actions { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
+.actions button {
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  padding: 6px 14px;
+  cursor: pointer;
+  font-size: 13px;
+  color: #555;
+}
+.actions button:hover { background: #f5f5f5; }
+.actions button.danger { color: #dc3545; border-color: #dc3545; }
+.status-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  margin-right: 6px;
+}
+.status-dot.ok { background: #28a745; }
+.status-dot.err { background: #dc3545; }
+.status-dot.unknown { background: #ffc107; }
+#loading { display: none; text-align: center; padding: 10px; color: #888; font-size: 13px; }
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>DesayMem 车机记忆 Demo</h1>
+  <div class="subtitle">在对话框中说话，系统会自动抽取记忆并存储。输入"搜索：xxx"可检索已有记忆。</div>
+
+  <div class="config-bar">
+    <span class="status-dot unknown" id="statusDot"></span>
+    <input id="baseUrl" placeholder="API 地址，如 http://你的服务器IP/memory 或 http://localhost:8766" value="">
+    <button onclick="checkHealth()">连接</button>
+  </div>
+
+  <div class="actions">
+    <button onclick="setUser('user_driver')">司机</button>
+    <button onclick="setUser('user_passenger')">乘客</button>
+    <button onclick="clearMemories()">清空当前用户记忆</button>
+    <button onclick="listMemories()">刷新记忆列表</button>
+    <button class="danger" onclick="deleteAllUsers()">清空所有用户</button>
+  </div>
+
+  <div class="panels">
+    <div class="panel">
+      <div class="panel-header">对话（当前用户：<span id="currentUser">user_driver</span>）</div>
+      <div class="chat-box" id="chatBox">
+        <div class="msg system">已连接。试试说"我开车的时候喜欢把空调调到22度"</div>
+      </div>
+      <div id="loading">LLM 抽取中...</div>
+      <div class="input-area">
+        <textarea id="msgInput" placeholder="输入对话内容，按回车发送..." onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendMessage();}"></textarea>
+        <button id="sendBtn" onclick="sendMessage()">发送</button>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-header">记忆库</div>
+      <div class="memories-list" id="memList">
+        <div class="mem-empty">暂无记忆</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+let currentUser = 'user_driver';
+let currentTenant = 'oem_chery';
+
+function getBaseUrl() {
+  let url = document.getElementById('baseUrl').value.trim();
+  if (!url) return '';
+  return url.replace(/\/+$/, '');
+}
+
+function setStatus(state) {
+  const dot = document.getElementById('statusDot');
+  dot.className = 'status-dot ' + state;
+}
+
+async function checkHealth() {
+  const base = getBaseUrl();
+  if (!base) { alert('请输入 API 地址'); return; }
+  try {
+    const resp = await fetch(base + '/health');
+    if (resp.ok) {
+      setStatus('ok');
+      addSystemMsg('已连接到 ' + base);
+      listMemories();
+    } else {
+      setStatus('err');
+      addSystemMsg('连接失败: HTTP ' + resp.status);
+    }
+  } catch (e) {
+    setStatus('err');
+    addSystemMsg('连接失败: ' + e.message);
+  }
+}
+
+function setUser(user) {
+  currentUser = user;
+  document.getElementById('currentUser').textContent = user;
+  listMemories();
+  addSystemMsg('已切换到用户: ' + user);
+}
+
+function addMsg(role, text) {
+  const box = document.getElementById('chatBox');
+  const div = document.createElement('div');
+  div.className = 'msg ' + role;
+  div.textContent = text;
+  box.appendChild(div);
+  box.scrollTop = box.scrollHeight;
+}
+
+function addSystemMsg(text) {
+  addMsg('system', text);
+}
+
+async function sendMessage() {
+  const input = document.getElementById('msgInput');
+  const btn = document.getElementById('sendBtn');
+  const text = input.value.trim();
+  if (!text) return;
+  const base = getBaseUrl();
+  if (!base) { alert('请先填写 API 地址并点击连接'); return; }
+
+  // 搜索模式
+  if (text.startsWith('搜索：') || text.startsWith('搜索:')) {
+    const query = text.replace(/^搜索[：:]\s*/, '');
+    addMsg('user', text);
+    input.value = '';
+    await searchMemories(query);
+    return;
+  }
+
+  addMsg('user', text);
+  input.value = '';
+  btn.disabled = true;
+  document.getElementById('loading').style.display = 'block';
+
+  try {
+    const resp = await fetch(base + '/v1/memories', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        tenant_id: currentTenant,
+        user_id: currentUser,
+        vehicle_id: 'vehicle_001',
+        session_id: 'session_demo',
+        scene: 'driving',
+        messages: [
+          { role: 'user', content: text }
+        ],
+        infer: true
+      })
+    });
+
+    if (!resp.ok) {
+      const err = await resp.text();
+      addSystemMsg('写入失败: ' + resp.status + ' ' + err);
+      return;
+    }
+
+    const data = await resp.json();
+    const memories = data.memories || [];
+
+    if (memories.length === 0) {
+      addMsg('assistant', '（未抽取到新记忆，可能已有相同记忆）');
+    } else {
+      let reply = '已记住 ' + memories.length + ' 条记忆：\n';
+      memories.forEach((m, i) => {
+        reply += (i + 1) + '. ' + m.content.substring(0, 100) + '\n';
+      });
+      addMsg('assistant', reply);
+    }
+
+    listMemories();
+  } catch (e) {
+    addSystemMsg('请求失败: ' + e.message);
+  } finally {
+    btn.disabled = false;
+    document.getElementById('loading').style.display = 'none';
+  }
+}
+
+async function searchMemories(query) {
+  const base = getBaseUrl();
+  try {
+    const resp = await fetch(base + '/v1/memories/search', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        tenant_id: currentTenant,
+        user_id: currentUser,
+        query: query,
+        top_k: 5
+      })
+    });
+
+    if (!resp.ok) {
+      addSystemMsg('搜索失败: ' + resp.status);
+      return;
+    }
+
+    const data = await resp.json();
+    const hits = data.memories || [];
+
+    if (hits.length === 0) {
+      addMsg('assistant', '未找到相关记忆');
+    } else {
+      let reply = '找到 ' + hits.length + ' 条相关记忆：\n';
+      hits.forEach((h, i) => {
+        reply += (i + 1) + '. ' + h.content.substring(0, 100) + '\n';
+      });
+      addMsg('assistant', reply);
+    }
+  } catch (e) {
+    addSystemMsg('搜索失败: ' + e.message);
+  }
+}
+
+async function listMemories() {
+  const base = getBaseUrl();
+  if (!base) return;
+  try {
+    const resp = await fetch(
+      base + '/v1/users/' + currentUser + '/memories?tenant_id=' + currentTenant + '&limit=50'
+    );
+    if (!resp.ok) return;
+    const data = await resp.json();
+    const memories = data.memories || [];
+    const list = document.getElementById('memList');
+
+    if (memories.length === 0) {
+      list.innerHTML = '<div class="mem-empty">暂无记忆</div>';
+      return;
+    }
+
+    list.innerHTML = memories.map(m => {
+      const type = m.memory_type || 'semantic_memory';
+      const typeClass = type === 'procedural_memory' ? 'procedural' : '';
+      const typeLabel = type === 'procedural_memory' ? '过程性' : '语义';
+      const content = (m.content || '').substring(0, 120);
+      return '<div class="mem-item">' +
+        content +
+        '<span class="type-tag ' + typeClass + '">' + typeLabel + '</span>' +
+        '</div>';
+    }).join('');
+  } catch (e) {
+    // 静默
+  }
+}
+
+async function clearMemories() {
+  const base = getBaseUrl();
+  if (!base) return;
+  if (!confirm('确认清空 ' + currentUser + ' 的所有记忆？')) return;
+  try {
+    await fetch(
+      base + '/v1/users/' + currentUser + '/memories?tenant_id=' + currentTenant + '&confirm=true',
+      { method: 'DELETE' }
+    );
+    addSystemMsg('已清空 ' + currentUser + ' 的记忆');
+    listMemories();
+  } catch (e) {
+    addSystemMsg('清空失败: ' + e.message);
+  }
+}
+
+async function deleteAllUsers() {
+  if (!confirm('危险操作！确认清空所有用户的记忆？')) return;
+  const base = getBaseUrl();
+  for (const user of ['user_driver', 'user_passenger']) {
+    try {
+      await fetch(
+        base + '/v1/users/' + user + '/memories?tenant_id=' + currentTenant + '&confirm=true',
+        { method: 'DELETE' }
+      );
+    } catch (e) {}
+  }
+  addSystemMsg('已清空所有用户记忆');
+  listMemories();
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,1772 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DesayMem Light - 记忆写入观测台</title>
+<style>
+:root {
+  --bg: #0d1117;
+  --panel: #161b22;
+  --border: #30363d;
+  --text: #e6edf3;
+  --text-dim: #8b949e;
+  --accent: #4a90d9;
+  --accent-dim: #1f3a5f;
+  --green: #3fb950;
+  --red: #f85149;
+  --yellow: #d29922;
+  --purple: #a371f7;
+  --user-bubble: #1f3a5f;
+  --car-bubble: #21262d;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: -apple-system, "Microsoft YaHei", "Segoe UI", sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ── 顶部导航栏 ── */
+.topbar {
+  background: var(--panel);
+  border-bottom: 1px solid var(--border);
+  padding: 8px 20px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-shrink: 0;
+}
+.topbar .logo { font-size: 16px; font-weight: 700; white-space: nowrap; }
+.topbar .logo span { color: var(--accent); }
+.topbar .backend-url {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 4px 10px;
+  color: var(--text-dim);
+  font-size: 12px;
+  width: 300px;
+}
+.topbar .backend-url:focus { outline: none; border-color: var(--accent); color: var(--text); }
+.topbar label.auto-refresh {
+  display: flex; align-items: center; gap: 5px;
+  font-size: 12px; color: var(--text-dim); cursor: pointer; user-select: none;
+}
+.status-pill {
+  display: flex; align-items: center; gap: 6px;
+  font-size: 12px; color: var(--text-dim);
+  margin-left: auto;
+}
+.status-dot { width: 8px; height: 8px; border-radius: 50%; }
+.status-dot.ok { background: var(--green); }
+.status-dot.err { background: var(--red); }
+.status-dot.idle { background: var(--yellow); }
+.last-sync { font-size: 11px; color: var(--text-dim); }
+
+/* ── 主体三栏 ── */
+.main-layout { display: flex; flex: 1; overflow: hidden; }
+.left-panel {
+  width: 300px;
+  background: var(--panel);
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+}
+.center-panel { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+.right-panel {
+  width: 380px;
+  background: var(--panel);
+  border-left: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+}
+
+/* ── 左侧：数据库表面板 ── */
+.db-header {
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.db-header .title { font-size: 13px; font-weight: 600; }
+.db-header .hint { font-size: 10px; color: var(--text-dim); }
+.db-header button {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 3px 8px;
+  color: var(--text-dim);
+  font-size: 11px;
+  cursor: pointer;
+}
+.db-header button:hover { border-color: var(--accent); color: var(--text); }
+
+.db-group { padding: 8px 0; border-bottom: 1px solid var(--border); }
+.db-group:last-child { border-bottom: none; }
+.db-group-label {
+  font-size: 10px;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 4px 16px 2px;
+}
+.db-table-list { flex: 1; overflow-y: auto; padding-bottom: 8px; }
+.view-toggle { display: flex; gap: 6px; padding: 0 16px 8px 16px; }
+.view-toggle button {
+  flex: 1; font-size: 11px; padding: 5px 0; border: 1px solid var(--border);
+  background: transparent; color: var(--text-dim, #9aa4b2); border-radius: 6px; cursor: pointer;
+}
+.view-toggle button.active { background: rgba(74,144,217,0.15); color: var(--accent); border-color: var(--accent); }
+.db-group-label .badge-sum { float: right; color: var(--text-dim, #9aa4b2); font-size: 10px; }
+/* 表说明 tooltip（title 属性即可，原生实现零依赖）+ 明细面板说明条 */
+.table-desc {
+  font-size: 11px; line-height: 1.5; color: var(--text-dim, #9aa4b2);
+  background: rgba(74,144,217,0.08); border-left: 2px solid var(--accent);
+  padding: 6px 10px; margin: 0 0 6px 0; border-radius: 0 4px 4px 0;
+}
+.table-desc .desc-fields { margin-top: 4px; display: flex; flex-wrap: wrap; gap: 4px 10px; }
+.table-desc .desc-fields span { white-space: nowrap; }
+.table-desc .fk { color: var(--accent); font-weight: 600; }
+.db-table-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 16px;
+  cursor: pointer;
+  font-size: 12px;
+  border-left: 2px solid transparent;
+}
+.db-table-item:hover { background: var(--bg); }
+.db-table-item.active {
+  background: var(--bg);
+  border-left-color: var(--accent);
+}
+.db-table-item .tname { flex: 1; word-break: break-all; }
+.db-table-item .tcount {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 0 7px;
+  font-size: 11px;
+  color: var(--text-dim);
+  min-width: 28px;
+  text-align: center;
+}
+.db-table-item .tcount.zero { color: #484f58; }
+.db-table-item .flash {
+  border-color: var(--green) !important;
+  color: var(--green) !important;
+  transition: all 0.2s;
+}
+
+/* ── 表内容抽屉（左侧选中表的行列表） ── */
+.db-rows-panel {
+  height: 45%;
+  border-top: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+}
+.db-rows-header {
+  padding: 8px 16px;
+  border-bottom: 1px solid var(--border);
+  font-size: 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.db-rows-header .close-x {
+  background: none; border: none; color: var(--text-dim);
+  font-size: 13px; cursor: pointer;
+}
+.db-rows-header .close-x:hover { color: var(--text); }
+.db-rows-body { flex: 1; overflow-y: auto; padding: 10px 12px; }
+.db-row-card {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 8px 10px;
+  margin-bottom: 8px;
+  font-size: 11px;
+}
+.db-row-card .r-main {
+  color: var(--text);
+  line-height: 1.4;
+  word-break: break-word;
+  white-space: pre-wrap;
+}
+.db-row-card .r-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 10px;
+  color: var(--text-dim);
+  font-size: 10px;
+  margin-top: 5px;
+}
+.db-row-card .r-badge {
+  border-radius: 3px;
+  padding: 1px 5px;
+  font-size: 10px;
+  background: rgba(74,144,217,0.2);
+  color: var(--accent);
+}
+.db-row-card.new { border-color: var(--green); box-shadow: 0 0 6px rgba(63,185,80,0.25); }
+.db-rows-empty { text-align: center; color: var(--text-dim); padding: 30px 0; font-size: 12px; }
+
+/* ── 中间对话区 ── */
+.chat-header {
+  padding: 12px 20px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.chat-header .title { font-size: 14px; font-weight: 600; }
+.chat-header .session { font-size: 11px; color: var(--text-dim); }
+.chat-box { flex: 1; overflow-y: auto; padding: 20px; }
+.chat-msg { margin-bottom: 16px; display: flex; flex-direction: column; max-width: 78%; }
+.chat-msg.user { margin-left: auto; align-items: flex-end; }
+.chat-msg.car { margin-right: auto; align-items: flex-start; }
+.chat-msg .bubble {
+  padding: 10px 14px;
+  border-radius: 14px;
+  font-size: 14px;
+  line-height: 1.5;
+  white-space: pre-wrap;
+}
+.chat-msg.user .bubble { background: var(--user-bubble); border-bottom-right-radius: 4px; }
+.chat-msg.car .bubble { background: var(--car-bubble); border: 1px solid var(--border); border-bottom-left-radius: 4px; }
+.chat-msg .meta { font-size: 10px; color: var(--text-dim); margin-top: 4px; }
+
+.chat-msg .pipeline-status {
+  background: rgba(74, 144, 217, 0.1);
+  border: 1px solid rgba(74, 144, 217, 0.3);
+  border-radius: 8px;
+  padding: 6px 10px;
+  font-size: 11px;
+  margin-top: 6px;
+  max-width: 100%;
+}
+.chat-msg .pipeline-status .ps-line {
+  display: flex; align-items: center; gap: 6px; margin-top: 3px;
+  color: var(--text-dim);
+}
+.chat-msg .pipeline-status .ps-line.first { margin-top: 0; }
+.chat-msg .pipeline-status .ps-name { min-width: 92px; color: var(--accent); }
+.ps-badge {
+  border-radius: 3px; padding: 1px 6px; font-size: 10px;
+}
+.ps-badge.pending { background: rgba(139,148,158,0.2); color: var(--text-dim); }
+.ps-badge.running { background: rgba(74,144,217,0.25); color: var(--accent); }
+.ps-badge.completed { background: rgba(63,185,80,0.2); color: var(--green); }
+.ps-badge.failed, .ps-badge.dead { background: rgba(248,81,73,0.2); color: var(--red); }
+.job-line.failed { border-left: 2px solid var(--red); background: rgba(248,81,73,0.06); }
+.job-line.failed .jl-err { color: var(--red); font-size: 10px; padding: 2px 0 0 0;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.tcount.fcount { background: rgba(248,81,73,0.25); color: var(--red); }
+
+.chat-msg .recall-info {
+  background: rgba(74, 144, 217, 0.1);
+  border: 1px solid rgba(74, 144, 217, 0.3);
+  border-radius: 8px;
+  padding: 6px 10px;
+  font-size: 11px;
+  color: var(--accent);
+  margin-top: 6px;
+  max-width: 100%;
+}
+.chat-msg .recall-info .label { font-weight: 600; margin-bottom: 2px; }
+.chat-msg .recall-info .item { margin-top: 2px; color: var(--text-dim); }
+
+.chat-input-area {
+  padding: 12px 20px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  gap: 10px;
+  align-items: flex-end;
+}
+.chat-input-area textarea {
+  flex: 1;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 10px 14px;
+  color: var(--text);
+  font-size: 14px;
+  resize: none;
+  height: 42px;
+  max-height: 120px;
+  font-family: inherit;
+}
+.chat-input-area textarea:focus { outline: none; border-color: var(--accent); }
+.chat-input-area button {
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  padding: 10px 20px;
+  cursor: pointer;
+  font-size: 14px;
+  white-space: nowrap;
+}
+.chat-input-area button:hover { background: #357abd; }
+.chat-input-area button:disabled { background: var(--border); cursor: not-allowed; }
+
+.quick-actions { padding: 8px 20px; display: flex; gap: 6px; flex-wrap: wrap; }
+.quick-actions button {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 5px 12px;
+  color: var(--text-dim);
+  font-size: 12px;
+  cursor: pointer;
+}
+.quick-actions button:hover { border-color: var(--accent); color: var(--text); }
+
+/* ── 右侧管线观测 ── */
+.right-header {
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.right-header .title { font-size: 13px; font-weight: 600; }
+.right-header button {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 4px 8px;
+  color: var(--text-dim);
+  font-size: 11px;
+  cursor: pointer;
+}
+.right-header button:hover { border-color: var(--accent); color: var(--text); }
+
+.obs-tabs { display: flex; border-bottom: 1px solid var(--border); flex-wrap: wrap; }
+.obs-tabs button {
+  flex: 1;
+  background: none; border: none; padding: 7px 4px;
+  color: var(--text-dim); font-size: 11px; cursor: pointer;
+  border-bottom: 2px solid transparent; white-space: nowrap;
+}
+.obs-tabs button.active { color: var(--text); border-bottom-color: var(--accent); }
+.obs-content { flex: 1; overflow-y: auto; padding: 12px; }
+
+.obs-section { margin-bottom: 16px; }
+.obs-label {
+  font-size: 10px; color: var(--text-dim);
+  text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px;
+}
+.obs-stat-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
+.obs-stat-box {
+  background: var(--bg); border: 1px solid var(--border);
+  border-radius: 6px; padding: 8px 4px; text-align: center;
+}
+.obs-stat-box .num { font-size: 18px; font-weight: 700; color: var(--accent); }
+.obs-stat-box .lbl { font-size: 9px; color: var(--text-dim); margin-top: 2px; }
+.obs-stat-box.green .num { color: var(--green); }
+.obs-stat-box.yellow .num { color: var(--yellow); }
+.obs-stat-box.red .num { color: var(--red); }
+
+.obs-card {
+  background: var(--bg); border: 1px solid var(--border);
+  border-radius: 8px; padding: 10px; margin-bottom: 8px; font-size: 12px;
+}
+.obs-card .obs-card-content { line-height: 1.4; margin-bottom: 6px; word-break: break-word; white-space: pre-wrap; }
+.obs-card .obs-card-footer {
+  display: flex; justify-content: space-between; align-items: center;
+  font-size: 10px; color: var(--text-dim); flex-wrap: wrap; gap: 4px;
+}
+.obs-tag { border-radius: 3px; padding: 1px 5px; font-size: 10px; }
+.obs-tag.fact { background: rgba(74,144,217,0.2); color: var(--accent); }
+.obs-tag.event { background: rgba(210,153,34,0.2); color: var(--yellow); }
+.obs-tag.cross_event { background: rgba(163,113,247,0.2); color: var(--purple); }
+.obs-tag.profile { background: rgba(230,126,34,0.2); color: #e67e22; }
+.obs-tag.active { background: rgba(63,185,80,0.2); color: var(--green); }
+.obs-tag.superseded { background: rgba(210,153,34,0.2); color: var(--yellow); }
+.obs-empty { text-align: center; color: var(--text-dim); padding: 30px 0; font-size: 12px; }
+
+/* 记忆卡片点击展开详情（只读元数据 + 证据链） */
+.obs-card.expandable { cursor: pointer; }
+.obs-card.expandable:hover { border-color: var(--accent); }
+.mem-detail { display: none; margin-top: 8px; padding-top: 8px; border-top: 1px dashed var(--border); }
+.obs-card.expanded .mem-detail { display: block; }
+.mem-detail .row { display: flex; gap: 8px; font-size: 10px; margin-bottom: 3px; }
+.mem-detail .row .key { color: var(--text-dim); min-width: 110px; flex-shrink: 0; }
+.mem-detail .row .val { word-break: break-all; color: var(--text); font-family: var(--mono); }
+.mem-detail .evidence { margin-top: 6px; font-size: 10px; color: var(--text-dim); }
+.mem-detail .evidence .ev-item { padding: 3px 6px; margin-bottom: 3px; background: rgba(74,144,217,0.06); border-left: 2px solid var(--accent); border-radius: 0 4px 4px 0; }
+.mem-detail .expand-hint { font-size: 9px; color: var(--text-dim); text-align: right; opacity: 0.7; }
+
+.job-line {
+  display: flex; justify-content: space-between; align-items: center;
+  background: var(--bg); border: 1px solid var(--border);
+  border-radius: 6px; padding: 6px 10px; margin-bottom: 6px; font-size: 11px;
+}
+.job-line .jl-left { display: flex; gap: 8px; align-items: center; min-width: 0; }
+.job-line .jl-type { color: var(--text); }
+.job-line .jl-time { color: var(--text-dim); font-size: 10px; }
+.job-line.new { border-color: var(--green); }
+
+/* ── 登录页面 ── */
+.login-overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: var(--bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+}
+.login-overlay.hidden { display: none; }
+.login-box {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 40px;
+  width: 440px;
+  max-width: 90vw;
+}
+.login-box h2 { font-size: 20px; margin-bottom: 6px; }
+.login-box p { color: var(--text-dim); font-size: 13px; margin-bottom: 24px; }
+.login-form { display: flex; flex-direction: column; gap: 14px; }
+.login-form label {
+  font-size: 12px; color: var(--text-dim);
+  margin-bottom: 4px; display: block;
+}
+.login-form input, .login-form select {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 10px;
+  color: var(--text);
+  font-size: 14px;
+  width: 100%;
+}
+.login-form input:focus, .login-form select:focus {
+  outline: none; border-color: var(--accent);
+}
+.login-form .row { display: flex; gap: 12px; }
+.login-form .row > div { flex: 1; }
+.login-btn {
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 12px;
+  font-size: 15px;
+  cursor: pointer;
+  margin-top: 8px;
+}
+.login-btn:hover { background: #357abd; }
+
+/* ── 左侧用户卡片 ── */
+.user-card {
+  padding: 16px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.user-card .avatar {
+  width: 44px; height: 44px;
+  border-radius: 50%;
+  background: var(--accent-dim);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 19px; flex-shrink: 0;
+}
+.user-card .name { font-size: 14px; font-weight: 600; word-break: break-all; }
+.user-card .role { font-size: 11px; color: var(--text-dim); }
+.user-card .detail { font-size: 10px; color: var(--text-dim); margin-top: 1px; }
+.switch-btn {
+  margin: 10px 16px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 7px;
+  color: var(--text);
+  font-size: 12px;
+  cursor: pointer;
+  text-align: center;
+}
+.switch-btn:hover { border-color: var(--accent); }
+
+/* ── 决策/调试面板 ── */
+.dev-panel {
+  background: rgba(22, 27, 34, 0.6);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  margin-top: 6px;
+  font-size: 11px;
+  overflow: hidden;
+  max-width: 100%;
+}
+.dev-panel-header {
+  padding: 6px 10px;
+  display: flex; align-items: center; gap: 8px;
+  cursor: pointer; user-select: none;
+  color: var(--text-dim);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.dev-panel-header:hover { color: var(--text); }
+.dev-panel-header .tag { border-radius: 3px; padding: 1px 5px; font-size: 10px; flex-shrink: 0; }
+.dev-panel-header .tag.sim { background: rgba(210,153,34,0.2); color: var(--yellow); }
+.dev-panel-body { display: none; padding: 8px 10px; border-top: 1px solid var(--border); }
+.dev-panel.expanded .dev-panel-body { display: block; }
+.dev-panel-body .row { display: flex; justify-content: space-between; margin-bottom: 3px; gap: 8px; }
+.dev-panel-body .row .key { color: var(--text-dim); flex-shrink: 0; }
+.dev-panel-body .row .val { text-align: right; word-break: break-all; }
+.dev-panel-body .section-label {
+  font-weight: 600; color: var(--accent);
+  margin-top: 6px; margin-bottom: 3px;
+  font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px;
+}
+.dev-panel-body .warn-text { color: var(--yellow); font-size: 10px; margin-top: 4px; }
+
+/* ── Toast ── */
+.toast {
+  position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+  background: var(--panel); border: 1px solid var(--border);
+  border-radius: 8px; padding: 10px 20px; font-size: 13px;
+  z-index: 200; display: none;
+}
+.toast.show { display: block; animation: fadeIn 0.2s; }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: #484f58; }
+</style>
+</head>
+<body>
+
+<!-- 登录页面 -->
+<div class="login-overlay" id="loginOverlay">
+  <div class="login-box">
+    <h2>车机点火启动</h2>
+    <p>选择驾驶员身份后点火，DesayMem Light 会按用户隔离存储记忆。左侧面板可实时观察数据库写入变化。</p>
+    <div class="login-form">
+      <div class="row">
+        <div>
+          <label>租户（项目）</label>
+          <input id="loginTenant" value="oem_chery">
+        </div>
+        <div>
+          <label>车辆 ID</label>
+          <input id="loginVehicle" value="vehicle_001">
+        </div>
+      </div>
+      <div class="row">
+        <div>
+          <label>驾驶员</label>
+          <select id="loginUserSelect">
+            <option value="user_driver">司机 A</option>
+            <option value="user_passenger">乘客 B</option>
+            <option value="user_driver2">司机 C</option>
+            <option value="custom">自定义...</option>
+          </select>
+        </div>
+        <div>
+          <label>乘员位置</label>
+          <select id="loginOccupant">
+            <option value="driver">主驾</option>
+            <option value="passenger">副驾</option>
+            <option value="rear_left">后排左</option>
+            <option value="rear_right">后排右</option>
+          </select>
+        </div>
+      </div>
+      <div id="customUserRow" style="display:none">
+        <label>自定义用户 ID</label>
+        <input id="loginUserCustom" placeholder="如 user_test">
+      </div>
+      <button class="login-btn" onclick="doLogin()">点火启动</button>
+    </div>
+  </div>
+</div>
+
+<!-- 顶栏 -->
+<div class="topbar">
+  <div class="logo">Desay<span>Mem</span> Light 观测台</div>
+  <input class="backend-url" id="backendUrl" value="http://10.133.72.161:20148" title="DesayMem Light API 地址">
+  <label class="auto-refresh">
+    <input type="checkbox" id="autoRefreshToggle" checked>
+    自动刷新(3s)
+  </label>
+  <label class="auto-refresh">
+    <input type="checkbox" id="devModeToggle" checked>
+    开发者模式
+  </label>
+  <div class="status-pill">
+    <div class="status-dot idle" id="mirrorDot"></div>
+    <span id="mirrorText">镜像未加载</span>
+    <span class="last-sync" id="lastSync"></span>
+  </div>
+</div>
+
+<!-- 主体 -->
+<div class="main-layout">
+
+  <!-- 左侧：数据库 -->
+  <div class="left-panel">
+    <div class="user-card">
+      <div class="avatar" id="userAvatar">D</div>
+      <div>
+        <div class="name" id="userName">未登录</div>
+        <div class="role" id="userRole">主驾</div>
+        <div class="detail" id="userTenant">tenant: -</div>
+        <div class="detail" id="userVehicle">vehicle: -</div>
+      </div>
+    </div>
+    <button class="switch-btn" onclick="logout()">熄火 / 切换用户</button>
+    <div class="db-header">
+      <div>
+        <div class="title">PostgreSQL（JSON 镜像）</div>
+        <div class="hint">来自 json_mirror/postgres/*.json</div>
+      </div>
+      <button onclick="refreshTables()">刷新</button>
+    <div class="view-toggle">
+      <button id="viewBtnMemory" onclick="setDbView('memory')">记忆视图</button>
+      <button id="viewBtnTables" onclick="setDbView('tables')">数据库视图</button>
+    </div>
+    </div>
+    <div class="db-table-list" id="dbTableList">
+      <div class="db-rows-empty">加载中...</div>
+    </div>
+    <div class="db-rows-panel" id="dbRowsPanel" style="display:none">
+      <div class="db-rows-header">
+        <span id="dbRowsTitle">表</span>
+        <button class="close-x" onclick="closeTableRows()">✕</button>
+      </div>
+      <div class="db-rows-body" id="dbRowsBody"></div>
+    </div>
+  </div>
+
+  <!-- 中间：对话 -->
+  <div class="center-panel">
+    <div class="chat-header">
+      <div class="title">车机对话（检索记忆 → LLM 决策 → 异步写入）</div>
+      <div class="session" id="sessionLabel"></div>
+    </div>
+    <div class="chat-box" id="chatBox">
+      <div class="chat-msg car">
+        <div class="bubble">系统已就绪。试试说"我开车的时候喜欢把空调调到22度"，我会记住你的偏好。左侧面板实时展示记忆的写入变化；发送「搜索：xxx」直接检索。</div>
+        <div class="meta">车机助手</div>
+      </div>
+    </div>
+    <div class="quick-actions">
+      <button onclick="quickSend('我开车的时候喜欢把空调调到22度')">空调偏好</button>
+      <button onclick="quickSend('导航去上海迪士尼')">导航</button>
+      <button onclick="quickSend('开车时帮我放周杰伦的歌')">音乐</button>
+      <button onclick="quickSend('帮我把座椅加热打开到3挡')">座椅加热</button>
+      <button onclick="quickSearch('空调温度偏好')">搜索记忆</button>
+    </div>
+    <div class="chat-input-area">
+      <textarea id="msgInput" placeholder="输入对话内容，回车发送；「搜索：xxx」直接检索..." onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendMessage();}"></textarea>
+      <button id="sendBtn" onclick="sendMessage()">发送</button>
+    </div>
+  </div>
+
+  <!-- 右侧：管线观测 -->
+  <div class="right-panel">
+    <div class="right-header">
+      <div class="title">管线观测</div>
+      <button onclick="refreshAll(true)">刷新</button>
+    </div>
+    <div class="obs-tabs">
+      <button class="active" id="obsTabOv" onclick="switchObsTab('overview')">总览</button>
+      <button id="obsTabJobs" onclick="switchObsTab('jobs')">任务队列</button>
+      <button id="obsTabFact" onclick="switchObsTab('fact')">facts</button>
+      <button id="obsTabEv" onclick="switchObsTab('event')">events</button>
+      <button id="obsTabCross" onclick="switchObsTab('cross_event')">cross</button>
+      <button id="obsTabProfile" onclick="switchObsTab('profile')">画像</button>
+    </div>
+    <div class="obs-content" id="obsContent">
+      <div class="obs-empty">加载中...</div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const API_TABLES = '/api/tables';            // 本服务（静态服务器）提供
+// ═══════════ 全局状态 ═══════════
+// 后端 API 调用统一走本服务反向代理 /api/backend/*（规避浏览器跨域 CORS）
+const PROXY = '/api/backend/';
+const LLM_CHAT = '/api/llm/chat';            // 车机 LLM 对话代理（server.py 转发 vLLM，Key 不进浏览器）
+let devMode = localStorage.getItem('light_dev_mode');
+if (devMode === null) devMode = 'true';
+
+const state = {
+  loggedIn: false,
+  backendUrl: 'http://10.133.72.161:20148',    // DesayMem Light API（显示用；实际请求走 /api/backend/ 代理）
+  scope: null,     // {tenant_id, user_id, vehicle_id, occupant_id, session_id} — doLogin 后填充
+  seq: 0,
+  // 镜像状态
+  tables: {},            // name -> {rows, table_version, mtime}
+  prevTables: {},
+  tableRows: null,       // 当前打开表的完整 rows
+  openTable: null,
+  openRowIds: new Set(), // 当前打开表已见过的行 id（用于高亮新行）
+  // 观测
+  obsTab: 'overview',
+  dbView: localStorage.getItem('dbView') || 'memory',
+  rowFilter: null,
+  prevJobIds: new Set(),
+  timer: null,
+};
+
+// ── 登录 / 多用户 ──
+const OCCUPANT_LABEL = { driver: '主驾', passenger: '副驾', rear_left: '后排左', rear_right: '后排右' };
+
+document.getElementById('loginUserSelect').addEventListener('change', function () {
+  document.getElementById('customUserRow').style.display = this.value === 'custom' ? 'block' : 'none';
+});
+document.getElementById('loginOccupant').addEventListener('change', function () {
+  const us = document.getElementById('loginUserSelect');
+  if (this.value === 'passenger' && us.value === 'user_driver') us.value = 'user_passenger';
+  else if (this.value === 'driver' && us.value === 'user_passenger') us.value = 'user_driver';
+});
+
+async function doLogin() {
+  const tenant = document.getElementById('loginTenant').value.trim();
+  const vehicleId = document.getElementById('loginVehicle').value.trim();
+  const occupant = document.getElementById('loginOccupant').value;
+  const sel = document.getElementById('loginUserSelect').value;
+  let userId;
+  if (sel === 'custom') {
+    userId = document.getElementById('loginUserCustom').value.trim();
+    if (!userId) { showToast('请输入自定义用户 ID'); return; }
+  } else userId = sel;
+  if (!tenant || !vehicleId || !userId) { showToast('请完整填写登录信息'); return; }
+
+  state.scope = {
+    tenant_id: tenant, user_id: userId, vehicle_id: vehicleId,
+    occupant_id: occupant, session_id: 'session_' + Date.now(),
+  };
+  state.seq = 0;
+  state.loggedIn = true;
+
+  // 后端连通性检查（不阻断登录，镜像观测仍可用）
+  try {
+    const r = await fetch(PROXY + 'health/ready');
+    if (r.ok) showToast('后端已连接，欢迎 ' + userId);
+    else throw new Error();
+  } catch (e) {
+    showToast('后端不可达（仅镜像观测可用）');
+  }
+
+  document.getElementById('loginOverlay').classList.add('hidden');
+  updateUserCard();
+  updateSessionLabel();
+}
+
+function logout() {
+  state.loggedIn = false;
+  state.scope = null;
+  state.seq = 0;
+  document.getElementById('chatBox').innerHTML =
+    '<div class="chat-msg car"><div class="bubble">已熄火。重新点火后系统将按新用户身份隔离记忆。</div><div class="meta">车机助手</div></div>';
+  document.getElementById('loginOverlay').classList.remove('hidden');
+  showToast('已熄火');
+}
+
+function updateUserCard() {
+  const s = state.scope || {};
+  document.getElementById('userName').textContent = s.user_id || '未登录';
+  document.getElementById('userRole').textContent = OCCUPANT_LABEL[s.occupant_id] || s.occupant_id || '';
+  document.getElementById('userTenant').textContent = 'tenant: ' + (s.tenant_id || '-');
+  document.getElementById('userVehicle').textContent = 'vehicle: ' + (s.vehicle_id || '-');
+  document.getElementById('userAvatar').textContent =
+    (s.user_id || 'D').charAt((s.user_id || 'D').lastIndexOf('_') + 1).toUpperCase();
+}
+
+// 开发者模式开关
+(function initDevMode() {
+  const t = document.getElementById('devModeToggle');
+  t.checked = devMode === 'true';
+  t.addEventListener('change', () => {
+    devMode = t.checked ? 'true' : 'false';
+    localStorage.setItem('light_dev_mode', devMode);
+  });
+})();
+
+// 管线分组：表 -> 阶段（展示顺序）
+const TABLE_GROUPS = [
+  { label: '接入层（L0）', tables: ['session_messages', 'short_term_memories'] },
+  { label: '切片（segment）', tables: ['topic_segments', 'topic_segment_messages'] },
+  { label: '记忆条目（L1/L2）', tables: ['memory_items'] },
+  { label: '证据与关联', tables: ['memory_evidence', 'memory_relations', 'memory_tag_links', 'tag_definitions'] },
+  { label: '画像（L3 profile）', tables: ['profile_items', 'profile_snapshots', 'profile_snapshot_items', 'profile_item_evidence', 'profile_checkpoints'] },
+  { label: '任务队列（jobs）', tables: ['memory_jobs'] },
+  { label: '审计与用量', tables: ['memory_audit_events', 'llm_usage', 'cross_event_checkpoints'] },
+];
+
+const JOB_LABEL = {
+  session_segment: '切段', fact_extract: '事实抽取', event_build: '事件构建',
+  cross_event: '跨事件归纳', profile_update: '画像更新',
+};
+// ── 表说明：给排查/验收的工程师看的"数据库导读" ──
+// usage 一行说清存什么；fields 只列关键列（省略 id/时间戳等自明字段）。
+const TABLE_INFO = {
+  session_messages: {
+    usage: 'L0 原始消息：每条对话原文，一切的源头。检索的 session buffer、切段、蒸馏都从这里出发',
+    fields: { session_id: '所属会话', sequence_no: '会话内序号', role: 'user/assistant', content: '消息原文', occurred_at: '发生时间' },
+  },
+  short_term_memories: {
+    usage: 'L0 短期记忆：检索命中后从 session buffer 物化的近期消息（召回即沉淀），供跨请求复用',
+    fields: { message_id: '来源消息（唯一，防重复）', content: '消息原文', session_id: '所属会话', sequence_no: '会话内序号' },
+  },
+  topic_segments: {
+    usage: '话题切片：把连续消息按话题切段（"聊音乐"一段、"导航"一段），是 fact/event 蒸馏的单元',
+    fields: { session_id: '所属会话', status: 'pending/closed', started_at: '段开始时间' },
+  },
+  topic_segment_messages: {
+    usage: '切片↔消息归属：记录每条消息属于哪个段（记忆溯源的中间层）',
+    fields: { topic_segment_id: '段 ID', message_id: '消息 ID' },
+  },
+  memory_items: {
+    usage: '★ 核心记忆表：fact(L1 事实) / event(L2 事件) / cross_event(L2.5 归纳) 三种记忆统一存这里，检索就是查它',
+    fields: { memory_type: 'fact/event/cross_event', content: '记忆内容', status: 'active/superseded', session_id: '产生时的会话', topic_segment_id: '来源切片', derivation_key: '溯源键（幂等去重）', content_hash: '内容指纹', embedding: '向量（镜像中为占位符）', metadata: '触发/覆盖窗口等元信息' },
+  },
+  memory_evidence: {
+    usage: '证据链：每条记忆"从哪条消息/事件提取的"——溯源与验收的关键',
+    fields: { memory_id: '记忆 ID', source_type: 'message/event', source_id: '来源行 ID' },
+  },
+  memory_relations: {
+    usage: '记忆间关系：event contains fact、cross_event summarizes/related_to event（检索时剔除已归纳项）',
+    fields: { source_memory_id: '关系发起方', target_memory_id: '关系目标', relation_type: 'contains/summarizes/related_to' },
+  },
+  memory_tag_links: {
+    usage: '标签链接：记忆↔标签的绑定，支持按标签过滤检索',
+    fields: { memory_id: '记忆 ID', tag_id: '标签 ID' },
+  },
+  tag_definitions: {
+    usage: '标签定义：导航/音乐/位置等主题词的字典（按 tenant 隔离）',
+    fields: { display_name: '标签名', normalized_name: '归一化名（去重用）' },
+  },
+  profile_items: {
+    usage: 'L3 画像条目：原子化的用户偏好（attribute = value），ADD/CONFIRM/SUPERSEDE 增量演进',
+    fields: { attribute: '属性（如 music preference）', value: '值', confirmation_count: '确认次数（越多越可信）', status: 'active/superseded', first_observed_at: '首次观察到', last_confirmed_at: '最近确认', normalized_hash: '去重指纹' },
+  },
+  profile_snapshots: {
+    usage: 'L3 画像快照：版本化的画像全文 summary——检索时注入 LLM 的就是它（稳态纯 CONFIRM 不新增版本）',
+    fields: { version: '版本号', summary: '画像全文', model: '生成模型' },
+  },
+  profile_snapshot_items: {
+    usage: '快照↔条目引用：记录每版快照包含哪些画像条目',
+    fields: { snapshot_id: '快照 ID', profile_item_id: '条目 ID', ordinal: '序' },
+  },
+  profile_item_evidence: {
+    usage: '画像证据：条目"凭什么存在"——经由哪个 cross_event、引用哪个 event',
+    fields: { profile_item_id: '条目 ID', via_cross_event_id: '经由的归纳', event_id: '证据事件', evidence_role: 'support/contradict' },
+  },
+  profile_checkpoints: {
+    usage: '画像水位线：profile 管线处理到哪个事件、最新快照版本（防重防漏）',
+    fields: { last_event_id: '处理到的事件', last_snapshot_version: '最新快照版本' },
+  },
+  memory_jobs: {
+    usage: '异步任务队列：切段→抽fact→建event→归纳→画像 全部靠它驱动，排查"为什么没沉淀"先看这里',
+    fields: { job_type: '任务类型', status: 'ready/running/completed/failed', attempts: '尝试次数', payload: '任务参数', last_error: '失败原因' },
+  },
+  memory_audit_events: {
+    usage: '审计日志：每次记忆/画像变更的操作记录（谁、什么操作、何时）',
+    fields: { entity_table: '目标表', entity_id: '目标行', operation: 'ADD/CONFIRM/NOOP…' },
+  },
+  llm_usage: {
+    usage: 'LLM 用量：每次模型调用的 token 消耗与延迟——成本核算与性能排查',
+    fields: { purpose: '调用目的（fact_extract/cross_event/profile_update…）', usage: 'token 明细', status: 'success/failed' },
+  },
+  cross_event_checkpoints: {
+    usage: '归纳水位线：cross_event 管线处理到哪个事件（防重防漏、未满阈值时调度延时任务）',
+    fields: { last_event_id: '处理到的事件', last_event_occurred_at: '事件时间' },
+  },
+};
+
+
+function escapeHtml(v) {
+  const d = document.createElement('div');
+  d.textContent = String(v ?? '');
+  return d.innerHTML;
+}
+// crypto.randomUUID 仅在安全上下文（HTTPS/localhost）可用；
+// http://IP 访问时为 undefined 会导致检索请求静默失败（召回 0 条）。
+// fallback 必须生成标准 v4 UUID（8-4-4-4-12 五段），SearchRequest.request_id 按 UUID 解析。
+function uuid() {
+  if (window.crypto && crypto.randomUUID) return crypto.randomUUID();
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
+    const r = Math.random() * 16 | 0;
+    return (c === 'x' ? r : (r & 0x3 | 0x8)).toString(16);
+  });
+}
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3000);
+}
+function fmtTime(ts) {
+  if (!ts) return '';
+  try { return new Date(ts).toLocaleString('zh-CN', {month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',second:'2-digit'}); } catch(e) { return String(ts); }
+}
+function setStatus(kind, text) {
+  document.getElementById('mirrorDot').className = 'status-dot ' + kind;
+  document.getElementById('mirrorText').textContent = text;
+}
+
+// ═══════════ 左侧：表列表 ═══════════
+async function refreshTables() {
+  try {
+    const resp = await fetch(API_TABLES);
+    if (!resp.ok) throw new Error('HTTP ' + resp.status);
+    state.prevTables = state.tables;
+    state.tables = await resp.json();
+    setStatus('ok', '镜像已同步');
+    document.getElementById('lastSync').textContent = new Date().toLocaleTimeString('zh-CN');
+    renderTableList();
+    if (state.openTable) loadTableRows(state.openTable, false);
+    renderObsContent();
+  } catch (e) {
+    setStatus('err', '镜像读取失败');
+  }
+}
+
+function setDbView(view) {
+  state.dbView = view;
+  localStorage.setItem('dbView', view);
+  closeTableRows();
+  renderTableList();
+}
+
+// 记忆视图：按 session → short_term → fact → event → cross_event → profile → 快照 的逻辑链组织
+const MEMORY_VIEW_ROWS = [
+  { key: 'session', label: '会话消息', table: 'session_messages', desc: 'L0 原始对话' },
+  { key: 'short_term', label: '短期记忆', table: 'short_term_memories', desc: 'L0 召回即沉淀' },
+  { key: 'fact', label: 'fact 事实', table: 'memory_items', type: 'fact', desc: 'L1 单条偏好/事实' },
+  { key: 'event', label: 'event 事件', table: 'memory_items', type: 'event', desc: 'L2 话题事件' },
+  { key: 'cross_event', label: 'cross_event 归纳', table: 'memory_items', type: 'cross_event', desc: 'L2.5 跨事件归纳' },
+  { key: 'profile_item', label: '画像条目', table: 'profile_items', desc: 'L3 原子偏好' },
+  { key: 'profile_snapshot', label: '画像快照', table: 'profile_snapshots', desc: 'L3 版本化全文' },
+];
+
+function renderMemoryView(known) {
+  let html = '';
+  let mainCount = 0;
+  for (const row of MEMORY_VIEW_ROWS) {
+    if (!known.has(row.table)) continue;
+    let n;
+    if (row.type) {
+      n = ((state.tables[row.table] || {}).by_type || {})[row.type] || 0;
+    } else {
+      n = (state.tables[row.table] || {}).rows || 0;
+    }
+    mainCount += n;
+    const prevType = state.prevTables[row.table];
+    let prevN = null;
+    if (row.type) prevN = ((prevType && prevType.by_type) || {})[row.type];
+    else prevN = prevType && prevType.rows;
+    const changed = prevN !== undefined && prevN !== null && n > prevN;
+    const cls = 'db-table-item' +
+      (state.openTable === row.table && state.rowFilter === (row.type || null) ? ' active' : '');
+    const cntCls = 'tcount' + (n === 0 ? ' zero' : '') + (changed ? ' flash' : '');
+    const tip = (TABLE_INFO[row.table] || {}).usage || '';
+    html += '<div class="' + cls + '" title="' + escapeHtml(tip) + '" onclick="openMemoryRows(\'' + row.table + '\', ' + (row.type ? "'" + row.type + "'" : 'null') + ')">' +
+      '<span class="tname">' + row.label + '</span>' +
+      '<span class="tname-sub" style="color:var(--text-dim,#9aa4b2);font-size:10px;">' + row.desc + '</span>' +
+      '<span class="' + cntCls + '">' + n + '</span></div>';
+  }
+  // 支撑与运维（折叠态展示总数）：切段/证据/关系/标签/水位线/jobs/审计/用量
+  const SUPPORT = ['topic_segments','topic_segment_messages','memory_evidence','memory_relations',
+    'memory_tag_links','tag_definitions','profile_snapshot_items','profile_item_evidence',
+    'profile_checkpoints','cross_event_checkpoints','memory_jobs','memory_audit_events','llm_usage'];
+  let supportCount = 0;
+  const parts = [];
+  for (const t of SUPPORT) {
+    if (!known.has(t)) continue;
+    const n = (state.tables[t] || {}).rows || 0;
+    supportCount += n;
+    parts.push(t.replace(/^memory_|_definitions$|_messages$/g, '') + ' ' + n);
+  }
+  html += '<div class="db-group-label" style="margin-top:6px;">支撑与运维<span class="badge-sum">' + supportCount + '</span></div>';
+  html += '<div class="db-table-item" title="' + escapeHtml(parts.join(' · ')) + '" onclick="setDbView(\'tables\')">' +
+    '<span class="tname" style="color:var(--text-dim,#9aa4b2);">全部数据表</span>' +
+    '<span class="tcount">' + (known.size) + '</span>' + failedBadge('memory_jobs') + '</div>';
+  return html;
+}
+
+// jobs 行的失败角标：例如 "65 ⚠2"
+function failedBadge(table) {
+  const by = ((state.tables[table] || {}).by_status) || {};
+  const n = (by.failed || 0) + (by.dead || 0);
+  return n ? ' <span class="tcount fcount">⚠' + n + '</span>' : '';
+}
+
+function renderTableList() {
+  const el = document.getElementById('dbTableList');
+  const known = new Set(Object.keys(state.tables));
+  document.getElementById('viewBtnMemory').classList.toggle('active', state.dbView === 'memory');
+  document.getElementById('viewBtnTables').classList.toggle('active', state.dbView === 'tables');
+  if (state.dbView === 'memory' && known.size) {
+    el.innerHTML = renderMemoryView(known);
+    return;
+  }
+  let html = '';
+  for (const g of TABLE_GROUPS) {
+    const present = g.tables.filter(t => known.has(t));
+    const extra = Object.keys(state.tables)
+      .filter(t => !TABLE_GROUPS.some(g2 => g2.tables.includes(t)))
+      .sort();
+    const list = g.label === '审计与用量' ? [...present, ...extra.filter(t =>
+      !['session_messages','topic_segments','topic_segment_messages','memory_items',
+        'memory_evidence','memory_relations','memory_tag_links','tag_definitions','memory_jobs'].includes(t)
+    )] : present;
+    if (!list.length) continue;
+    html += '<div class="db-group"><div class="db-group-label">' + g.label + '</div>';
+    for (const t of list) {
+      const info = state.tables[t] || {};
+      const prev = (state.prevTables[t] || {}).rows;
+      const n = info.rows || 0;
+      const changed = prev !== undefined && n > prev;
+      const cls = 'db-table-item' + (state.openTable === t ? ' active' : '');
+      const cntCls = 'tcount' + (n === 0 ? ' zero' : '') + (changed ? ' flash' : '');
+      const tip = (TABLE_INFO[t] && TABLE_INFO[t].usage) ? TABLE_INFO[t].usage : t;
+      html += '<div class="' + cls + '" title="' + escapeHtml(tip) + '" onclick="openTableRows(\'' + t + '\')">' +
+        '<span class="tname">' + t + '</span>' +
+        '<span class="' + cntCls + '">' + n + '</span>' + failedBadge(t) + '</div>';
+    }
+    html += '</div>';
+  }
+  if (!Object.keys(state.tables).length) {
+    html = '<div class="db-rows-empty">镜像目录为空或不可读</div>';
+  }
+  el.innerHTML = html;
+}
+
+async function openMemoryRows(name, type) {
+  state.rowFilter = type;  // 'fact'/'event'/'cross_event' 或 null
+  await openTableRows(name);
+}
+
+async function openTableRows(name) {
+  state.openTable = name;
+  if (state.rowFilter && name !== 'memory_items') state.rowFilter = null;
+  state.openRowIds = new Set();
+  renderTableList();
+  await loadTableRows(name, true);
+}
+
+async function loadTableRows(name, showPanel) {
+  try {
+    const resp = await fetch(API_TABLES + '/' + name);
+    if (!resp.ok) throw new Error('HTTP ' + resp.status);
+    const data = await resp.json();
+    if (showPanel !== false) {
+      document.getElementById('dbRowsPanel').style.display = 'flex';
+      const shown = state.rowFilter
+        ? Object.values(data.rows || {}).filter(c => (c.data || {}).memory_type === state.rowFilter).length
+        : (data.rows ? Object.keys(data.rows).length : 0);
+      document.getElementById('dbRowsTitle').textContent =
+        (state.rowFilter ? state.rowFilter + ' · ' : '') + name + ' · ' + shown + ' 行';
+    }
+    state.tableRows = data.rows || {};
+    renderTableRows(name);
+  } catch (e) {
+    document.getElementById('dbRowsBody').innerHTML =
+      '<div class="db-rows-empty">读取失败: ' + escapeHtml(e.message) + '</div>';
+  }
+}
+
+// 每张表挑出最可读的“主字段”作为行卡片标题
+const ROW_MAIN_FIELD = {
+  session_messages: 'content',
+  topic_segments: 'content',
+  memory_items: 'content',
+  memory_jobs: 'job_type',
+  memory_evidence: 'source_id',
+  memory_relations: 'relation_type',
+  memory_tag_links: 'memory_id',
+  tag_definitions: 'display_name',
+  llm_usage: 'purpose',
+  memory_audit_events: 'operation',
+};
+
+function renderTableRows(name) {
+  const el = document.getElementById('dbRowsBody');
+  const rows = state.tableRows || {};
+  let entries = Object.entries(rows);
+  if (state.rowFilter && name === 'memory_items') {
+    entries = entries.filter(([pk, cell]) => (cell.data || {}).memory_type === state.rowFilter);
+  }
+  // 顶部说明条：这张表是干什么的 + 关键字段含义（TABLE_INFO）
+  const info = TABLE_INFO[name];
+  let descHtml = '';
+  if (info) {
+    const fields = Object.entries(info.fields || {}).map(([k, v]) =>
+      '<span><span class="fk">' + escapeHtml(k) + '</span>: ' + escapeHtml(v) + '</span>').join('');
+    descHtml = '<div class="table-desc">' + escapeHtml(info.usage) +
+      '<div class="desc-fields">' + fields + '</div></div>';
+  }
+  if (!entries.length) {
+    el.innerHTML = descHtml + '<div class="db-rows-empty">表为空</div>';
+    return;
+  }
+  // 按 created_at / updated_at 降序（新的在前）
+  entries.sort((a, b) => {
+    const ta = (a[1].data.created_at || a[1].data.updated_at || '');
+    const tb = (b[1].data.created_at || b[1].data.updated_at || '');
+    return tb.localeCompare(ta);
+  });
+  const mainField = ROW_MAIN_FIELD[name] || 'id';
+  const skip = new Set(['embedding', 'search_document']);
+  let html = '';
+  for (const [pk, cell] of entries) {
+    const d = cell.data || {};
+    const isNew = !state.openRowIds.has(pk);
+    state.openRowIds.add(pk);
+    const main = d[mainField] != null ? String(d[mainField]) : pk;
+    let meta = '';
+    for (const [k, v] of Object.entries(d)) {
+      if (skip.has(k) || k === mainField) continue;
+      let val = v;
+      if (val === null || val === undefined) continue;
+      if (typeof val === 'string' && val.length > 60) val = val.slice(0, 60) + '…';
+      if (typeof val === 'object') { try { val = JSON.stringify(val).slice(0, 60); } catch (e) { val = String(val); } }
+      meta += '<span>' + escapeHtml(k) + '=' + escapeHtml(val) + '</span>';
+    }
+    let badge = '';
+    if (name === 'memory_items' && d.memory_type) badge = '<span class="r-badge">' + d.memory_type + '</span> ';
+    if (name === 'memory_jobs' && d.job_type) badge = '<span class="r-badge">' + d.job_type + '</span> ';
+    html += '<div class="db-row-card' + (isNew && state.openRowIds.size <= entries.length ? ' new' : '') + '">' +
+      badge + '<div class="r-main">' + escapeHtml(main) + '</div>' +
+      (meta ? '<div class="r-meta">' + meta + '</div>' : '') +
+      '</div>';
+  }
+  el.innerHTML = descHtml + html;
+}
+
+function closeTableRows() {
+  state.openTable = null;
+  state.rowFilter = null;
+  state.tableRows = null;
+  document.getElementById('dbRowsPanel').style.display = 'none';
+  renderTableList();
+}
+
+// ═══════════ 中间：消息写入与检索 ═══════════
+function updateSessionLabel() {
+  const el = document.getElementById('sessionLabel');
+  el.textContent = state.scope
+    ? state.scope.user_id + ' @ ' + state.scope.session_id : '';
+}
+function addChatMsg(role, text, extraHtml) {
+  const box = document.getElementById('chatBox');
+  const div = document.createElement('div');
+  div.className = 'chat-msg ' + (role === 'user' ? 'user' : 'car');
+  let html = '<div class="bubble">' + escapeHtml(text) + '</div>';
+  html += '<div class="meta">' + (role === 'user' ? '我 (' + escapeHtml(state.scope ? state.scope.occupant_id : '') + ')' : '车机助手') + '</div>';
+  if (extraHtml) html += extraHtml;
+  div.innerHTML = html;
+  box.appendChild(div);
+  box.scrollTop = box.scrollHeight;
+}
+function quickSend(text) {
+  document.getElementById('msgInput').value = text;
+  sendMessage();
+}
+function quickSearch(text) { doSearch(text); }
+
+async function sendMessage() {
+  if (!state.loggedIn) { showToast('请先点火启动'); return; }
+  const input = document.getElementById('msgInput');
+  const text = input.value.trim();
+  if (!text) return;
+
+  if (text.startsWith('搜索：') || text.startsWith('搜索:')) {
+    addChatMsg('user', text);
+    input.value = '';
+    await doSearch(text.replace(/^搜索[：:]\s*/, ''));
+    return;
+  }
+
+  addChatMsg('user', text);
+  input.value = '';
+  document.getElementById('sendBtn').disabled = true;
+
+  // ── 车机对话链路：检索记忆 → LLM 决策 → 展示回复 → 异步写入两条消息 ──
+  const t0 = performance.now();
+  let memoriesUsed = [], memoryDetails = [];
+  let reply = '', decision = null, usage = null, latencyMs = 0, errorDetail = '';
+
+  // Step 1: 检索记忆（失败不阻断）
+  let tMem0 = performance.now(), tMem1 = tMem0;
+  try {
+    const ctrl = new AbortController();
+    const timer = setTimeout(() => ctrl.abort(), 10000);
+    const resp = await fetch(PROXY + 'v1/memories/search', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        request_id: uuid(),
+        query: text,
+        scope: {
+          tenant_id: state.scope.tenant_id, user_id: state.scope.user_id,
+          vehicle_id: state.scope.vehicle_id, occupant_id: state.scope.occupant_id,
+        },
+        // session_id 必传：后端 L0 近期对话（session_buffer）按它取当前会话消息，
+        // 不传则 short_term 召回恒为空（用户刚说的话 LLM 收不到，会重复追问）
+        session_id: state.scope.session_id,
+        top_k: 5,
+      }),
+      signal: ctrl.signal,
+    });
+    clearTimeout(timer);
+    if (resp.ok) {
+      const data = await resp.json();
+      for (const k of ['facts', 'events', 'cross_events']) {
+        for (const h of (data[k] || [])) {
+          memoriesUsed.push(h.memory.content);
+          memoryDetails.push({ content: h.memory.content, score: h.score, type: k });
+        }
+      }
+      // L0 短期记忆：结构为 h.message.role/content（与 facts 的 h.memory.content 不同）
+      for (const h of (data.short_term || [])) {
+        const line = (h.message.role === 'user' ? '用户' : '助手') + '：' + h.message.content;
+        memoriesUsed.push('[近期对话] ' + line);
+        memoryDetails.push({ content: line, score: h.score, type: 'short_term' });
+      }
+    }
+  } catch (e) { console.warn('记忆检索失败（继续对话）:', e); showToast('记忆检索失败: ' + e.message); }
+  tMem1 = performance.now();
+
+  // Step 2: LLM 车机决策
+  try {
+    const ctrl = new AbortController();
+    const timer = setTimeout(() => ctrl.abort(), 35000);
+    const resp = await fetch(LLM_CHAT, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        messages: [{ role: 'user', content: text }],
+        memory_context: memoriesUsed,
+        vehicle_context: {
+          vehicle_id: state.scope.vehicle_id,
+          occupant_id: state.scope.occupant_id,
+          current_location: null,
+        },
+      }),
+      signal: ctrl.signal,
+    });
+    clearTimeout(timer);
+    if (!resp.ok) throw new Error('HTTP ' + resp.status);
+    const data = await resp.json();
+    if (data.error) { errorDetail = data.detail || data.error; throw new Error(data.error); }
+    reply = (data.reply || '').trim();
+    decision = data.decision || null;
+    usage = data.usage || null;
+    latencyMs = data.latency_ms || 0;
+    if (!reply) throw new Error('模型未返回有效回答');
+  } catch (e) {
+    reply = '车机助手暂时无法回答，请稍后重试。';
+    errorDetail = errorDetail || (e.name === 'AbortError' ? '决策超时（35秒）' : e.message);
+  }
+
+  // Step 3: 开发者面板 + 展示
+  let extra = '';
+  if (devMode === 'true') {
+    if (decision) extra += buildDecisionPanel(decision);
+    extra += buildDebugPanel(memoryDetails, Math.round(tMem1 - tMem0), latencyMs,
+      usage, errorDetail);
+  } else if (errorDetail) {
+    extra = '<div class="recall-info"><div class="label">⚠ LLM 调用失败</div><div class="item">' + escapeHtml(errorDetail) + '</div></div>';
+  }
+  addChatMsg('car', reply, extra);
+
+  // Step 4: 异步写入两条消息（user + assistant，同一 session，推进管线）
+  writeMessageAsync(text, 'user');
+  writeMessageAsync(reply, 'assistant');
+
+  document.getElementById('sendBtn').disabled = false;
+  refreshTables();
+}
+
+// 异步写入消息（202）——不阻塞 UI
+function writeMessageAsync(content, role) {
+  state.seq += 1;
+  fetch(PROXY + 'v1/messages', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      request_id: 'fe_' + Date.now() + '_' + state.seq,
+      scope: state.scope,
+      sequence_no: state.seq,
+      role: role,
+      content: content,
+      metadata: { source: 'light-frontend' },
+    }),
+  }).then(r => r.ok ? r.json() : null)
+    .then(d => { if (d && role === 'user') showToast('已写入，切段任务 ' + shortId(d.segmentation_job_id)); refreshTables(); })
+    .catch(e => console.warn('写入失败:', e));
+}
+
+// ── 决策面板（开发者模式） ──
+function buildDecisionPanel(d) {
+  const isSim = d.tool_mode === 'simulation';
+  const rows = (obj) => Object.entries(obj || {}).map(([k, v]) =>
+    '<div class="row"><span class="key">' + escapeHtml(k) + '</span><span class="val">' +
+    (v === null || v === undefined ? '未提供' : escapeHtml(String(v))) + '</span></div>').join('');
+  const bullets = (arr) => (arr && arr.length)
+    ? arr.map(x => '<div class="row"><span class="key">•</span><span class="val">' + escapeHtml(String(x)) + '</span></div>').join('')
+    : '<div class="row"><span class="key">无</span><span class="val">-</span></div>';
+
+  return '<div class="dev-panel" onclick="this.classList.toggle(\'expanded\')">' +
+    '<div class="dev-panel-header">' +
+      '<span>车机决策</span><span class="tag ' + (isSim ? 'sim' : '') + '">' + (isSim ? '模拟' : '生产') + '</span>' +
+      '<span>｜' + escapeHtml(d.intent || 'other') + '</span>' +
+      '<span>｜置信度' + (Number(d.confidence) || 0).toFixed(2) + '</span>' +
+    '</div>' +
+    '<div class="dev-panel-body">' +
+      (isSim ? '<div class="warn-text">模拟决策，未执行真实车机操作</div>' : '') +
+      '<div class="section-label">意图</div><div class="row"><span class="key">intent</span><span class="val">' + escapeHtml(d.intent || '') + '</span></div>' +
+      '<div class="section-label">实体</div>' + rows(d.entities) +
+      '<div class="section-label">使用的用户偏好</div>' + bullets(d.retrieved_preferences) +
+      '<div class="section-label">缺失信息</div>' + bullets(d.missing_information) +
+      '<div class="section-label">决策说明</div><div class="row"><span class="key">explanation</span><span class="val">' + escapeHtml(d.explanation || '') + '</span></div>' +
+    '</div>' +
+  '</div>';
+}
+
+function buildDebugPanel(memDetails, memLatency, llmLatency, usage, errorDetail) {
+  let memHtml = '';
+  if (memDetails && memDetails.length) {
+    memDetails.forEach(m => {
+      memHtml += '<div class="row"><span class="key">' + m.type + '</span><span class="val">' +
+        escapeHtml(fmtMemoryPreview(m.content)) + ' (' + (m.score != null ? m.score.toFixed(3) : '-') + ')</span></div>';
+    });
+  } else memHtml = '<div class="row"><span class="key">无召回</span><span class="val">-</span></div>';
+  const usageHtml = usage
+    ? '<div class="row"><span class="key">token</span><span class="val">' + (usage.prompt_tokens || 0) + ' → ' + (usage.completion_tokens || 0) + '</span></div>'
+    : '';
+  const errHtml = errorDetail
+    ? '<div class="section-label" style="color:var(--red)">错误</div><div class="row"><span class="key">detail</span><span class="val">' + escapeHtml(errorDetail) + '</span></div>'
+    : '';
+  return '<div class="dev-panel" onclick="this.classList.toggle(\'expanded\')">' +
+    '<div class="dev-panel-header"><span>记忆调试</span><span>｜召回' + (memDetails ? memDetails.length : 0) + '条</span>' +
+      '<span>｜LLM ' + llmLatency + 'ms</span></div>' +
+    '<div class="dev-panel-body">' +
+      '<div class="section-label">召回记忆</div>' + memHtml +
+      '<div class="section-label">性能</div>' +
+      '<div class="row"><span class="key">检索耗时</span><span class="val">' + memLatency + 'ms</span></div>' +
+      '<div class="row"><span class="key">模型耗时</span><span class="val">' + llmLatency + 'ms</span></div>' +
+      usageHtml + errHtml +
+    '</div>' +
+  '</div>';
+}
+
+function shortId(id) { return String(id || '').slice(0, 8); }
+
+// 记忆预览：event 是多行文本（首行时间头 + fact bullet），只显示正文行，
+// 否则 50 字截断全被时间戳占满，看不到实际内容
+function fmtMemoryPreview(content) {
+  const text = String(content || '');
+  const lines = text.split('\n').map(s => s.trim()).filter(Boolean);
+  const bodyLines = lines.filter(l => !l.startsWith('['));
+  const body = (bodyLines.length ? bodyLines : lines).join(' / ');
+  return body.length > 60 ? body.slice(0, 60) + '…' : body;
+}
+
+function statusBadge(s) {
+  const map = { pending: '排队', running: '运行中', completed: '完成', failed: '失败', dead: '死亡' };
+  return '<span class="ps-badge ' + s + '">' + (map[s] || s) + '</span>';
+}
+
+function collectJobs() {
+  // jobs 表数据由 renderObsContent 缓存在 state.jobsCache
+  return state.jobsCache || [];
+}
+
+async function doSearch(query) {
+  if (!state.loggedIn) { showToast('请先点火启动'); return; }
+  try {
+    const resp = await fetch(PROXY + 'v1/memories/search', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        request_id: uuid(),
+        query: query,
+        scope: {
+          tenant_id: state.scope.tenant_id,
+          user_id: state.scope.user_id,
+          vehicle_id: state.scope.vehicle_id,
+          occupant_id: state.scope.occupant_id,
+        },
+        session_id: state.scope.session_id,  // 同 sendMessage：L0 近期对话按 session 取
+        top_k: 5,
+      }),
+    });
+    if (!resp.ok) {
+      const err = await resp.json().catch(() => ({}));
+      addChatMsg('car', '搜索失败: ' + (err.message || resp.status));
+      return;
+    }
+    const data = await resp.json();
+    const groups = [
+      ['short_term', '近期对话 (short_term)'], ['facts', '事实 (fact)'], ['events', '事件 (event)'], ['cross_events', '跨事件 (cross_event)'],
+    ];
+    let total = 0, extra = '';
+    for (const [k, label] of groups) {
+      const hits = data[k] || [];
+      total += hits.length;
+      if (!hits.length) continue;
+      extra += '<div class="recall-info"><div class="label">' + label + ' · ' + hits.length + ' 条</div>';
+      for (const h of hits) {
+        const content = k === 'short_term'
+          ? ((h.message.role === 'user' ? '用户' : '助手') + '：' + (h.message.content || ''))
+          : (h.memory.content || '');
+        // event 首行是时间头，跳过后取正文（fact bullet）
+        const preview = k === 'short_term' ? content.slice(0, 100) : fmtMemoryPreview(content);
+        extra += '<div class="item">• ' + escapeHtml(preview) +
+          ' <span style="color:var(--accent)">score=' + (h.score != null ? h.score.toFixed(3) : '-') + '</span></div>';
+      }
+      extra += '</div>';
+    }
+    if (data.profile) {
+      extra += '<div class="recall-info"><div class="label">画像 (profile v' + data.profile.version + ')</div>' +
+        '<div class="item">' + escapeHtml((data.profile.summary || '').slice(0, 300)) + '</div></div>';
+    }
+    if (data.agent_context) {
+      extra += '<div class="recall-info"><div class="label">Agent Context</div><div class="item">' +
+        escapeHtml(data.agent_context.slice(0, 500)) + '</div></div>';
+    }
+    addChatMsg('car', total ? ('找到 ' + total + ' 条相关记忆。llm_calls=' + (data.usage ? data.usage.llm_calls : 0)) : '没有找到相关记忆。', extra);
+  } catch (e) {
+    addChatMsg('car', '搜索错误: ' + e.message);
+  }
+}
+
+// ═══════════ 右侧：管线观测 ═══════════
+function switchObsTab(tab) {
+  state.obsTab = tab;
+  document.querySelectorAll('.obs-tabs button').forEach(b => b.classList.remove('active'));
+  const id = { overview: 'obsTabOv', jobs: 'obsTabJobs', fact: 'obsTabFact', event: 'obsTabEv', cross_event: 'obsTabCross', profile: 'obsTabProfile' }[tab];
+  if (id) document.getElementById(id).classList.add('active');
+  renderObsContent();
+}
+
+async function refreshAll(showToastFlag) {
+  await refreshTables();
+  if (showToastFlag) showToast('已刷新');
+}
+
+function renderObsContent() {
+  const el = document.getElementById('obsContent');
+  const t = state.obsTab;
+  if (t === 'overview') renderOverview(el);
+  else if (t === 'jobs') renderJobs(el);
+  else if (t === 'profile') renderProfile(el);
+  else renderMemories(el, t);
+}
+
+function renderOverview(el) {
+  const items = (state.tables.memory_items) ? null : null;
+  // overview 需要表数据行数即可 + jobs 概况
+  const j = state.jobsCache || [];
+  const done = j.filter(x => x.status === 'completed').length;
+  const fail = j.filter(x => x.status === 'failed' || x.status === 'dead').length;
+  const html =
+    '<div class="obs-section"><div class="obs-label">数据表行数</div><div class="obs-stat-grid">' +
+      statBox('session_messages', 'messages', '') +
+      statBox('short_term_memories', 'short_term', '') +
+      statBox('topic_segments', 'segments', '') +
+      statBox('memory_items', 'items', '') +
+      statBox('llm_usage', 'llm_calls', '') +
+    '</div></div>' +
+    '<div class="obs-section"><div class="obs-label">任务队列</div><div class="obs-stat-grid">' +
+      '<div class="obs-stat-box"><div class="num">' + j.length + '</div><div class="lbl">总任务</div></div>' +
+      '<div class="obs-stat-box green"><div class="num">' + done + '</div><div class="lbl">完成</div></div>' +
+      '<div class="obs-stat-box yellow"><div class="num">' + (j.length - done - fail) + '</div><div class="lbl">排队/运行</div></div>' +
+      '<div class="obs-stat-box red"><div class="num">' + fail + '</div><div class="lbl">失败</div></div>' +
+    '</div></div>' +
+    '<div class="obs-section"><div class="obs-label">说明</div>' +
+      '<div class="obs-card"><div class="obs-card-content" style="color:var(--text-dim)">左侧点击任意表名查看行数据；行数增长时计数徽章绿色闪烁。写入消息后约 1~2 秒可见 session_messages → topic_segments → memory_items 逐级变化。</div></div>' +
+    '</div>';
+  el.innerHTML = html;
+}
+
+function statBox(table, label, cls) {
+  const n = (state.tables[table] || {}).rows || 0;
+  return '<div class="obs-stat-box ' + cls + '"><div class="num">' + n + '</div><div class="lbl">' + label + '</div></div>';
+}
+
+async function renderJobs(el) {
+  // jobs 表需要完整行 -> 拉 memory_jobs
+  try {
+    const resp = await fetch(API_TABLES + '/memory_jobs');
+    const data = resp.ok ? await resp.json() : { rows: {} };
+    const rows = Object.values(data.rows || {}).map(c => c.data);
+    rows.sort((a, b) => {
+      // 失败/死亡任务置顶（排查"为什么没沉淀"先看失败），其余按时间降序
+      const fail = s => (s === 'failed' || s === 'dead') ? 0 : 1;
+      if (fail(a.status) !== fail(b.status)) return fail(a.status) - fail(b.status);
+      return String(b.created_at).localeCompare(String(a.created_at));
+    });
+    state.jobsCache = rows;
+    if (!rows.length) { el.innerHTML = '<div class="obs-empty">暂无任务</div>'; return; }
+    const failedCount = rows.filter(j => j.status === 'failed' || j.status === 'dead').length;
+    let html = '';
+    if (failedCount) {
+      html += '<div class="obs-empty" style="color:var(--red);border:1px solid rgba(248,81,73,0.3);border-radius:6px;">' +
+        failedCount + ' 个失败任务（已置顶，点击行查看原因）</div>';
+    }
+    for (const j of rows.slice(0, 80)) {
+      const isNew = !state.prevJobIds.has(j.id);
+      state.prevJobIds.add(j.id);
+      const isFail = j.status === 'failed' || j.status === 'dead';
+      const err = isFail && j.last_error
+        ? '<div class="jl-err" title="' + escapeHtml(String(j.last_error)) + '">✖ ' +
+            escapeHtml(String(j.last_error).slice(0, 120)) + '</div>'
+        : '';
+      html += '<div class="job-line' + (isFail ? ' failed' : '') + (isNew && state.prevJobIds.size <= rows.length ? ' new' : '') + '">' +
+        '<div class="jl-left"><span class="jl-type">' + (JOB_LABEL[j.job_type] || j.job_type) + '</span>' +
+        statusBadge(j.status) + '</div>' +
+        '<div class="jl-time">' + fmtTime(j.created_at) + ' · ' + shortId(j.id) + '</div>' + err + '</div>';
+    }
+    el.innerHTML = html;
+  } catch (e) {
+    el.innerHTML = '<div class="obs-empty">读取失败: ' + escapeHtml(e.message) + '</div>';
+  }
+}
+
+async function renderMemories(el, type) {
+  try {
+    const resp = await fetch(API_TABLES + '/memory_items');
+    const data = resp.ok ? await resp.json() : { rows: {} };
+    // 证据链（memory_evidence）与关系（memory_relations）一并拉取，展开时展示
+    const [evResp, relResp] = await Promise.all([
+      fetch(API_TABLES + '/memory_evidence'),
+      fetch(API_TABLES + '/memory_relations'),
+    ]);
+    const evRows = evResp.ok ? Object.values((await evResp.json()).rows || {}).map(c => c.data) : [];
+    const relRows = relResp.ok ? Object.values((await relResp.json()).rows || {}).map(c => c.data) : [];
+    const evidenceByMemory = {};
+    for (const ev of evRows) (evidenceByMemory[ev.memory_id] = evidenceByMemory[ev.memory_id] || []).push(ev);
+    const relationsBySource = {};
+    for (const r of relRows) (relationsBySource[r.source_memory_id] = relationsBySource[r.source_memory_id] || []).push(r);
+    // 溯源文本：段-消息映射 + 原始消息（memory_items.topic_segment_id -> 消息原文）
+    const [segMsgResp, msgResp] = await Promise.all([
+      fetch(API_TABLES + '/topic_segment_messages'),
+      fetch(API_TABLES + '/session_messages'),
+    ]);
+    const segMsgRows = segMsgResp.ok ? Object.values((await segMsgResp.json()).rows || {}).map(c => c.data) : [];
+    const msgById = {};
+    if (msgResp.ok) for (const c of Object.values((await msgResp.json()).rows || {})) msgById[c.data.id] = c.data;
+    const sourceTextBySegment = {};
+    for (const sm of segMsgRows) {
+      const m = msgById[sm.message_id];
+      if (m) (sourceTextBySegment[sm.topic_segment_id] = sourceTextBySegment[sm.topic_segment_id] || []).push(m);
+    }
+    const memById = {};
+    for (const c of Object.values(data.rows || {})) memById[c.data.id] = c.data;
+
+    state.jobsCache = state.jobsCache || [];
+    const items = Object.values(data.rows || {}).map(c => c.data)
+      .filter(m => m.memory_type === type)
+      .sort((a, b) => String(b.created_at).localeCompare(String(a.created_at)));
+    if (!items.length) {
+      el.innerHTML = '<div class="obs-empty">暂无 ' + type + ' 记忆</div>';
+      return;
+    }
+    el.innerHTML = items.map(m => {
+      const statusTag = m.status === 'active'
+        ? '<span class="obs-tag active">有效</span>'
+        : (m.status === 'superseded' ? '<span class="obs-tag superseded">已替代</span>' : '<span class="obs-tag">' + m.status + '</span>');
+      // ── 详情区（只读）：元数据 + 证据链 + 溯源原文 + 关系 ──
+      const meta = [
+        ['memory_id', m.id],
+        ['scope', m.tenant_id + '/' + m.user_id + '/' + (m.vehicle_id || '-') + '/' + m.occupant_id],
+        ['session', m.session_id || '-'],
+        ['prompt_version', m.prompt_version || '-'],
+        ['derivation_key', m.derivation_key || '-'],
+        ['content_hash', (m.content_hash || '-').slice(0, 16)],
+        ['topic_segment', m.topic_segment_id ? m.topic_segment_id.slice(0, 8) : '-'],
+        ['observed_at', m.observed_at ? fmtTime(m.observed_at) : '-'],
+        ['valid_from', m.valid_from ? fmtTime(m.valid_from) : '-'],
+        ['valid_to', m.valid_to ? fmtTime(m.valid_to) : '-'],
+        ['occurred_at', m.occurred_at ? fmtTime(m.occurred_at) : '-'],
+      ].map(([k, v]) => '<div class="row"><span class="key">' + k + '</span><span class="val">' + escapeHtml(String(v)) + '</span></div>').join('');
+
+      // 证据链：该记忆引用的来源（topic/消息）
+      const evs = evidenceByMemory[m.id] || [];
+      let evHtml = '';
+      if (evs.length) {
+        evHtml = '<div class="evidence">证据 (' + evs.length + '):' +
+          evs.map(ev => '<div class="ev-item">' + escapeHtml(ev.source_type) + ' ' + shortId(ev.source_id) +
+            (ev.observed_at ? ' · ' + fmtTime(ev.observed_at) : '') + '</div>').join('') + '</div>';
+      }
+
+      // 溯源原文：fact/event 来源段落的原始消息（event 的 contains 指向 fact，cross_event 的 summarizes 同理）
+      let srcHtml = '';
+      const srcMsgs = m.topic_segment_id ? (sourceTextBySegment[m.topic_segment_id] || []) : [];
+      if (srcMsgs.length) {
+        srcHtml = '<div class="evidence">溯源对话 (' + srcMsgs.length + ' 条):' +
+          srcMsgs.slice(0, 6).map(msg => '<div class="ev-item">' +
+            escapeHtml(msg.role === 'user' ? '用户' : '助手') + ': ' + escapeHtml((msg.content || '').slice(0, 80)) +
+            '</div>').join('') + '</div>';
+      }
+
+      // 关系：本条作为 source 的 contains/summarizes 关系，指向的目标记忆内容
+      const rels = relationsBySource[m.id] || [];
+      let relHtml = '';
+      if (rels.length) {
+        relHtml = '<div class="evidence">关联 (' + rels.length + '):' +
+          rels.map(r => {
+            const target = memById[r.target_memory_id];
+            return '<div class="ev-item">' + escapeHtml(r.relation_type) + ' → ' +
+              (target ? escapeHtml((target.content || '').slice(0, 60)) : shortId(r.target_memory_id)) + '</div>';
+          }).join('') + '</div>';
+      }
+
+      return '<div class="obs-card expandable" onclick="this.classList.toggle(\'expanded\')">' +
+        '<div class="obs-card-content">' + escapeHtml(m.content) + '</div>' +
+        '<div class="obs-card-footer">' +
+          '<span class="obs-tag ' + type + '">' + type + '</span>' + statusTag +
+          '<span>模型: ' + escapeHtml(m.model || '-') + '</span>' +
+          '<span>' + fmtTime(m.created_at) + '</span>' +
+        '</div>' +
+        '<div class="mem-detail">' + meta + evHtml + srcHtml + relHtml +
+          '<div class="expand-hint">点击收起</div>' +
+        '</div>' +
+      '</div>';
+    }).join('');
+  } catch (e) {
+    el.innerHTML = '<div class="obs-empty">读取失败: ' + escapeHtml(e.message) + '</div>';
+  }
+}
+
+// 画像（L3 profile）：items 卡片 + snapshots 版本卡片（证据关联 cross_event/event）
+async function renderProfile(el) {
+  try {
+    const [itemResp, snapResp, evResp] = await Promise.all([
+      fetch(API_TABLES + '/profile_items'),
+      fetch(API_TABLES + '/profile_snapshots'),
+      fetch(API_TABLES + '/profile_item_evidence'),
+    ]);
+    const itemRows = itemResp.ok ? Object.values((await itemResp.json()).rows || {}).map(c => c.data) : [];
+    const snapRows = snapResp.ok ? Object.values((await snapResp.json()).rows || {}).map(c => c.data) : [];
+    const evRows = evResp.ok ? Object.values((await evResp.json()).rows || {}).map(c => c.data) : [];
+    const evByItem = {};
+    for (const ev of evRows) (evByItem[ev.profile_item_id] = evByItem[ev.profile_item_id] || []).push(ev);
+
+    itemRows.sort((a, b) => String(b.updated_at || b.created_at).localeCompare(String(a.updated_at || a.created_at)));
+    snapRows.sort((a, b) => (b.version || 0) - (a.version || 0));
+
+    if (!itemRows.length && !snapRows.length) {
+      el.innerHTML = '<div class="obs-empty">暂无画像（cross_event 沉淀后生成）</div>';
+      return;
+    }
+
+    let html = '';
+    for (const s of snapRows.slice(0, 5)) {
+      html += '<div class="obs-card expandable" onclick="this.classList.toggle(\'expanded\')">' +
+        '<div class="obs-card-content">📷 画像快照 v' + escapeHtml(String(s.version)) + ': ' + escapeHtml(s.summary || '-') + '</div>' +
+        '<div class="obs-card-footer">' +
+          '<span class="obs-tag profile">snapshot</span>' +
+          '<span>模型: ' + escapeHtml(s.model || '-') + '</span>' +
+          '<span>' + fmtTime(s.created_at) + '</span>' +
+        '</div>' +
+        '<div class="mem-detail">' +
+          '<div class="row"><span class="key">snapshot_id</span><span class="val">' + escapeHtml(s.id) + '</span></div>' +
+          '<div class="row"><span class="key">scope</span><span class="val">' + escapeHtml(s.tenant_id + '/' + s.user_id + '/' + (s.vehicle_id || '-') + '/' + s.occupant_id) + '</span></div>' +
+          '<div class="row"><span class="key">prompt_version</span><span class="val">' + escapeHtml(s.prompt_version || '-') + '</span></div>' +
+          '<div class="expand-hint">点击收起</div>' +
+        '</div>' +
+      '</div>';
+    }
+
+    for (const it of itemRows) {
+      const statusTag = it.status === 'active'
+        ? '<span class="obs-tag active">有效</span>'
+        : (it.status === 'superseded' ? '<span class="obs-tag superseded">已替代</span>' : '<span class="obs-tag">' + escapeHtml(it.status) + '</span>');
+      const meta = [
+        ['item_id', it.id],
+        ['scope', it.tenant_id + '/' + it.user_id + '/' + (it.vehicle_id || '-') + '/' + it.occupant_id],
+        ['normalized_hash', (it.normalized_hash || '-').slice(0, 16)],
+        ['confirmation_count', it.confirmation_count],
+        ['first_observed_at', it.first_observed_at ? fmtTime(it.first_observed_at) : '-'],
+        ['last_confirmed_at', it.last_confirmed_at ? fmtTime(it.last_confirmed_at) : '-'],
+        ['valid_from', it.valid_from ? fmtTime(it.valid_from) : '-'],
+        ['valid_to', it.valid_to ? fmtTime(it.valid_to) : '-'],
+        ['prompt_version', it.prompt_version || '-'],
+      ].map(([k, v]) => '<div class="row"><span class="key">' + k + '</span><span class="val">' + escapeHtml(String(v)) + '</span></div>').join('');
+      const evs = evByItem[it.id] || [];
+      let evHtml = '';
+      if (evs.length) {
+        evHtml = '<div class="evidence">证据 (' + evs.length + '):' +
+          evs.map(ev => '<div class="ev-item">' + escapeHtml(ev.evidence_role || 'support') + ' ← cross_event ' + shortId(ev.via_cross_event_id) +
+            ' · event ' + shortId(ev.event_id) + '</div>').join('') + '</div>';
+      }
+      html += '<div class="obs-card expandable" onclick="this.classList.toggle(\'expanded\')">' +
+        '<div class="obs-card-content">👤 ' + escapeHtml(it.attribute || '-') + ' = ' + escapeHtml(it.value || '-') + '</div>' +
+        '<div class="obs-card-footer">' +
+          '<span class="obs-tag profile">profile</span>' + statusTag +
+          '<span>确认 ' + escapeHtml(String(it.confirmation_count ?? 0)) + ' 次</span>' +
+          '<span>模型: ' + escapeHtml(it.model || '-') + '</span>' +
+          '<span>' + fmtTime(it.updated_at || it.created_at) + '</span>' +
+        '</div>' +
+        '<div class="mem-detail">' + meta + evHtml + '<div class="expand-hint">点击收起</div></div>' +
+      '</div>';
+    }
+    el.innerHTML = html;
+  } catch (e) {
+    el.innerHTML = '<div class="obs-empty">读取失败: ' + escapeHtml(e.message) + '</div>';
+  }
+}
+
+// ═══════════ 初始化 ═══════════
+function initBackendUrl() {
+  const saved = localStorage.getItem('light_backend_url');
+  const el = document.getElementById('backendUrl');
+  if (saved) el.value = saved;
+  state.backendUrl = el.value.trim().replace(/\/+$/, '');
+  el.addEventListener('change', () => {
+    state.backendUrl = el.value.trim().replace(/\/+$/, '');
+    localStorage.setItem('light_backend_url', state.backendUrl);
+    showToast('后端地址已切换: ' + state.backendUrl);
+  });
+  // 后端健康检查
+  fetch(PROXY + 'health/ready').then(r => {
+    if (r.ok) showToast('后端已连接: ' + state.backendUrl);
+  }).catch(() => showToast('后端不可达: ' + state.backendUrl + '（仍可观察镜像）'));
+}
+
+function initAutoRefresh() {
+  const toggle = document.getElementById('autoRefreshToggle');
+  const start = () => {
+    if (state.timer) clearInterval(state.timer);
+    state.timer = setInterval(refreshTables, 3000);
+  };
+  if (toggle.checked) start();
+  toggle.addEventListener('change', () => {
+    if (toggle.checked) start();
+    else if (state.timer) { clearInterval(state.timer); state.timer = null; }
+  });
+}
+
+(function init() {
+  updateUserCard();
+  initBackendUrl();
+  initAutoRefresh();
+  refreshTables();
+})();
+</script>
+</body>
+</html>

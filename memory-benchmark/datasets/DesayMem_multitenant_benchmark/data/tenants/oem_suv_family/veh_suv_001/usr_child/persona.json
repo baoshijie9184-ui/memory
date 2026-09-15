@@ -1,0 +1,30 @@
+{
+  "user_id": "usr_child",
+  "role": "后座儿童乘客",
+  "occupant": "passenger_rear",
+  "expected_habits": [
+    "观看《汪汪队立大功》",
+    "酸奶零食（草莓酸奶）"
+  ],
+  "expected_noise": [
+    "偶发要看小猪佩奇"
+  ],
+  "recall_anchors": [
+    {
+      "topic": "动画",
+      "query": "我想看的动画片",
+      "expected": [
+        "汪汪队"
+      ]
+    },
+    {
+      "topic": "零食",
+      "query": "我的零食",
+      "expected": [
+        "酸奶"
+      ]
+    }
+  ],
+  "tenant_id": "oem_suv_family",
+  "vehicle_id": "veh_suv_001"
+}

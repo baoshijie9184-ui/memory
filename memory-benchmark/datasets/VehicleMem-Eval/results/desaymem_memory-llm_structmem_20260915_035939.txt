@@ -1,0 +1,73 @@
+======================================================================
+DesayMem-Eval 评测报告
+数据集: desaymem  |  模型: memory-llm  |  记忆系统: structmem
+时间: 2026-09-15 03:59:39
+======================================================================
+
+── 官方指标 ──
+协议: accuracy
+总准确率: 46.00%  (23/50)
+均分: 46.00%
+
+  按类别:
+    filter/flt_01                  0.00%  (0/1)
+    filter/flt_02                  0.00%  (0/1)
+    filter/flt_03                  0.00%  (0/1)
+    filter/flt_04                  100.00%  (1/1)
+    isolation/iso_01               100.00%  (1/1)
+    isolation/iso_02               0.00%  (0/1)
+    isolation/iso_03               100.00%  (1/1)
+    isolation/iso_04               100.00%  (1/1)
+    isolation/iso_05               100.00%  (1/1)
+    isolation/iso_06               100.00%  (1/1)
+    isolation/iso_07               0.00%  (0/1)
+    isolation/iso_08               100.00%  (1/1)
+    isolation/iso_09               100.00%  (1/1)
+    loose/filter/flt_01            0.00%  (0/1)
+    loose/filter/flt_02            0.00%  (0/1)
+    loose/filter/flt_03            100.00%  (1/1)
+    loose/isolation/iso_01         100.00%  (1/1)
+    loose/isolation/iso_02         0.00%  (0/1)
+    loose/isolation/iso_03         100.00%  (1/1)
+    loose/isolation/iso_04         100.00%  (1/1)
+    loose/isolation/iso_06         100.00%  (1/1)
+    loose/isolation/iso_07         100.00%  (1/1)
+    loose/isolation/iso_08         100.00%  (1/1)
+    loose/isolation/iso_09         100.00%  (1/1)
+    loose/recall/rc_c_01           100.00%  (1/1)
+    loose/recall/rc_f_01           0.00%  (0/1)
+    loose/recall/rc_f_02           0.00%  (0/1)
+    loose/recall/rc_f_03           0.00%  (0/1)
+    loose/recall/rc_f_04           0.00%  (0/1)
+    loose/recall/rc_f_05           0.00%  (0/1)
+    loose/recall/rc_g_01           100.00%  (1/1)
+    loose/recall/rc_m_01           0.00%  (0/1)
+    loose/recall/rc_m_02           0.00%  (0/1)
+    loose/recall/rc_m_03           100.00%  (1/1)
+    loose/trap/trap_01             0.00%  (0/1)
+    loose/trap/trap_02             100.00%  (1/1)
+    loose/trap/trap_03             0.00%  (0/1)
+    recall/rc_c_01                 100.00%  (1/1)
+    recall/rc_f_01                 100.00%  (1/1)
+    recall/rc_f_02                 0.00%  (0/1)
+    recall/rc_f_03                 0.00%  (0/1)
+    recall/rc_f_04                 0.00%  (0/1)
+    recall/rc_f_05                 0.00%  (0/1)
+    recall/rc_g_01                 0.00%  (0/1)
+    recall/rc_m_01                 0.00%  (0/1)
+    recall/rc_m_02                 0.00%  (0/1)
+    recall/rc_m_03                 0.00%  (0/1)
+    trap/trap_01                   0.00%  (0/1)
+    trap/trap_02                   0.00%  (0/1)
+    trap/trap_03                   100.00%  (1/1)
+
+── 效率 ──
+阶段                 Token In  Token Out      Total    Calls    Runtime
+----------------------------------------------------------------------
+memory_build              0          0          0        0       0.0s
+qa                   11,975         74     12,049       37       8.0s
+----------------------------------------------------------------------
+Total                11,975         74     12,049       37       8.0s
+内存峰值             55.8 MB
+
+======================================================================

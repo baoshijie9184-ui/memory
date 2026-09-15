@@ -1,0 +1,418 @@
+{
+  "cases": [
+    {
+      "id": "iso_01",
+      "group": "isolation",
+      "op": "search",
+      "scope": {
+        "tenant_id": "oem_sedan_biz",
+        "user_id": "usr_father"
+      },
+      "query": "通勤习惯",
+      "must": [],
+      "must_not": [
+        "童梦森林",
+        "麦田",
+        "露营"
+      ]
+    },
+    {
+      "id": "iso_02",
+      "group": "isolation",
+      "op": "search",
+      "scope": {
+        "tenant_id": "oem_suv_family",
+        "user_id": "usr_father",
+        "vehicle_id": "veh_suv_001"
+      },
+      "query": "通勤",
+      "must": [
+        "德赛科技园"
+      ],
+      "must_not": [
+        "公司配车",
+        "红花湖"
+      ]
+    },
+    {
+      "id": "iso_03",
+      "group": "isolation",
+      "op": "search",
+      "scope": {
+        "tenant_id": "oem_suv_family",
+        "user_id": "usr_father"
+      },
+      "query": "咖啡 拿铁",
+      "must": [],
+      "must_not": [
+        "拿铁",
+        "燕麦奶"
+      ]
+    },
+    {
+      "id": "iso_04",
+      "group": "isolation",
+      "op": "search",
+      "scope": {
+        "tenant_id": "oem_suv_family",
+        "user_id": "usr_mother"
+      },
+      "query": "西餐点单",
+      "must": [],
+      "must_not": [
+        "西冷",
+        "蘑菇汤"
+      ]
+    },
+    {
+      "id": "iso_05",
+      "group": "isolation",
+      "op": "search_dual",
+      "scope_a": {
+        "tenant_id": "oem_suv_family",
+        "user_id": "usr_father"
+      },
+      "scope_b": {
+        "tenant_id": "oem_suv_family",
+        "user_id": "usr_mother"
+      },
+      "query": "我们经常去的亲子餐厅",
+      "must_a": [
+        "童梦森林"
+      ],
+      "must_b": [
+        "麦田"
+      ],
+      "not_top1_a": [
+        "麦田"
+      ],
+      "not_top1_b": [
+        "童梦森林"
+      ]
+    },
+    {
+      "id": "iso_06",
+      "group": "isolation",
+      "op": "profile",
+      "scope": {
+        "tenant_id": "oem_suv_family",
+        "user_id": "usr_father",
+        "occupant_id": "driver"
+      },
+      "query": "音量偏好",
+      "must_not": [
+        "粤剧"
+      ]
+    },
+    {
+      "id": "iso_07",
+      "group": "isolation",
+      "op": "search",
+      "scope": {
+        "tenant_id": "oem_suv_family",
+        "user_id": "usr_child"
+      },
+      "query": "我想看的动画片",
+      "must": [
+        "汪汪队"
+      ],
+      "must_not": [
+        "通勤轻音乐",
+        "爵士"
+      ]
+    },
+    {
+      "id": "iso_08",
+      "group": "isolation",
+      "op": "search",
+      "scope": {
+        "tenant_id": "oem_suv_family",
+        "user_id": "usr_grandma"
+      },
+      "query": "周三的行程",
+      "must": [
+        "市中心医院"
+      ],
+      "must_not": [
+        "德赛科技园"
+      ]
+    },
+    {
+      "id": "iso_09",
+      "group": "isolation",
+      "op": "search",
+      "scope": {
+        "tenant_id": "oem_suv_family",
+        "user_id": "usr_father"
+      },
+      "query": "医院行程",
+      "must": [],
+      "must_not": [
+        "透析",
+        "市中心医院"
+      ]
+    },
+    {
+      "id": "flt_01",
+      "group": "filter",
+      "op": "search",
+      "scope": {
+        "tenant_id": "oem_suv_family",
+        "user_id": "usr_father"
+      },
+      "query": "空调习惯",
+      "no_filter": true,
+      "expect_behavior": "returns memories across veh_suv_001+veh_suv_002 (backend default: vehicle not isolated)",
+      "must": [
+        "23"
+      ],
+      "allow": [
+        "24"
+      ]
+    },
+    {
+      "id": "flt_02",
+      "group": "filter",
+      "op": "search",
+      "scope": {
+        "tenant_id": "oem_suv_family",
+        "user_id": "usr_father",
+        "vehicle_id": "veh_suv_001"
+      },
+      "query": "空调习惯",
+      "filters": {
+        "vehicle_id": "veh_suv_001"
+      },
+      "must": [
+        "23"
+      ],
+      "must_not_vehicle": [
+        "veh_suv_002",
+        "veh_sed_001"
+      ]
+    },
+    {
+      "id": "flt_03",
+      "group": "filter",
+      "op": "search",
+      "scope": {
+        "tenant_id": "oem_suv_family",
+        "user_id": "usr_father"
+      },
+      "query": "媒体偏好",
+      "filters": {
+        "occupant_id": "driver"
+      },
+      "must": [
+        "通勤轻音乐"
+      ],
+      "must_not": [
+        "汪汪队",
+        "粤剧"
+      ]
+    },
+    {
+      "id": "flt_04",
+      "group": "filter",
+      "op": "dedup_check",
+      "scope": {
+        "tenant_id": "oem_sedan_biz",
+        "user_id": "usr_father"
+      },
+      "query": "去公司，空调和音乐照平时通勤习惯来",
+      "expect_behavior": "identical content in SUV1 and SED1 → single memory row (tenant,user,hash) dedup; vehicle_id = first-written",
+      "must": [],
+      "must_not": []
+    },
+    {
+      "id": "rc_f_01",
+      "group": "recall",
+      "op": "search",
+      "scope": {
+        "tenant_id": "oem_suv_family",
+        "user_id": "usr_father"
+      },
+      "query": "我们经常去的亲子餐厅",
+      "must": [
+        "童梦森林"
+      ],
+      "not_top1": [
+        "童趣岛"
+      ]
+    },
+    {
+      "id": "rc_f_02",
+      "group": "recall",
+      "op": "search",
+      "scope": {
+        "tenant_id": "oem_suv_family",
+        "user_id": "usr_father"
+      },
+      "query": "根据我爱吃的菜，找个最近的地方",
+      "must": [
+        "少油",
+        "香菜",
+        "鲈鱼"
+      ]
+    },
+    {
+      "id": "rc_f_03",
+      "group": "recall",
+      "op": "search",
+      "scope": {
+        "tenant_id": "oem_suv_family",
+        "user_id": "usr_father"
+      },
+      "query": "外面的空气质量不好，按老规矩给我调整一下",
+      "must": [
+        "车窗",
+        "内循环",
+        "3档"
+      ]
+    },
+    {
+      "id": "rc_f_04",
+      "group": "recall",
+      "op": "search",
+      "scope": {
+        "tenant_id": "oem_suv_family",
+        "user_id": "usr_father"
+      },
+      "query": "帮我找一下西餐厅，按照习惯进行点餐",
+      "must": [
+        "西冷",
+        "蘑菇汤",
+        "柠檬水"
+      ]
+    },
+    {
+      "id": "rc_f_05",
+      "group": "recall",
+      "op": "search",
+      "scope": {
+        "tenant_id": "oem_suv_family",
+        "user_id": "usr_father",
+        "vehicle_id": "veh_suv_002"
+      },
+      "query": "露营怎么设置",
+      "must": [
+        "后排放倒",
+        "24"
+      ]
+    },
+    {
+      "id": "rc_m_01",
+      "group": "recall",
+      "op": "search",
+      "scope": {
+        "tenant_id": "oem_suv_family",
+        "user_id": "usr_mother"
+      },
+      "query": "我的拿铁怎么点",
+      "must": [
+        "少糖",
+        "燕麦奶"
+      ]
+    },
+    {
+      "id": "rc_m_02",
+      "group": "recall",
+      "op": "search",
+      "scope": {
+        "tenant_id": "oem_suv_family",
+        "user_id": "usr_mother"
+      },
+      "query": "导航去上班",
+      "must": [
+        "惠州西湖",
+        "市内道路"
+      ]
+    },
+    {
+      "id": "rc_m_03",
+      "group": "recall",
+      "op": "search",
+      "scope": {
+        "tenant_id": "oem_suv_family",
+        "user_id": "usr_mother"
+      },
+      "query": "我中午吃什么比较健康",
+      "must": [
+        "藜麦沙拉"
+      ]
+    },
+    {
+      "id": "rc_g_01",
+      "group": "recall",
+      "op": "search",
+      "scope": {
+        "tenant_id": "oem_suv_family",
+        "user_id": "usr_grandma"
+      },
+      "query": "我平时听什么",
+      "must": [
+        "粤剧"
+      ]
+    },
+    {
+      "id": "rc_c_01",
+      "group": "recall",
+      "op": "search",
+      "scope": {
+        "tenant_id": "oem_suv_family",
+        "user_id": "usr_child"
+      },
+      "query": "我的零食",
+      "must": [
+        "酸奶"
+      ]
+    },
+    {
+      "id": "trap_01",
+      "group": "trap",
+      "op": "search",
+      "scope": {
+        "tenant_id": "oem_suv_family",
+        "user_id": "usr_father"
+      },
+      "query": "空调习惯温度",
+      "must": [
+        "23"
+      ],
+      "not_top1": [
+        "25"
+      ]
+    },
+    {
+      "id": "trap_02",
+      "group": "trap",
+      "op": "search",
+      "scope": {
+        "tenant_id": "oem_suv_family",
+        "user_id": "usr_father"
+      },
+      "query": "通勤听什么",
+      "must": [
+        "通勤轻音乐"
+      ],
+      "not_top1": [
+        "新闻"
+      ]
+    },
+    {
+      "id": "trap_03",
+      "group": "trap",
+      "op": "search",
+      "scope": {
+        "tenant_id": "oem_suv_family",
+        "user_id": "usr_father"
+      },
+      "query": "最近的天气怎么样",
+      "must": [],
+      "not_top1": [
+        "26度",
+        "晴"
+      ]
+    }
+  ]
+}

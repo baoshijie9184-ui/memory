@@ -1,0 +1,99 @@
+config_version: 1
+
+modules:
+  topic_segmenter: lightmem_v1
+  fact_extractor: mem0_additive_v1
+  event_builder: deterministic_v1
+  cross_event: structmem_style_v1
+  profile_updater: timem_style_v1
+  query_planner: qwen_query_v1
+  retriever: hybrid_v1
+  mirror: outbox_json_v1
+
+providers:
+  llm: qwen_openai_compatible
+  embedding: bge_m3_http
+  tokenizer: qwen_tokenizer
+
+provider_options:
+  qwen_openai_compatible:
+    top_p: 0.1
+  bge_m3_http:
+    batch_size: 32
+    send_dimensions: false
+  qwen_tokenizer:
+    add_special_tokens: false
+
+module_options:
+  lightmem_v1:
+    sensory_tokens: 512
+    topic_batch_tokens: 2000
+    similarity_threshold: 0.55
+    use_precompression: false
+    # Idle Session duration before the final pending Topic is force-flushed.
+    idle_flush_minutes: 10
+    # Safety cap only; normal vehicle Turns are expected to be much shorter.
+    topic_max_messages: 50
+    # Per-Worker, non-persistent Topic Embedding cache.
+    embedding_cache_ttl_minutes: 30
+    embedding_cache_max_entries: 10000
+  mem0_additive_v1:
+    recent_messages: 10
+    existing_fact_candidates: 10
+    prompt_version: v4
+  deterministic_v1:
+    skip_when_no_facts: true
+    max_tags: 10
+  structmem_style_v1:
+    prompt_version: v2
+    trigger_event_count: 10
+    time_trigger_minutes: 10
+    time_trigger_min_events: 2
+    history_days: 90
+    history_top_k: 10
+    max_events: 20
+    max_input_tokens: 6000
+    max_tags: 10
+    max_output_tokens: 500
+  timem_style_v1:
+    related_profile_top_k: 20
+    recent_profile_items: 10
+    max_input_tokens: 6000
+    max_output_tokens: 1000
+  qwen_query_v1:
+    timezone: Asia/Shanghai
+    max_output_tokens: 256
+  hybrid_v1:
+    fact_top_k: 5
+    event_top_k: 3
+    cross_event_top_k: 2
+    context_max_tokens: 2000
+    llm_rerank: false
+    # Optional legacy L0 vector persistence; disabled for lightweight Session recall.
+    persist_short_term: false
+  outbox_json_v1:
+    batch_size: 32
+    wait_for_ack: true
+    ack_timeout_ms: 2000
+    outbox_retention_hours: 24
+
+jobs:
+  poll_interval_ms: 500
+  max_attempts: 5
+  lock_timeout_seconds: 300
+
+retention:
+  operational_log_days: 7
+  completed_job_days: 7
+
+vehicle:
+  # Local dry-run only: the current vehicle store is process-local, not PostgreSQL-backed.
+  enable_in_memory_api: false
+  enable_postgres_api: false
+  tool_registry_path: docs/examples/vehicle_memory_v1/tool_registry.json
+  min_independent_successes: 3
+  trust_gateway_auth: true
+  auto_distill: true
+  episode_gap_minutes: 20
+  pre_trip_window_minutes: 15
+  pending_timeout_minutes: 30

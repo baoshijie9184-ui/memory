@@ -1,0 +1,1112 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DesayMem 车机记忆系统 - 实地测试</title>
+<style>
+:root {
+  --bg: #0d1117;
+  --panel: #161b22;
+  --border: #30363d;
+  --text: #e6edf3;
+  --text-dim: #8b949e;
+  --accent: #4a90d9;
+  --accent-dim: #1f3a5f;
+  --green: #3fb950;
+  --red: #f85149;
+  --yellow: #d29922;
+  --user-bubble: #1f3a5f;
+  --car-bubble: #21262d;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: -apple-system, "Microsoft YaHei", "Segoe UI", sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ── 顶部导航栏 ── */
+.topbar {
+  background: var(--panel);
+  border-bottom: 1px solid var(--border);
+  padding: 8px 20px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-shrink: 0;
+}
+.topbar .logo {
+  font-size: 16px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+.topbar .logo span { color: var(--accent); }
+.status-pill {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--text-dim);
+  margin-left: auto;
+}
+.status-dot {
+  width: 8px; height: 8px; border-radius: 50%;
+}
+.status-dot.ok { background: var(--green); }
+.status-dot.err { background: var(--red); }
+.status-dot.idle { background: var(--yellow); }
+
+/* ── 登录页面 ── */
+.login-overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: var(--bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+}
+.login-overlay.hidden { display: none; }
+.login-box {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 40px;
+  width: 420px;
+  max-width: 90vw;
+}
+.login-box h2 {
+  font-size: 20px;
+  margin-bottom: 6px;
+}
+.login-box p {
+  color: var(--text-dim);
+  font-size: 13px;
+  margin-bottom: 24px;
+}
+.login-form { display: flex; flex-direction: column; gap: 14px; }
+.login-form label {
+  font-size: 12px;
+  color: var(--text-dim);
+  margin-bottom: 4px;
+  display: block;
+}
+.login-form input, .login-form select {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 10px;
+  color: var(--text);
+  font-size: 14px;
+  width: 100%;
+}
+.login-form input:focus, .login-form select:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+.login-form .row { display: flex; gap: 12px; }
+.login-form .row > div { flex: 1; }
+.login-btn {
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 12px;
+  font-size: 15px;
+  cursor: pointer;
+  margin-top: 8px;
+}
+.login-btn:hover { background: #357abd; }
+.preset-users {
+  display: flex;
+  gap: 8px;
+  margin-top: 12px;
+  flex-wrap: wrap;
+}
+.preset-users button {
+  background: var(--accent-dim);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 6px 12px;
+  color: var(--text);
+  font-size: 12px;
+  cursor: pointer;
+}
+.preset-users button:hover { border-color: var(--accent); }
+
+/* ── 主体布局 ── */
+.main-layout {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+}
+.left-panel {
+  width: 240px;
+  background: var(--panel);
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+}
+.center-panel {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+.right-panel {
+  width: 360px;
+  background: var(--panel);
+  border-left: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+}
+
+/* ── 左侧用户信息 ── */
+.user-card {
+  padding: 16px;
+  border-bottom: 1px solid var(--border);
+}
+.user-card .avatar {
+  width: 48px; height: 48px;
+  border-radius: 50%;
+  background: var(--accent-dim);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  margin-bottom: 10px;
+}
+.user-card .name { font-size: 15px; font-weight: 600; }
+.user-card .role { font-size: 12px; color: var(--text-dim); }
+.user-card .detail {
+  font-size: 11px;
+  color: var(--text-dim);
+  margin-top: 2px;
+}
+.switch-btn {
+  margin: 12px 16px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 8px;
+  color: var(--text);
+  font-size: 12px;
+  cursor: pointer;
+  text-align: center;
+}
+.switch-btn:hover { border-color: var(--accent); }
+
+.mem-stat {
+  padding: 16px;
+  border-top: 1px solid var(--border);
+  margin-top: auto;
+}
+.mem-stat .stat-label {
+  font-size: 11px;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.mem-stat .stat-val {
+  font-size: 24px;
+  font-weight: 700;
+  margin-top: 4px;
+}
+
+/* ── 中间对话区 ── */
+.chat-header {
+  padding: 12px 20px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.chat-header .title { font-size: 14px; font-weight: 600; }
+.chat-header .session {
+  font-size: 11px;
+  color: var(--text-dim);
+}
+.chat-box {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px;
+}
+.chat-msg {
+  margin-bottom: 16px;
+  display: flex;
+  flex-direction: column;
+  max-width: 75%;
+}
+.chat-msg.user { margin-left: auto; align-items: flex-end; }
+.chat-msg.car { margin-right: auto; align-items: flex-start; }
+.chat-msg .bubble {
+  padding: 10px 14px;
+  border-radius: 14px;
+  font-size: 14px;
+  line-height: 1.5;
+  white-space: pre-wrap;
+}
+.chat-msg.user .bubble {
+  background: var(--user-bubble);
+  border-bottom-right-radius: 4px;
+}
+.chat-msg.car .bubble {
+  background: var(--car-bubble);
+  border: 1px solid var(--border);
+  border-bottom-left-radius: 4px;
+}
+.chat-msg .meta {
+  font-size: 10px;
+  color: var(--text-dim);
+  margin-top: 4px;
+}
+.chat-msg .mem-extracted {
+  background: rgba(63, 185, 80, 0.1);
+  border: 1px solid rgba(63, 185, 80, 0.3);
+  border-radius: 8px;
+  padding: 6px 10px;
+  font-size: 11px;
+  color: var(--green);
+  margin-top: 6px;
+  max-width: 100%;
+}
+.chat-msg .mem-extracted .label {
+  font-weight: 600;
+  margin-bottom: 2px;
+}
+.chat-msg .mem-extracted .item {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 2px;
+}
+.chat-msg .mem-extracted .type-badge {
+  background: rgba(63, 185, 80, 0.2);
+  border-radius: 3px;
+  padding: 1px 5px;
+  font-size: 10px;
+}
+.chat-msg .mem-extracted .type-badge.proc {
+  background: rgba(210, 153, 34, 0.2);
+  color: var(--yellow);
+}
+.chat-msg .recall-info {
+  background: rgba(74, 144, 217, 0.1);
+  border: 1px solid rgba(74, 144, 217, 0.3);
+  border-radius: 8px;
+  padding: 6px 10px;
+  font-size: 11px;
+  color: var(--accent);
+  margin-top: 6px;
+  max-width: 100%;
+}
+.chat-msg .recall-info .label {
+  font-weight: 600;
+  margin-bottom: 2px;
+}
+.chat-msg .recall-info .item {
+  margin-top: 2px;
+  color: var(--text-dim);
+}
+
+.chat-input-area {
+  padding: 12px 20px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  gap: 10px;
+  align-items: flex-end;
+}
+.chat-input-area textarea {
+  flex: 1;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 10px 14px;
+  color: var(--text);
+  font-size: 14px;
+  resize: none;
+  height: 42px;
+  max-height: 120px;
+  font-family: inherit;
+}
+.chat-input-area textarea:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+.chat-input-area button {
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  padding: 10px 20px;
+  cursor: pointer;
+  font-size: 14px;
+  white-space: nowrap;
+}
+.chat-input-area button:hover { background: #357abd; }
+.chat-input-area button:disabled { background: var(--border); cursor: not-allowed; }
+
+.quick-actions {
+  padding: 8px 20px;
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+.quick-actions button {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 5px 12px;
+  color: var(--text-dim);
+  font-size: 12px;
+  cursor: pointer;
+}
+.quick-actions button:hover { border-color: var(--accent); color: var(--text); }
+
+/* ── 右侧记忆面板 ── */
+.right-header {
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.right-header .title { font-size: 13px; font-weight: 600; }
+.right-header button {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 4px 8px;
+  color: var(--text-dim);
+  font-size: 11px;
+  cursor: pointer;
+}
+.right-header button:hover { border-color: var(--accent); }
+
+.mem-tabs {
+  display: flex;
+  border-bottom: 1px solid var(--border);
+}
+.mem-tabs button {
+  flex: 1;
+  background: none;
+  border: none;
+  padding: 8px;
+  color: var(--text-dim);
+  font-size: 12px;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+}
+.mem-tabs button.active {
+  color: var(--text);
+  border-bottom-color: var(--accent);
+}
+
+.mem-list {
+  flex: 1;
+  overflow-y: auto;
+  padding: 12px;
+}
+.mem-card {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 12px;
+  margin-bottom: 10px;
+}
+.mem-card .content {
+  font-size: 13px;
+  line-height: 1.4;
+  margin-bottom: 8px;
+}
+.mem-card .footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 10px;
+  color: var(--text-dim);
+}
+.mem-card .type-tag {
+  border-radius: 3px;
+  padding: 1px 6px;
+  font-size: 10px;
+}
+.mem-card .type-tag.semantic { background: rgba(74,144,217,0.2); color: var(--accent); }
+.mem-card .type-tag.procedural { background: rgba(210,153,34,0.2); color: var(--yellow); }
+.mem-card .del-btn {
+  background: none;
+  border: none;
+  color: var(--text-dim);
+  font-size: 11px;
+  cursor: pointer;
+}
+.mem-card .del-btn:hover { color: var(--red); }
+
+.mem-empty {
+  text-align: center;
+  color: var(--text-dim);
+  padding: 40px 0;
+  font-size: 13px;
+}
+
+/* ── 隔离测试面板 ── */
+.iso-panel {
+  border-top: 1px solid var(--border);
+  padding: 12px 16px;
+}
+.iso-panel .iso-title {
+  font-size: 11px;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 8px;
+}
+.iso-panel .iso-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  margin-bottom: 4px;
+}
+.iso-panel .iso-row .val { color: var(--green); }
+.iso-panel .iso-row .val.fail { color: var(--red); }
+
+/* ── Toast ── */
+.toast {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 10px 20px;
+  font-size: 13px;
+  z-index: 200;
+  display: none;
+}
+.toast.show { display: block; animation: fadeIn 0.2s; }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+/* ── Loading ── */
+.loading-indicator {
+  display: none;
+  padding: 8px 20px;
+  font-size: 12px;
+  color: var(--text-dim);
+}
+.loading-indicator.show { display: flex; align-items: center; gap: 8px; }
+.loading-spinner {
+  width: 14px; height: 14px;
+  border: 2px solid var(--border);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* scrollbar */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: #484f58; }
+</style>
+</head>
+<body>
+
+<!-- 登录页面 -->
+<div class="login-overlay" id="loginOverlay">
+  <div class="login-box">
+    <h2>车机启动</h2>
+    <p>选择驾驶员身份后点火启动，系统会自动恢复您的记忆偏好。</p>
+    <div class="login-form">
+      <div>
+        <label>服务地址</label>
+        <input id="apiUrl" value="http://47.115.228.135/memory" placeholder="http://IP/memory">
+      </div>
+      <div>
+        <label>LLM 代理地址（本地运行 llm_proxy.py）</label>
+        <input id="llmProxyUrlInput" value="http://127.0.0.1:8767" placeholder="http://localhost:8767">
+      </div>
+      <div class="row">
+        <div>
+          <label>租户（项目）</label>
+          <input id="loginTenant" value="oem_chery">
+        </div>
+        <div>
+          <label>车辆 ID</label>
+          <input id="loginVehicle" value="vehicle_001">
+        </div>
+      </div>
+      <div class="row">
+        <div>
+          <label>驾驶员</label>
+          <select id="loginUserSelect">
+            <option value="user_driver">司机 A</option>
+            <option value="user_passenger">乘客 B</option>
+            <option value="user_driver2">司机 C</option>
+            <option value="custom">自定义...</option>
+          </select>
+        </div>
+        <div>
+          <label>乘员位置</label>
+          <select id="loginOccupant">
+            <option value="driver">主驾</option>
+            <option value="passenger">副驾</option>
+            <option value="rear_left">后排左</option>
+            <option value="rear_right">后排右</option>
+          </select>
+        </div>
+      </div>
+      <div id="customUserRow" style="display:none">
+        <label>自定义用户 ID</label>
+        <input id="loginUserCustom" placeholder="如 user_test">
+      </div>
+      <button class="login-btn" onclick="doLogin()">点火启动</button>
+    </div>
+  </div>
+</div>
+
+<!-- 顶栏 -->
+<div class="topbar">
+  <div class="logo">Desay<span>Mem</span> 车机记忆</div>
+  <div class="status-pill">
+    <div class="status-dot idle" id="statusDot"></div>
+    <span id="statusText">未连接</span>
+  </div>
+</div>
+
+<!-- 主体 -->
+<div class="main-layout">
+  <!-- 左侧 -->
+  <div class="left-panel">
+    <div class="user-card">
+      <div class="avatar" id="userAvatar">D</div>
+      <div class="name" id="userName">user_driver</div>
+      <div class="role" id="userRole">主驾</div>
+      <div class="detail" id="userTenant">tenant: oem_chery</div>
+      <div class="detail" id="userVehicle">vehicle: vehicle_001</div>
+    </div>
+    <button class="switch-btn" onclick="logout()">熄火 / 切换用户</button>
+    <div class="mem-stat">
+      <div class="stat-label">记忆总数</div>
+      <div class="stat-val" id="memCount">0</div>
+    </div>
+  </div>
+
+  <!-- 中间对话 -->
+  <div class="center-panel">
+    <div class="chat-header">
+      <div class="title">车机对话</div>
+      <div class="session" id="sessionLabel">会话已启动</div>
+    </div>
+    <div class="chat-box" id="chatBox">
+      <div class="chat-msg car">
+        <div class="bubble">系统已就绪。试试说"我开车的时候喜欢把空调调到22度"，我会记住你的偏好，下次上车自动恢复。</div>
+        <div class="meta">车机助手</div>
+      </div>
+    </div>
+    <div class="loading-indicator" id="loadingIndicator">
+      <div class="loading-spinner"></div>
+      <span id="loadingText">正在处理...</span>
+    </div>
+    <div class="quick-actions">
+      <button onclick="quickSend('我开车的时候喜欢把空调调到22度')">空调偏好</button>
+      <button onclick="quickSend('导航去上海迪士尼')">导航</button>
+      <button onclick="quickSend('开车时帮我放周杰伦的歌')">音乐</button>
+      <button onclick="quickSend('帮我把座椅加热打开到3挡')">座椅加热</button>
+      <button onclick="quickSend('我之前说的空调温度是多少度')">召回测试</button>
+      <button onclick="quickSearch('空调温度')">搜索记忆</button>
+    </div>
+    <div class="chat-input-area">
+      <textarea id="msgInput" placeholder="输入对话内容，回车发送..." onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendMessage();}"></textarea>
+      <button id="sendBtn" onclick="sendMessage()">发送</button>
+    </div>
+  </div>
+
+  <!-- 右侧记忆 -->
+  <div class="right-panel">
+    <div class="right-header">
+      <div class="title">记忆库</div>
+      <button onclick="refreshMemories()">刷新</button>
+    </div>
+    <div class="mem-tabs">
+      <button class="active" id="tabAll" onclick="switchTab('all')">全部</button>
+      <button id="tabSemantic" onclick="switchTab('semantic_memory')">语义</button>
+      <button id="tabProcedural" onclick="switchTab('procedural_memory')">过程性</button>
+    </div>
+    <div class="mem-list" id="memList">
+      <div class="mem-empty">暂无记忆</div>
+    </div>
+    <div class="iso-panel">
+      <div class="iso-title">用户隔离测试</div>
+      <div class="iso-row">
+        <span>当前用户记忆数</span>
+        <span class="val" id="isoMyCount">0</span>
+      </div>
+      <div class="iso-row">
+        <span>其他用户可查</span>
+        <span class="val" id="isoOtherStatus">未测试</span>
+      </div>
+      <button class="switch-btn" style="margin:8px 0 0;width:100%" onclick="runIsolationTest()">运行隔离测试</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ── 全局状态 ──
+let state = {
+  apiUrl: '',
+  llmProxyUrl: '',
+  tenant: '',
+  userId: '',
+  vehicleId: '',
+  occupant: '',
+  sessionId: '',   // 系统自动生成，用户不可见
+  connected: false,
+  memTab: 'all',
+  memories: [],
+};
+
+// ── 登录 ──
+document.getElementById('loginUserSelect').addEventListener('change', function() {
+  document.getElementById('customUserRow').style.display = this.value === 'custom' ? 'block' : 'none';
+});
+
+document.getElementById('loginOccupant').addEventListener('change', function() {
+  // 乘员位置联动用户选择
+  const userSelect = document.getElementById('loginUserSelect');
+  if (this.value === 'passenger' && userSelect.value === 'user_driver') {
+    userSelect.value = 'user_passenger';
+  } else if (this.value === 'driver' && userSelect.value === 'user_passenger') {
+    userSelect.value = 'user_driver';
+  }
+});
+
+async function doLogin() {
+  const apiUrl = document.getElementById('apiUrl').value.trim().replace(/\/+$/, '');
+  const llmProxyUrl = document.getElementById('llmProxyUrlInput').value.trim().replace(/\/+$/, '');
+  const tenant = document.getElementById('loginTenant').value.trim();
+  const vehicleId = document.getElementById('loginVehicle').value.trim();
+  const occupant = document.getElementById('loginOccupant').value;
+
+  let userId;
+  const userSelectVal = document.getElementById('loginUserSelect').value;
+  if (userSelectVal === 'custom') {
+    userId = document.getElementById('loginUserCustom').value.trim();
+    if (!userId) { showToast('请输入自定义用户 ID'); return; }
+  } else {
+    userId = userSelectVal;
+  }
+
+  if (!apiUrl || !userId) { showToast('请填写服务地址'); return; }
+
+  state.apiUrl = apiUrl;
+  state.llmProxyUrl = llmProxyUrl;
+  state.tenant = tenant;
+  state.userId = userId;
+  state.vehicleId = vehicleId;
+  state.occupant = occupant;
+  // 会话 ID 自动生成，用户不可见
+  state.sessionId = 'session_' + Date.now();
+
+  // 测试连接
+  try {
+    const resp = await fetch(apiUrl + '/health');
+    if (!resp.ok) throw new Error('HTTP ' + resp.status);
+    state.connected = true;
+    setStatus('ok', '已连接');
+  } catch (e) {
+    state.connected = false;
+    setStatus('err', '连接失败');
+    showToast('连接失败: ' + e.message + ' — 请检查服务地址是否正确');
+    return;
+  }
+
+  // 隐藏登录页
+  document.getElementById('loginOverlay').classList.add('hidden');
+
+  // 更新左侧用户卡片
+  updateUserCard();
+
+  // 加载记忆
+  await refreshMemories();
+
+  // 如果已有记忆，提示恢复
+  if (state.memories.length > 0) {
+    addChatMsg('car', '欢迎回来！已恢复您的历史记忆 ' + state.memories.length + ' 条。');
+  }
+}
+
+function logout() {
+  state.connected = false;
+  state.memories = [];
+  document.getElementById('loginOverlay').classList.remove('hidden');
+  document.getElementById('chatBox').innerHTML = '';
+  document.getElementById('memList').innerHTML = '<div class="mem-empty">暂无记忆</div>';
+  document.getElementById('memCount').textContent = '0';
+  setStatus('idle', '未连接');
+}
+
+function updateUserCard() {
+  document.getElementById('userName').textContent = state.userId;
+  const roleMap = { driver: '主驾', passenger: '副驾', rear_left: '后排左', rear_right: '后排右' };
+  document.getElementById('userRole').textContent = roleMap[state.occupant] || state.occupant;
+  document.getElementById('userTenant').textContent = 'tenant: ' + state.tenant;
+  document.getElementById('userVehicle').textContent = 'vehicle: ' + state.vehicleId;
+  document.getElementById('sessionLabel').textContent = '会话已启动';
+  document.getElementById('userAvatar').textContent = state.userId.charAt(state.userId.lastIndexOf('_') + 1).toUpperCase();
+}
+
+// ── 状态 ──
+function setStatus(state, text) {
+  const dot = document.getElementById('statusDot');
+  const txt = document.getElementById('statusText');
+  dot.className = 'status-dot ' + state;
+  txt.textContent = text;
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+function showLoading(text) {
+  document.getElementById('loadingText').textContent = text || '处理中...';
+  document.getElementById('loadingIndicator').classList.add('show');
+}
+function hideLoading() {
+  document.getElementById('loadingIndicator').classList.remove('show');
+}
+
+// ── 对话 ──
+function addChatMsg(role, text, extraHtml) {
+  const box = document.getElementById('chatBox');
+  const div = document.createElement('div');
+  div.className = 'chat-msg ' + (role === 'user' ? 'user' : 'car');
+  let html = '<div class="bubble">' + escapeHtml(text) + '</div>';
+  html += '<div class="meta">' + (role === 'user' ? '我' : '车机助手') + '</div>';
+  if (extraHtml) html += extraHtml;
+  div.innerHTML = html;
+  box.appendChild(div);
+  box.scrollTop = box.scrollHeight;
+}
+
+function escapeHtml(s) {
+  return s.replace(/&/g,'&').replace(/</g,'<').replace(/>/g,'>');
+}
+
+function quickSend(text) {
+  document.getElementById('msgInput').value = text;
+  sendMessage();
+}
+
+function quickSearch(text) {
+  doSearch(text);
+}
+
+async function sendMessage() {
+  if (!state.connected) { showToast('未连接'); return; }
+  const input = document.getElementById('msgInput');
+  const text = input.value.trim();
+  if (!text) return;
+
+  // 搜索模式
+  if (text.startsWith('搜索：') || text.startsWith('搜索:')) {
+    const query = text.replace(/^搜索[：:]\s*/, '');
+    addChatMsg('user', text);
+    input.value = '';
+    await doSearch(query);
+    return;
+  }
+
+  addChatMsg('user', text);
+  input.value = '';
+  document.getElementById('sendBtn').disabled = true;
+  showLoading('检索记忆中...');
+  let extra = '';
+  let memoriesUsed = [];
+
+  // Step 1: 检索记忆（后端 /v1/memories/search）
+  try {
+    const searchResp = await fetch(state.apiUrl + '/v1/memories/search', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        tenant_id: state.tenant,
+        user_id: state.userId,
+        query: text,
+        top_k: 5
+      })
+    });
+    if (searchResp.ok) {
+      const searchData = await searchResp.json();
+      memoriesUsed = (searchData.memories || []).map(m => m.content);
+      if (memoriesUsed.length > 0) {
+        extra += '<div class="recall-info"><div class="label">参考记忆 (' + memoriesUsed.length + ' 条)</div>';
+        memoriesUsed.forEach(m => {
+          extra += '<div class="item">• ' + escapeHtml(m.substring(0, 80)) + '</div>';
+        });
+        extra += '</div>';
+      }
+    }
+  } catch (e) {
+    // 记忆检索失败不阻断对话
+  }
+
+  // Step 2: 调本地 LLM 代理生成回复
+  showLoading('车机思考中（LLM 生成回复）...');
+  let reply = '';
+  try {
+    const proxyResp = await fetch(state.llmProxyUrl + '/chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        messages: [{ role: 'user', content: text }],
+        memory_context: memoriesUsed
+      })
+    });
+    if (!proxyResp.ok) throw new Error('HTTP ' + proxyResp.status);
+    const proxyData = await proxyResp.json();
+    reply = proxyData.reply || '...';
+  } catch (e) {
+    reply = '（LLM 代理未启动，请在本地运行 python scripts/llm_proxy.py）';
+    extra += '<div class="mem-extracted"><div class="label">⚠ LLM 代理连接失败</div><div class="item">' + escapeHtml(e.message) + '</div></div>';
+  }
+
+  // Step 3: 存储记忆（后端 /v1/memories）
+  showLoading('存储记忆中...');
+  try {
+    const addResp = await fetch(state.apiUrl + '/v1/memories', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        tenant_id: state.tenant,
+        user_id: state.userId,
+        vehicle_id: state.vehicleId,
+        occupant_id: state.occupant,
+        session_id: state.sessionId,
+        scene: 'driving',
+        messages: [
+          { role: 'user', content: text },
+          { role: 'assistant', content: reply }
+        ],
+        infer: true
+      })
+    });
+    if (addResp.ok) {
+      const addData = await addResp.json();
+      const stored = addData.memories || [];
+      if (stored.length > 0) {
+        extra += '<div class="mem-extracted"><div class="label">新记忆已存储 (' + stored.length + ' 条)</div>';
+        stored.forEach(m => {
+          const isProc = m.memory_type === 'procedural_memory';
+          extra += '<div class="item"><span class="type-badge ' + (isProc?'proc':'') + '">' + (isProc?'过程性':'语义') + '</span> ' + escapeHtml(m.content.substring(0, 80)) + '</div>';
+        });
+        extra += '</div>';
+      }
+    }
+  } catch (e) {
+    // 存储失败不阻断对话
+  }
+
+  addChatMsg('car', reply, extra);
+  await refreshMemories();
+  } catch (e) {
+    addChatMsg('car', '网络错误: ' + e.message);
+  } finally {
+    document.getElementById('sendBtn').disabled = false;
+    hideLoading();
+  }
+}
+
+async function doSearch(query) {
+  if (!state.connected) { showToast('未连接'); return; }
+  showLoading('正在检索记忆...');
+
+  try {
+    const resp = await fetch(state.apiUrl + '/v1/memories/search', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        tenant_id: state.tenant,
+        user_id: state.userId,
+        query: query,
+        top_k: 5
+      })
+    });
+
+    if (!resp.ok) {
+      addChatMsg('car', '搜索失败: ' + resp.status);
+      return;
+    }
+
+    const data = await resp.json();
+    const hits = data.memories || [];
+
+    let reply, extra = '';
+    if (hits.length === 0) {
+      reply = '没有找到相关记忆。';
+    } else {
+      reply = '找到 ' + hits.length + ' 条相关记忆：';
+      extra = '<div class="recall-info"><div class="label">召回结果</div>';
+      hits.forEach((h, i) => {
+        const score = h.score ? h.score.toFixed(3) : '-';
+        extra += '<div class="item">' + (i+1) + '. ' + escapeHtml(h.content.substring(0, 80)) + ' <span style="color:var(--text-dim)">(score: ' + score + ')</span></div>';
+      });
+      extra += '</div>';
+    }
+
+    addChatMsg('car', reply, extra);
+  } catch (e) {
+    addChatMsg('car', '搜索错误: ' + e.message);
+  } finally {
+    hideLoading();
+  }
+}
+
+// ── 车机回复模拟 ──
+function simulateCarReply(userText, memories) {
+  const text = userText.toLowerCase();
+
+  // 空调
+  if (text.includes('空调') && (text.includes('22') || text.includes('度'))) {
+    return '好的，已为您设置空调温度到' + (text.match(/(\d+)\s*度/) || ['', '22'])[1] + '度。';
+  }
+  if (text.includes('空调') && text.includes('多少')) {
+    if (memories && memories.length > 0) {
+      const m = memories.find(m => m.content.includes('22'));
+      if (m) return '根据您的记忆偏好，您喜欢把空调调到22度，已为您设置。';
+    }
+    return '让我查一下您的偏好...';
+  }
+
+  // 导航
+  if (text.includes('导航') || text.includes('去')) {
+    const dest = text.replace(/导航去|导航到|去/g, '').trim();
+    return '正在为您规划前往' + dest + '的路线，预计30分钟到达。';
+  }
+
+  // 音乐
+  if (text.includes('音乐') || text.includes('歌') || text.includes('听')) {
+    const artist = (text.match(/放(.+?)的/) || ['', ''])[1] || (text.match(/听(.+?)的/) || ['', ''])[1] || '您喜欢的';
+    return '已为您播放' + artist + '的歌单。';
+  }
+
+  // 座椅加热
+  if (text.includes('座椅') || text.includes('加热')) {
+    const level = (text.match(/(\d+)\s*挡/) || ['', '3'])[1];
+    return '座椅加热已调至' + level + '挡，请注意温度。';
+  }
+
+  // 通用
+  if (memories && memories.length > 0) {
+    return '好的，已记住您的偏好。';
+  }
+  return '好的，我了解了。';
+}
+
+// ── 记忆列表 ──
+async function refreshMemories() {
+  if (!state.connected) return;
+  try {
+    let url = state.apiUrl + '/v1/users/' + state.userId + '/memories?tenant_id=' + state.tenant + '&limit=100';
+    if (state.memTab !== 'all') {
+      url += '&memory_type=' + state.memTab;
+    }
+    const resp = await fetch(url);
+    if (!resp.ok) return;
+    const data = await resp.json();
+    state.memories = data.memories || [];
+    renderMemList();
+    document.getElementById('memCount').textContent = state.memories.length;
+    document.getElementById('isoMyCount').textContent = state.memories.length;
+  } catch (e) {}
+}
+
+function renderMemList() {
+  const list = document.getElementById('memList');
+  if (state.memories.length === 0) {
+    list.innerHTML = '<div class="mem-empty">暂无记忆</div>';
+    return;
+  }
+  list.innerHTML = state.memories.map(m => {
+    const type = m.memory_type || 'semantic_memory';
+    const typeClass = type === 'procedural_memory' ? 'procedural' : 'semantic';
+    const typeLabel = type === 'procedural_memory' ? '过程性' : '语义';
+    const time = m.created_at ? new Date(m.created_at).toLocaleString('zh-CN', {month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit'}) : '';
+    return '<div class="mem-card">' +
+      '<div class="content">' + escapeHtml(m.content) + '</div>' +
+      '<div class="footer">' +
+        '<span class="type-tag ' + typeClass + '">' + typeLabel + '</span>' +
+        '<span>' + time + '</span>' +
+        '<button class="del-btn" onclick="deleteMemory(\'' + m.id + '\')">删除</button>' +
+      '</div>' +
+    '</div>';
+  }).join('');
+}
+
+function switchTab(tab) {
+  state.memTab = tab;
+  document.querySelectorAll('.mem-tabs button').forEach(b => b.classList.remove('active'));
+  if (tab === 'all') document.getElementById('tabAll').classList.add('active');
+  else if (tab === 'semantic_memory') document.getElementById('tabSemantic').classList.add('active');
+  else document.getElementById('tabProcedural').classList.add('active');
+  refreshMemories();
+}
+
+async function deleteMemory(id) {
+  if (!confirm('确认删除这条记忆？')) return;
+  try {
+    await fetch(state.apiUrl + '/v1/users/' + state.userId + '/memories/' + id + '?tenant_id=' + state.tenant, { method: 'DELETE' });
+    showToast('已删除');
+    await refreshMemories();
+  } catch (e) {
+    showToast('删除失败');
+  }
+}
+
+// ── 隔离测试 ──
+async function runIsolationTest() {
+  if (!state.connected) { showToast('未连接'); return; }
+  showLoading('正在测试用户隔离...');
+
+  // 用一个不存在的用户 ID 搜索，验证看不到当前用户的记忆
+  const fakeUser = state.userId + '_isol_test';
+  try {
+    const resp = await fetch(state.apiUrl + '/v1/memories/search', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        tenant_id: state.tenant,
+        user_id: fakeUser,
+        query: '空调温度',
+        top_k: 5
+      })
+    });
+    const data = await resp.json();
+    const hits = data.memories || [];
+    const isolated = hits.length === 0;
+
+    document.getElementById('isoOtherStatus').textContent = isolated ? '隔离正常' : '隔离失败!';
+    document.getElementById('isoOtherStatus').className = 'val ' + (isolated ? '' : 'fail');
+
+    showToast(isolated ? '隔离测试通过：其他用户无法查到你的记忆' : '隔离测试失败：其他用户可见你的记忆！');
+  } catch (e) {
+    showToast('测试失败: ' + e.message);
+  } finally {
+    hideLoading();
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,35 @@
+======================================================================
+DesayMem-Eval 评测报告
+数据集: carmem  |  模型: memory-llm  |  记忆系统: structmem
+时间: 2026-09-14 13:30:00
+======================================================================
+
+── 官方指标 ──
+协议: CarMem Extraction In-Schema / Retrieval Hit / Maintenance Action
+Extraction In-Schema Acc: 0.00%  (0/10)
+Extraction hierarchy mean (Main/Sub/Detail): 0.00%
+Retrieval Hit@k proxy: 20.00%  (2/10)
+Maintenance Action Acc (Pass/Update/Append):
+    maintenance_different        80.00%  (8/10)
+    maintenance_equal            70.00%  (7/10)
+    maintenance_negate           100.00%  (10/10)
+Maintenance state-after-update (辅助): 36.67%
+Extraction attribute match (辅助): 0.00%
+
+  按类别:
+    extraction                     0.00%  (0/10)
+    maintenance_different          80.00%  (8/10)
+    maintenance_equal              70.00%  (7/10)
+    maintenance_negate             100.00%  (10/10)
+    retrieval                      20.00%  (2/10)
+
+── 效率 ──
+阶段                 Token In  Token Out      Total    Calls    Runtime
+----------------------------------------------------------------------
+memory_build              0          0          0        0       0.0s
+qa                   15,405        320     15,725       70      11.4s
+----------------------------------------------------------------------
+Total                15,405        320     15,725       70      11.4s
+内存峰值             38.3 MB
+
+======================================================================

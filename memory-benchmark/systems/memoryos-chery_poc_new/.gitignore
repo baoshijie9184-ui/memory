@@ -1,0 +1,29 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+env/
+
+# Runtime memory data (auto-generated at runtime, may contain real user profiles - do not commit)
+memoryos_data/
+memoryos/users/
+memoryos/assistants/
+
+# Logs
+*.log
+log.txt
+
+# SQLite databases (session persistence, generated at runtime)
+*.db
+*.sqlite
+*.sqlite3
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.idea/
+.vscode/

@@ -1,0 +1,41 @@
+# Editors and local tooling
+.vscode/
+.pytest_cache/
+**/__pycache__/
+*.py[cod]
+
+# Local secrets (keep example templates)
+.env
+.env.*
+!.env.example
+!.env.*.example
+
+# JavaScript dependencies and build output
+**/node_modules/
+**/dist/
+**/.next/
+**/coverage/
+
+# Local environments, caches, and downloaded models
+desaymem/cache/
+desaymem/envs/
+desaymem/models/
+memory-benchmark/envs/
+**/.cache/
+
+# Runtime state and generated benchmark output
+desaymem/data/
+desaymem/logs/
+desaymem/run/
+memory-benchmark/data/
+memory-benchmark/logs/
+memory-benchmark/results/
+memory-benchmark/tmp/
+
+# Common runtime artifacts
+*.db
+*.db-shm
+*.db-wal
+*.log
+*.pid
+
