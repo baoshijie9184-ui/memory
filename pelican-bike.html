@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>海风骑行 · Pelican Cycling Club</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#eaf5f1;color:#183d36;font-family:Arial,"Microsoft YaHei",sans-serif;letter-spacing:0}main{min-height:100svh;display:flex;flex-direction:column;overflow:hidden}header{padding:28px 5vw;display:flex;justify-content:space-between;align-items:center;gap:20px}.brand{font-size:13px;font-weight:700;letter-spacing:0}.edition{font-size:12px;color:#56786d}h1{font-size:46px;font-weight:500;margin:24px 0 10px}.heading{text-align:center}.heading p{font-size:13px;margin:0;color:#54766c}svg.scene{width:100%;flex:1;min-height:300px;max-height:660px;display:block;overflow:visible}.toolbar{display:flex;align-items:center;justify-content:center;gap:25px;padding:16px 20px 35px;flex-wrap:wrap}button{border:1px solid #aec9bf;background:transparent;color:inherit;width:48px;height:48px;border-radius:50%;display:grid;place-items:center;cursor:pointer}button:hover{background:#d3e8df}button:focus-visible,input:focus-visible{outline:3px solid #dc635b;outline-offset:4px}button svg{width:19px;height:19px}label{display:flex;gap:14px;align-items:center;font-size:12px}input{width:120px;accent-color:#266456}output{width:36px;font-variant-numeric:tabular-nums;font-size:12px}footer{padding:0 5vw 24px;display:flex;justify-content:space-between;font-size:11px;color:#54766c}.motion{animation-timing-function:linear;animation-iteration-count:infinite}.wheel{transform-box:fill-box;transform-origin:center;animation-name:spin;animation-duration:1.4s}.pedal{transform-origin:510px 396px;animation-name:spin;animation-duration:1.4s}.bird{animation:bob .7s ease-in-out infinite alternate}.scarf{transform-origin:550px 224px;animation:flap .55s ease-in-out infinite alternate}.ground{animation-name:travel;animation-duration:3s}.clouds{animation-name:travel;animation-duration:30s}.leg{stroke:#eab64c;stroke-width:12;stroke-linecap:round;stroke-linejoin:round;fill:none}.paused *{animation-play-state:paused!important}@keyframes spin{to{transform:rotate(360deg)}}@keyframes bob{to{transform:translateY(-4px) rotate(.4deg)}}@keyframes flap{to{transform:rotate(-7deg)}}@keyframes travel{to{transform:translateX(-1000px)}}@media(max-width:600px){header{padding-top:23px}.edition{display:none}h1{font-size:34px;margin-top:35px}.scene{min-height:300px!important}footer{font-size:10px}.toolbar{gap:18px}}@media(prefers-reduced-motion:reduce){.motion,.bird,.scarf{animation-play-state:paused}}
+</style>
+</head>
+<body>
+<main id="app">
+<header><div class="brand">PELICAN CYCLING CLUB</div><div class="edition">COASTAL RIDES / No. 001</div></header>
+<div class="heading"><p>沿着海岸，慢慢来</p><h1>今天，顺风。</h1></div>
+<svg class="scene" viewBox="0 0 1000 560" role="img" aria-label="戴红围巾的鹈鹕骑着绿色自行车沿海岸前进，双脚踩踏，车轮旋转">
+<defs>
+ <pattern id="sea" width="150" height="30" patternUnits="userSpaceOnUse"><path d="M15 18h38m46 5h20" stroke="#91c9c2" stroke-width="2" stroke-linecap="round"/></pattern>
+ <g id="cloud"><path d="M0 0c0-14 17-19 27-12 1-25 42-28 47-4 20-8 33 4 33 16Z" fill="#fff" opacity=".8"/></g>
+ <g id="landmarks"><path d="M0 452h1000" stroke="#53766a" stroke-width="2"/><path d="M70 482h80m210 0h80m210 0h80m210 0h80" stroke="#fff" stroke-width="4" stroke-linecap="round"/><g stroke="#769987" stroke-width="3" fill="none"><path d="M160 449l-6-15m6 15 9-10m495 10-5-16m5 16 10-9m210 9-7-12"/></g><g fill="#aac5b5"><ellipse cx="260" cy="440" rx="9" ry="3"/><ellipse cx="790" cy="440" rx="7" ry="3"/></g></g>
+ <g id="spokes" stroke="#71978a" stroke-width="1.5"><path d="M-67 0H67M0-67V67M-47-47l94 94M-47 47l94-94M-62-26l124 52M-26-62l52 124M-62 26l124-52M-26 62l52-124"/></g>
+</defs>
+<circle cx="767" cy="110" r="43" fill="#efd275"/>
+<g class="clouds motion"><use href="#cloud" x="120" y="104"/><use href="#cloud" x="600" y="64"/><use href="#cloud" x="940" y="157"/><use href="#cloud" x="1120" y="104"/><use href="#cloud" x="1600" y="64"/><use href="#cloud" x="1940" y="157"/></g>
+<path d="M0 291Q140 246 270 280T510 285T760 276T1000 276V399H0Z" fill="#c3dfd4"/>
+<path d="M0 308Q180 296 360 310T720 305T1000 310V419H0Z" fill="#a9d6d0"/>
+<path d="M0 324H1000V405H0Z" fill="url(#sea)"/>
+<path d="M0 412Q245 394 520 412T1000 404V560H0Z" fill="#d8e7d2"/>
+<path d="M0 454H1000V510H0Z" fill="#b7cebc"/>
+<g class="ground motion"><use href="#landmarks"/><use href="#landmarks" x="1000"/></g>
+<ellipse cx="501" cy="455" rx="196" ry="11" fill="#6d9982" opacity=".16"/>
+<!-- The bicycle remains anchored while the coast moves past. -->
+<g fill="#eaf5f1" stroke="#284c43" stroke-width="9"><circle cx="365" cy="384" r="70"/><circle cx="650" cy="384" r="70"/></g>
+<g transform="translate(365 384)"><g class="wheel motion"><use href="#spokes"/><path d="M-30-58a65 65 0 0 1 20-6" fill="none" stroke="#dc635b" stroke-width="5"/></g></g>
+<g transform="translate(650 384)"><g class="wheel motion"><use href="#spokes"/><path d="M-30-58a65 65 0 0 1 20-6" fill="none" stroke="#dc635b" stroke-width="5"/></g></g>
+<path d="M365 384l92-102 53 114H365l65-64h177l-97 64m97-64 43 52m-43-52-18-71" stroke="#29765e" stroke-width="9" stroke-linejoin="round" fill="none"/>
+<path d="m457 282-9-23m141 2-9-22h33q19 1 12 19" fill="none" stroke="#284c43" stroke-width="7" stroke-linecap="round"/>
+<path d="M421 258h51" stroke="#284c43" stroke-width="12" stroke-linecap="round"/>
+<circle cx="510" cy="396" r="21" fill="#eaf5f1" stroke="#284c43" stroke-width="5"/><circle cx="365" cy="384" r="6" fill="#284c43"/><circle cx="650" cy="384" r="6" fill="#284c43"/>
+<path id="legBack" class="leg" d="M468 259L490 326L479 396" stroke-opacity=".6"/>
+<g class="bird">
+ <path d="m415 254-52-25 31 1-26-22 68 20" fill="#fffdf3" stroke="#d7e3d6" stroke-width="2"/>
+ <path d="M401 219q-10 57 52 67c45 4 84-29 91-55l21-54q16-20 7-41c-9-22-41-22-53-5-12 14-5 30-1 44l-17 36c-35-22-81-23-100 8Z" fill="#fffdf3" stroke="#d7e3d6" stroke-width="3"/>
+ <path d="M417 220q39-17 74 12c-8 40-46 44-74 13" fill="#e0e9df"/>
+ <path d="M423 229q24 3 47 13m-43-1 26 9" fill="none" stroke="#c0d2c5" stroke-width="3" stroke-linecap="round"/>
+ <path d="M565 153l115 20-111 10q-8 42-22 41-6-4 4-22Z" fill="#edba52" stroke="#d5a23d" stroke-width="2"/>
+ <path d="m565 153 115 20-112 2" fill="#f5cf6e"/><path d="m568 175 95-2" fill="none" stroke="#b88937" stroke-width="2"/>
+ <circle cx="547" cy="149" r="5" fill="#243f37"/><circle cx="548.5" cy="147.5" r="1.4" fill="white"/>
+ <path d="M515 134q10-25 33-16l19 10" fill="#377b65"/><path d="m517 134 58 4" stroke="#245b49" stroke-width="5" stroke-linecap="round"/>
+ <g class="scarf"><path d="m531 202-63-5-32 15 35 2 57 5Z" fill="#d95e53"/><path d="m523 211-43 14-28-3 13 17 62-20" fill="#c95049"/></g>
+ <path d="m519 201 19 8" stroke="#df6759" stroke-width="13" stroke-linecap="round"/>
+ <path d="M492 231q30 29 59 29l36-18" fill="none" stroke="#d7e3d6" stroke-width="17" stroke-linecap="round"/><path d="M492 228q30 29 59 29l36-18" fill="none" stroke="#fffdf3" stroke-width="12" stroke-linecap="round"/>
+</g>
+<path id="legFront" class="leg" d="M464 266L526 329L541 396"/>
+<g class="pedal motion" stroke="#284c43" stroke-width="5"><path d="M479 396h62"/><circle cx="479" cy="396" r="4"/><circle cx="541" cy="396" r="4"/></g>
+<path id="footFront" d="M530 397h24" stroke="#cf9636" stroke-width="8" stroke-linecap="round"/>
+<path d="M765 234q9-10 18 0 9-10 18 0m-62-43q6-7 12 0 6-7 12 0" fill="none" stroke="#709b90" stroke-width="2" stroke-linecap="round"/>
+</svg>
+<div class="toolbar"><button id="toggle" title="暂停动画" aria-label="暂停动画"><svg viewBox="0 0 24 24" fill="currentColor"><path id="controlIcon" d="M6 4h4v16H6zM14 4h4v16h-4z"/></svg></button><label for="speed">骑行速度 <input id="speed" type="range" min="0.5" max="2" step="0.1" value="1"></label><output id="speedValue" for="speed">1.0×</output></div>
+<footer><span>海风骑行俱乐部</span><span>A LITTLE RIDE. A GOOD DAY.</span></footer>
+</main>
+<script>
+const app=document.getElementById('app'),button=document.getElementById('toggle'),icon=document.getElementById('controlIcon'),slider=document.getElementById('speed');
+let paused=matchMedia('(prefers-reduced-motion: reduce)').matches,speed=1,phase=0,last=performance.now();
+const animations=document.getAnimations();
+function renderControl(){app.classList.toggle('paused',paused);button.setAttribute('aria-label',paused?'播放动画':'暂停动画');button.title=paused?'播放动画':'暂停动画';icon.setAttribute('d',paused?'M7 4l14 8-14 8z':'M6 4h4v16H6zM14 4h4v16h-4z');animations.forEach(a=>paused?a.pause():a.play());}
+button.addEventListener('click',()=>{paused=!paused;renderControl()});
+slider.addEventListener('input',()=>{speed=Number(slider.value);document.getElementById('speedValue').value=speed.toFixed(1)+'×';animations.forEach(a=>a.updatePlaybackRate(speed));});
+// Both feet follow opposite ends of the same crank.
+function frame(now){const dt=Math.min(now-last,60);last=now;if(!paused)phase+=dt*speed/1400*Math.PI*2;const x=510+31*Math.cos(phase),y=396+31*Math.sin(phase);document.getElementById('legFront').setAttribute('d',`M464 266 Q${x+12} 323 ${x} ${y}`);document.getElementById('legBack').setAttribute('d',`M468 259 Q${1000-x} 319 ${1020-x} ${792-y}`);document.getElementById('footFront').setAttribute('d',`M${x-9} ${y}h24`);requestAnimationFrame(frame)}
+renderControl();requestAnimationFrame(frame);
+</script>
+</body>
+</html>
