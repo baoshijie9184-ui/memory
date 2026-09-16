@@ -21,6 +21,8 @@ desaymem/cache/
 desaymem/envs/
 desaymem/models/
 memory-benchmark/envs/
+memory-benchmark/benchmark/
+/Qdrant-bm25/
 **/.cache/
 
 # Runtime state and generated benchmark output
@@ -38,4 +40,3 @@ memory-benchmark/tmp/
 *.db-wal
 *.log
 *.pid
-

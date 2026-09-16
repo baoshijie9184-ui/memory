@@ -44,16 +44,27 @@ class Mem0Bridge:
 
     def __init__(self, model_cfg, storage_root: str):
         from mem0 import Memory
+        from .llm_proxy import ensure_proxy, proxy_llm_base, proxy_embed_base
+
+        # llm/embedder 走本地记账代理 → 真实服务：mem0 内部的抽取/决策/向量化
+        # 调用（不经 CountingLLMClient）也被 phase 记账（2026-09-15 成本完整性改造）
+        ensure_proxy()
+        _llm_base = proxy_llm_base()
+        _embed_base = proxy_embed_base()
+        self._history_db_path = os.path.join(storage_root, "history.db")
+        self._cleanup_delete_events = 0
 
         # from_config 接收 dict（main.py:733 做 MemoryConfig(**config_dict)），
         # 直接传 MemoryConfig 实例会报 "argument after ** must be a mapping"
         cfg = {
+            # 与本次 Qdrant 库一起创建和清理，避免读取 ~/.mem0/history.db 的历史累计值。
+            "history_db_path": self._history_db_path,
             "llm": {
                 "provider": "openai",
                 "config": {
                     "model": model_cfg.model,
                     "api_key": model_cfg.api_key,
-                    "openai_base_url": model_cfg.api_base,
+                    "openai_base_url": _llm_base,
                 },
             },
             "embedder": {
@@ -61,7 +72,7 @@ class Mem0Bridge:
                 "config": {
                     "model": model_cfg.embedding_model,
                     "api_key": model_cfg.embedding_key,
-                    "openai_base_url": model_cfg.embedding_base,
+                    "openai_base_url": _embed_base,
                     "embedding_dims": model_cfg.embedding_dim,
                 },
             },
@@ -97,10 +108,48 @@ class Mem0Bridge:
 
     def delete_memoryos_user(self, uid):
         # mem0 的 delete_all 按 user_id 清；qdrant 本地库随目录清理
+        before = self._raw_event_counts().get("DELETE", 0)
         try:
             self._m.delete_all(user_id=uid)
         except Exception:
             pass
+        after = self._raw_event_counts().get("DELETE", 0)
+        # delete_all 是评测框架的样本清理，不属于 mem0 自身的冲突消解行为。
+        self._cleanup_delete_events += max(0, after - before)
+
+    def _raw_event_counts(self) -> dict:
+        """读取本次评测专属 history.db 中的原始事件计数。"""
+        if not os.path.isfile(self._history_db_path):
+            return {}
+        import sqlite3
+        from contextlib import closing
+        with closing(sqlite3.connect(self._history_db_path)) as conn:
+            return {
+                event: count
+                for event, count in conn.execute(
+                    "SELECT event, COUNT(*) FROM history GROUP BY event"
+                )
+                if event
+            }
+
+    def behavior_stats(self) -> dict:
+        """统计本次运行中由 mem0 自身产生的 ADD/UPDATE/DELETE。"""
+        try:
+            events = self._raw_event_counts()
+            if not events:
+                return {}
+            if "DELETE" in events:
+                events["DELETE"] = max(
+                    0, events["DELETE"] - self._cleanup_delete_events
+                )
+            out = {"memory_events": events}
+            adds = events.get("ADD", 0)
+            dels = events.get("DELETE", 0)
+            if adds + dels:
+                out["delete_ratio"] = round(dels / (adds + dels), 4)
+            return out
+        except Exception:
+            return {}
 
 
 # ---------------------------------------------------------------------------
@@ -134,9 +183,13 @@ class LightMemBridge:
         self._alias = dict(alias or {})
         self._dim = model_cfg.embedding_dim or 1024
         # OpenAI 兼容 embedding 客户端（bge-m3 @ vLLM）
+        # 走本地记账代理 → 真实 embedding 服务：retrieval 的 query 向量化
+        # 也计入 phase 账（2026-09-15 成本完整性改造，与 Mem0Bridge 同口径）
         from openai import OpenAI
+        from .llm_proxy import ensure_proxy, proxy_embed_base
+        ensure_proxy()
         self._emb = OpenAI(
-            base_url=model_cfg.embedding_base, api_key=model_cfg.embedding_key,
+            base_url=proxy_embed_base(), api_key=model_cfg.embedding_key,
         )
         self._emb_model = model_cfg.embedding_model
 
@@ -332,6 +385,7 @@ def build_mem0(model_cfg, llm_client, storage_root=None):
     import shutil
     shutil.rmtree(storage_root, ignore_errors=True)
     os.makedirs(storage_root, exist_ok=True)
+    print(f"[mem0] 已清理上次评测残留并重建干净库: {storage_root}")
     return Mem0Bridge(model_cfg, storage_root)
 
 

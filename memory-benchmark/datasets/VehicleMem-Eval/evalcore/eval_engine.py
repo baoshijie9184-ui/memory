@@ -13,7 +13,18 @@ import yaml
 import tracemalloc
 
 try:
-    from tqdm import tqdm
+    from tqdm import tqdm as _tqdm
+
+    def tqdm(iterable=None, **kwargs):
+        # 进度条直写终端（/dev/tty）而非 stdout——stdout 被 tee/重定向进
+        # eval.log 时，进度条不上日志文件（避免几百行 tqdm 快照污染日志），
+        # 有终端的会话（screen/交互终端）依然实时可见；无 tty 时退化为不显示。
+        try:
+            kwargs["file"] = open("/dev/tty", "w")
+        except OSError:
+            kwargs["file"] = None  # 无 tty（如纯 cron/管道），tqdm 自行禁用
+        return _tqdm(iterable, **kwargs)
+
 except ImportError:  # 未装 tqdm 时静默降级为无进度条
     def tqdm(iterable=None, **kwargs):
         return iterable if iterable is not None else _NullBar()
@@ -428,6 +439,20 @@ def run_evaluation(
                 pass
 
     metrics.merge_phase_stats(llm.get_stats())
+    # 并入记账代理账本：被测系统内部 LLM/embedding 调用（如 mem0 add 的抽取/决策）
+    import evalcore.llm_proxy as _lp
+    if _lp._PROXY is not None:
+        metrics.merge_phase_stats(_lp._PROXY.get_stats())
+
+    # 记忆系统行为统计（如 mem0 的 ADD/DELETE 分布）——有该能力的 bridge 自动采集
+    if mem is not None and hasattr(mem, "behavior_stats"):
+        try:
+            bstats = mem.behavior_stats()
+            if bstats:
+                metrics.raw_info["memory_behavior"] = bstats
+                print(f"记忆行为统计: {bstats}")
+        except Exception:
+            pass
     metrics.record_peak_memory()
     tracemalloc.stop()
 

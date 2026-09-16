@@ -98,6 +98,18 @@ def generate_report(metrics: EvalMetrics, dataset: str, model: str,
 
     lines.append(f"{'内存峰值':<16} {metrics.peak_memory_mb:.1f} MB")
 
+    # 记忆系统行为统计（mem0 等"评测即建库"系统的增删改分布）
+    beh = (metrics.raw_info or {}).get("memory_behavior")
+    if beh:
+        lines.append("")
+        lines.append("── 记忆行为 ──")
+        events = beh.get("memory_events") or {}
+        if events:
+            ev_txt = "  ".join(f"{k}={v}" for k, v in sorted(events.items()))
+            lines.append(f"事件分布: {ev_txt}")
+        if "delete_ratio" in beh:
+            lines.append(f"删除占比 (DELETE/(ADD+DELETE)): {beh['delete_ratio']:.2%}")
+
     lines.append("")
     lines.append("=" * 70)
 
