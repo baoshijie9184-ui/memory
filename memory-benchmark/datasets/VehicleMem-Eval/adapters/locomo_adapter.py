@@ -11,7 +11,8 @@ JSON category 字段 (与论文列举顺序不同, 以官方 evaluation.py 为�
   4 = single-hop  — token F1
   5 = adversarial — 预测含 "no information available" / "not mentioned" 得 1, 否则 0
 
-官方主指标: Token-level F1 (Porter stem + normalize_answer), 不是 LLM-as-judge.
+当前适配器协议: Token-level F1 (Porter stem + normalize_answer)。
+mem0ai/memory-benchmarks 的 J-score 是另一套 LoCoMo LLM-as-judge 协议。
 """
 
 import json

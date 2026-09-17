@@ -415,7 +415,6 @@ def run_evaluation(
                 max_tokens=200, temperature=0.0, disable_thinking=True,
             )
 
-            llm.set_phase("judge")
             result = adapter.evaluate_answer(
                 pred, q["answer"], llm, question=q["query"], query=q,
             )
@@ -433,6 +432,7 @@ def run_evaluation(
         )
 
         if mem and hasattr(mem, "delete_memoryos_user"):
+            llm.set_phase("cleanup")
             try:
                 mem.delete_memoryos_user(uid)
             except Exception:
